@@ -1,0 +1,178 @@
+﻿@using Capstone.Areas.CMS.Controllers.Training.Curriculum
+@using Capstone.Models
+@model t_CTDaotao
+@{
+    ViewBag.Title = "CreatCTDTstep1";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+
+    var rand = new Random();
+    var LoaiHN = rand.Next().ToString();
+    var CacHeNganh = ViewBag.CacHeNganh as List<sc_HeNganh>;
+    var NganhDaoTao = ViewBag.NganhDaoTao as List<sc_HeNganh>;
+}
+
+<style>
+    label {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Thêm Mới Chương Trình Đào Tạo - Bước 1 </h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lý CTDT</li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("List","CTDTKhung", new { area = "CMS" })">Danh sách CTDT khung</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Thêm mới CTDT</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.MaCT)
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <h6 class="card-subtitle"></h6>
+                <div>
+                    <div class="tab-content row">
+                        <div class="container col-12 tab-pane active" id="list">
+                            <h2 style="text-align:center">THÔNG TIN CHUNG CHƯƠNG TRÌNH ĐÀO TẠO</h2>
+                            <br />
+                            <hr />
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label>Tên chương trình đào tạo </label><label style="color:red">*</label>
+                                    @Html.TextBoxFor(m => m.TenCT, new { autofocus = true, @class = "form-control", maxlength = 100, required = true, message = CommonRS.Resources.ValidationMes.mes_TenCTDT })
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label >Hệ đào tạo</label>
+                                            @Html.DropDownList(LoaiHN, CacHeNganh.GetSelectList(m => m.MaHN, m => m.Mota, Model.MaHN), "Chọn hệ đào tạo", new { @class = "form-control", message = CommonRS.Resources.ValidationMes.mes_HeDT })
+                                        </div>
+                                        <div class="col-4">
+                                            <label>Ngành đào tạo</label><label style="color:red">*</label>
+                                            @Html.DropDownListFor(m => m.MaHN, (Model.MaCT > 0 ? NganhDaoTao : new List<sc_HeNganh>()).GetSelectList(m => m.MaHN, m => m.Mota, Model.MaHN), "Chọn ngành đào tạo", new { @class = "form-control", required = true, message = CommonRS.Resources.ValidationMes.mes_NganhDT })
+                                        </div>
+                                        <div class="col-5">
+                                            <label>Phiên bản CTDT</label><label style="color:red">*</label>
+                                            @Html.TextBoxFor(m => m.Phienban, new { @class = "form-control", maxlength = 20, required = true, @readonly = true, message = CommonRS.Resources.ValidationMes.mes_PhienBan })
+                                        </div>
+                                    </div>
+
+                                    @Html.LabelFor(m => m.Trinhdo, "Trình độ đào tạo")
+                                    @Html.TextBoxFor(m => m.Trinhdo, new { @class = "form-control", maxlength = 20 })
+
+                                </div>
+                                <div class="col-lg-6">
+                                    @Html.LabelFor(m => m.Thangdiem, "Thang điểm")
+                                    @Html.TextBoxFor(m => m.Thangdiem, new { @class = "form-control", maxlength = 100 })
+
+                                    @Html.LabelFor(m => m.LoaiCT, "Loại hình đào tạo")
+                                    @Html.TextBoxFor(m => m.LoaiCT, new { @class = "form-control", maxlength = 100 })
+
+                                    @Html.LabelFor(m => m.ThoigianDT, "Thời gian đào tạo")
+                                    @Html.TextBoxFor(m => m.ThoigianDT, new { @class = "form-control", maxlength = 200 })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    @Html.LabelFor(m => m.QuytrinhDT, "Quy trình đào tạo, điều kiện tốt nghiệp")
+                                    @Html.TextAreaFor(m => m.QuytrinhDT, new { @class = "form-control", maxlength = 200, rows = 5 })
+                                </div>
+
+                                <div class="col-lg-6">
+                                    @Html.LabelFor(m => m.Doituong, "Đối tượng tuyển sinh")
+                                    @Html.TextAreaFor(m => m.Doituong, new { @class = "form-control", rows = 5 })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.LabelFor(m => m.CosoVC, "Cơ sở vật chất phục vụ học tập")
+                                    @Html.TextAreaFor(m => m.CosoVC, new { @class = "form-control", rows = 5 })
+                                </div>
+                                <br />
+                                <hr />
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <p style="color:red">(*) Bắt buộc nhập </p>
+                    <hr />
+                    <input type="submit" value="Tiếp tục" class="btn" style="float:right;border-radius:25px; background-color:#b22222; color:white; border: 2px solid #ffffff" />
+                    <a class="btn" style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@(Url.Action<CTDTKhungController>(c => nameof(c.List)))">Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/ckeditor.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/samples/js/sample.js"></script>
+<script>
+    $(function () {
+        CKEDITOR.replace('@Model.NameOf(m => m.Doituong)');
+        CKEDITOR.replace('@Model.NameOf(m => m.QuytrinhDT)');
+        CKEDITOR.replace('@Model.NameOf(m => m.CosoVC)');
+        $('[name=@LoaiHN]').change(changeHeDaoTao);
+        $('#@Model.NameOf(m => m.MaHN)').change(changeNganhDaoTao);
+
+        $('[message]').each(function () {
+            $(this).attr('oninput', "this.setCustomValidity('')")
+                .attr('oninvalid', `this.setCustomValidity('${$(this).attr('message')}')`);
+        });
+    });
+</script>
+
+<script>
+    function changeHeDaoTao() {
+        var heDaoTao = document.getElementsByName('@LoaiHN');
+        var nganhDaoTao = document.getElementById('@Model.NameOf(m => m.MaHN)');
+        var value = $(heDaoTao).val();
+        if (value > 0)
+            $.ajax({
+                type: 'GET',
+                url: '.@(Url.Action<CTDTKhungController>(c => nameof(c.GetNganhDaoTao)))?maHe=' + value,
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (data) {
+                    alert(data.statusText || data);
+                },
+                success: function (data) {
+                    nganhDaoTao.innerHTML = '<option value>Chọn ngành đào tạo</option>';
+                    for (var index in data) {
+                        var option = document.createElement('option');
+                        option.value = data[index].MaHN;
+                        option.text = data[index].Mota + '-' + data[index].Tenrutgon;
+                        nganhDaoTao.appendChild(option);
+                    }
+                    changeNganhDaoTao();
+                }
+            });
+    }
+    function changeNganhDaoTao() {
+        var value = $('#@Model.NameOf(m => m.MaHN)').val();
+        if (value > 0)
+            $.ajax({
+                async: true,
+                type: 'POST',
+                url: '.@(Url.Action<CTDTKhungController>(c => nameof(c.GetPhienBanCTDT)))?idHeNganh=' + value,
+                cache: false,
+                error: function (data) {
+                     console.error(data)
+                },
+                success: function (data) {
+                    $('#@Model.NameOf(m => m.Phienban)').val(data);
+                }
+            });
+        else $('#@Model.NameOf(m => m.Phienban)').val('');
+    }
+</script>

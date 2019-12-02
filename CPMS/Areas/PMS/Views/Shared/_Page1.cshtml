@@ -1,0 +1,268 @@
+﻿<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title m-b-0">1. Thông tin chung</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Loại kiến thức:</label>
+                    <input type="text" class="form-control" id="" value="@Model.sc_Khoikienthuc.Mota" placeholder="Loại kiến thức" value="" disabled>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Hình thức:</label>
+                    <input type="text" class="form-control" id="" value="@Model.Hinhthuc" placeholder="Hình thức" value="" disabled>
+                </div>
+            </div>
+            @*<div class="col-md-2">
+                    <div class="form-group">
+                        <label>Loại hình thức:</label>
+                        <input type="text" class="form-control" id="" placeholder="Loại hình thức" value="" disabled>
+                    </div>
+                </div>*@
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Học kỳ:</label>
+                    <input type="text" class="form-control" id="" value="@Model.Hocky" placeholder="Học kỳ" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Số tín chỉ:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" value="@Model.SoTC" placeholder="0" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Tín chỉ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group m-b-16">
+                    <label>Giờ lý thuyết:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" value="@Model.GioLT" placeholder="0" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Giờ thực hành:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" placeholder="0" value="@Model.GioTH" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Giờ đồ án:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" placeholder="0" value="@Model.GioDa" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <label>Giờ thực tế:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" placeholder="0" value="@Model.GioTT" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title m-b-0">2. Mục tiêu học phần</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="col-md-12">
+            <div class="form-group row required-field">
+                <label>Mục tiêu học phần:</label>
+                <textarea class="form-control" id="idMucTieuHP" rows="5" placeholder="Nhập mục tiêu học phần">@Model.MuctieuHP</textarea>
+                <div class="invalid-feedback">
+                    Không được để trống
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title m-b-0">3. Kết quả học tập mong đợi</h5>
+</div>
+<div class="card m-b-0" id="table-content" style="overflow-x: auto;">
+    <table class="table table-hover table-bordered bg-table-mhgd-p1-t1 m-t-0 m-b-5">
+        <thead class="thead_ct">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">Phân loại</th>
+                <th rowspan="2">Tên kết quả học tập mong đợi</th>
+                <th rowspan="2">Chuẩn đầu ra CTĐT</th>
+                <th rowspan="2">Mô tả</th>
+                <th rowspan="2">Tùy chọn</th>
+            </tr>
+        </thead>
+        <tbody id='table-body-p1-t1'>
+        </tbody>
+    </table>
+</div>
+<a href="javascript:void(0)" id="showPopup" data-toggle="modal" data-target="#modalThemP1">Thêm kết quả học tập mong đợi</a>
+<div class="modal fade" id="modalThemP1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm kết quả học tập mong đợi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group required-field">
+                            <label>Tên kết quả học tập mong đợi:</label>
+                            <input type="text" class="form-control" maxlength="5" id="kqht" placeholder="Nhập tên kết quả học tập mong đợi" value="">
+                            <div class="invalid-feedback">
+                                Không được để trống, Chỉ được tối đa 5 kí tự và không được trùng tên với các Tên kết quả đã có.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group required-field" id="mySelect2Parent">
+                            <label>Chuẩn đầu ra chương trình đào tạo:</label>
+                            <select id="selectCDR" class="js-example-placeholder-multiple js-states form-control" multiple="multiple" style="height: 36px;width: 100%;"></select>
+                            <div class="invalid-feedback">
+                                Không được để trống
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group required-field">
+                            <label>Phân loại:</label>
+                            <select id="selectPhanloai" class="select2-phanloai form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                                <option value="Thái độ và phẩm chất đạo đức">Thái độ và phẩm chất đạo đức</option>
+                                <option value="Kiến thức">Kiến thức</option>
+                                <option value="Kỹ năng">Kỹ năng</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Không được để trống
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group required-field">
+                            <label>Mô tả:</label>
+                            <textarea id="motaCDR" class="form-control" rows="5" maxlength="500" placeholder="Nhập mô tả"></textarea>
+                            <div class="invalid-feedback">
+                                Không được để trống, Chỉ được tối đa 500 kí tự.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" id="btnThem" class="btn btn-success">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalEditP1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa kết quả học tập mong đợi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group required-field">
+                            <label>Tên kết quả học tập mong đợi:</label>
+                            <input type="text" class="form-control" maxlength="5" id="kqhtEdit" placeholder="Nhập tên kết quả học tập mong đợi" value="">
+                            <div class="invalid-feedback">
+                                Không được để trống, Chỉ được tối đa 5 kí tự.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group required-field" id="mySelect2Parent">
+                            <label>Chuẩn đầu ra chương trình đào tạo:</label>
+                            <select id="selectCDREdit" class="js-example-placeholder-multiple js-states form-control" multiple="multiple" style="height: 36px;width: 100%;"></select>
+                            <div class="invalid-feedback">
+                                Không được để trống
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group required-field">
+                            <label>Phân loại:</label>
+                            <select id="selectPhanLoaiEdit" class="select2-phanloai form-control custom-select" style="width: 100%; height:36px;">
+                                <option value="Thái độ và phẩm chất đạo đức">Thái độ và phẩm chất đạo đức</option>
+                                <option value="Kiến thức">Kiến thức</option>
+                                <option value="Kỹ năng">Kỹ năng</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Không được để trống
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group required-field">
+                            <label>Mô tả:</label>
+                            <textarea id="motaEdit" class="form-control" maxlength="500" rows="5" placeholder="Nhập mô tả"></textarea>
+                            <div class="invalid-feedback">
+                                Không được để trống, Chỉ được tối đa 500 kí tự
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" id="btnLuuChinhSua" class="btn btn-success">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="xacNhanXoaTableMot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận xóa kết quả học tập mong đợi?
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0)" class="btn btn-secondary" data-dismiss="modal">Hủy</a>
+                <a href="javascript:void(0)" class="btn btn-success" onclick="deleteAfterConfirm(1)" data-dismiss="modal">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>

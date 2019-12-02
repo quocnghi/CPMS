@@ -1,0 +1,235 @@
+﻿@model IEnumerable<Capstone.Areas.CMS.Models.NoiDungCtdt>
+@{
+                /**/
+
+                ViewBag.Title = "List";
+                Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+                int i = 1;
+                string[] arrTQ = null;
+                string[] arrHT = null;
+                string monTQ = "";
+                string monHT = "";
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css">
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<div class="page-wrapper" ng-controller="HPController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Nội Dung Chương Trình Đào Tạo </h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("Overview","Curriculum", new { area = "CMS" } )">Thông Tin Chung</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Nội Dung CTDT</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-sm-2">
+        <ul class="nav nav-pills" role="tablist" style="margin-left: 10px;width: 100%;">
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#list">Lưới</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#wrapper">Mapping</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container-fluid">
+        <div class="tab-content row">
+            <div class="container col-12 tab-pane" id="list">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="zero_config" class="table table-striped table-bordered">
+                                <thead style="text-align:center ; background-color: firebrick; color: white">
+                                    <tr>
+
+                                        <th>STT</th>
+                                        <th>Loại kiến thức</th>
+                                        <th>Tên học phần</th>
+                                        <th>Môn TQ</th>
+                                        <th>Môn HT</th>
+                                        <th>TC</th>
+                                        <th>LT</th>
+                                        <th>TH</th>
+                                        <th>ĐA</th>
+                                        <th>TT</th>
+                                        <th>BB/TC</th>
+                                        <th>HK</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.FirstOrDefault().khdaotao)
+                                    {
+                                        monTQ = "";
+                                        monHT = "";
+                                        <tr>
+                                            <td style="text-align:center">@i</td>
+
+                                            <td>@item.sc_Khoikienthuc.Mota</td>
+                                            <td>@item.TenHP</td>
+                                            @if (item.MonTQ != null)
+                                            {
+                                                arrTQ = item.MonTQ.Split(',');
+                                                foreach (var it in arrTQ)
+                                                {
+                                                    foreach (var h in Model.FirstOrDefault().hocphan)
+                                                    {
+                                                        int mamh = int.Parse(it);
+                                                        if (mamh == h.MaMH)
+                                                        {
+                                                            monTQ += h.TenMH + "";
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                            @if (monTQ.Length > 0)
+                                            {
+                                                <td>@monTQ.Substring(0, monTQ.Length - 1)</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            @if (item.MonHT != null)
+                                            {
+                                                arrHT = item.MonHT.Split(',');
+                                                foreach (var it in arrHT)
+                                                {
+                                                    foreach (var h in Model.FirstOrDefault().hocphan)
+                                                    {
+                                                        int mamh = int.Parse(it);
+                                                        if (mamh == h.MaMH)
+                                                        {
+                                                            monHT += h.TenMH + ";";
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                            @if (monHT.Length > 0)
+                                            {
+                                                <td>@monHT.Substring(0, monHT.Length - 1)</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td style="text-align:center">@item.SoTC</td>
+                                            <td style="text-align:center">@item.GioLT</td>
+                                            <td style="text-align:center">@item.GioTH </td>
+                                            <td style="text-align:center">@item.GioDA</td>
+                                            <td style="text-align:center">@item.GioTT</td>
+                                            @if (item.Hinhthuc == "BB")
+                                            {
+                                                <td style="text-align:center">Bắt buộc</td>
+                                            }
+                                            else if (item.Hinhthuc == "TC")
+                                            {
+                                                <td style="text-align:center">Tuỳ chọn</td>
+                                            }
+
+                                            <td style="text-align:center">@item.Hocky</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <br />
+                        <a class="btn " style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@Url.Action("Overview", "Curriculum" , new { area = "CMS", ID= Model.FirstOrDefault().ctdt.MaCT })">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+            <div id="wrapper" class="container col-12 tab-pane active">
+                <div class="card">
+                    <div class="card-body">
+                        @*<div id="sample">
+                                <div id="myDiagramDiv" style="border: solid 1px black; width:100%; height:600px;"></div>
+                            </div>*@
+                        <div class="table-responsive">
+                            <table id="zero_config" class="table table-striped table-bordered">
+                                <tr>
+                                    <th rowspan="2" style="text-align:center ; background-color:firebrick; color:white; vertical-align:middle;width:6%">Năm 1</th>
+                                    <th style="width:5% ;vertical-align:middle; text-align:center ; background-color:firebrick; color:white" >Học kỳ 1</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '1'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <th style="width:5%;vertical-align:middle; text-align:center ; background-color:firebrick; color:white">Học kỳ 2</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '2'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2" style="text-align:center ; background-color:firebrick; color:white; vertical-align:middle;width:6%">Năm 2</th>
+                                    <th style="width:5%; vertical-align:middle;text-align:center ; background-color:firebrick; color:white">Học kỳ 3</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '3'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <th style="width:5%; vertical-align:middle;text-align:center ; background-color:firebrick; color:white">Học kỳ 4</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '4'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2" style="text-align:center ; background-color:firebrick; color:white; vertical-align:middle;width:6%">Năm 3</th>
+                                    <th style="width:5%;vertical-align:middle; text-align:center ; background-color:firebrick; color:white">Học kỳ 5</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '5'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <th style="width:5%; vertical-align:middle;text-align:center ; background-color:firebrick; color:white">Học kỳ 6</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '6'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2" style="text-align:center ; background-color:firebrick; color:white; vertical-align:middle;width:6%">Năm 4</th>
+                                    <th style="width:5%;vertical-align:middle; text-align:center ; background-color:firebrick; color:white" rowspan="2">Học kỳ 7-8</th>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '7'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                                <tr>
+                                    <td style="width:11%" ng-repeat="hp in DSHP" ng-if="hp.Hocky == '8'">{{hp.TenHP}} [{{hp.MaCDR[hp.MaCDR.length - 1].MaHT.substr(0, hp.MaCDR[hp.MaCDR.length - 1].MaHT.length - 1)}}]</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <a class="btn " style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@Url.Action("Index", "Home" , new { area = "CMS"})">Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+    </div>
+</div>
+@*<script src="~/Content/Curriculum/assets/extra-libs/multicheck/datatable-checkbox-init.js"></script>
+    <script src="~/Content/Curriculum/assets/extra-libs/multicheck/jquery.multicheck.js"></script>*@
+<script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/DataTables/datatables.min.js"></script>
+<script>
+    /****************************************
+     *       Basic Table                   *
+     ****************************************/
+    $('#zero_config').DataTable();
+</script>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/DsHP/HPModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/DsHP/HPService.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/DsHP/HPController.js"></script>

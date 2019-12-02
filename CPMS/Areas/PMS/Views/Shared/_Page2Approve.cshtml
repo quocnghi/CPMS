@@ -1,0 +1,236 @@
+﻿<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">1. Ma trận đánh giá Kết quả học tập mong đợi (KQHTMĐ) của học phần</h5>
+</div>
+<div class="card" style="overflow-x: auto;">
+    <table class="table table-hover table-bordered bg-table-mhgd-p2-t1 m-t-0 m-b-5" id="tableDanhGiaKQHT">
+        <thead class="thead_ct" id="tableDanhGiaKQHT-Head">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">KQHTMD</th>
+                <th rowspan="2">Trọng số</th>
+                <th rowspan="2">Mô tả phương pháp đánh giá</th>
+            </tr>
+        </thead>
+        <tbody id='tableDanhGiaKQHT-Body'></tbody>
+    </table>
+    <table class="table table-hover table-bordered bg-table-mhgd-p2-t1 m-t-0 m-b-5" id="tableCCDG">
+        <thead class="thead_ct" id="tableCCDG-Head">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">KQHTMĐ</th>
+                <th rowspan="2">Công cụ đánh giá</th>
+                <th rowspan="2">Thời điểm đánh giá</th>
+            </tr>
+        </thead>
+        <tbody id='tableCCDG-Body'></tbody>
+    </table>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">2. Bảng đánh giá KQHTMĐ của học phần (quy đổi Bảng 1 về 3 cột điểm theo quy định của Phòng Đào Tạo)</h5>
+</div>
+<div class="card">
+    <table class="table table-hover table-bordered bg-table-mhgd-p2-t2 m-t-0 m-b-5" id="table-header">
+        <thead class="thead_ct" id="tableP2T2-Head">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">Phương pháp đánh giá</th>
+                <th rowspan="2">Trọng số</th>
+                <th rowspan="2">Phương pháp đánh giá</th>
+            </tr>
+        </thead>
+        <tbody id='tableP2T2-Body'></tbody>
+    </table>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">3. Nội dung giảng dạy</h5>
+</div>
+<div class="card m-b-0" id="table-content">
+    <div class="accordion" id="testAccordition">
+    </div>
+</div>
+<script type="text/javascript">
+    var accorditionArea = document.getElementById('testAccordition')
+    $(document).ready(function () {
+        $(".select2-cdr-ctdt").select2({
+            placeholder: "Chọn tiêu chí đánh giá",
+            allowClear: true
+        })
+        $(".select2-ckq-htmd").select2({
+            placeholder: "Chọn kết quả học tập mong đợi",
+            allowClear: true
+        })
+        $(".select2-c-qdts").select2({
+            placeholder: "Chọn thành phần quy đổi",
+            allowClear: true,
+            dropdownParent: $("#mP2T2")
+        })
+        $(".select2-kqhtmd").select2({
+            placeholder: "Chọn kết quả học tập mong đợi",
+            allowClear: true,
+            dropdownParent: $("#mP2T3")
+        })
+        $(".select2-c-tp").select2({
+            placeholder: "Chọn thành phần",
+            allowClear: true
+        })
+        $(".js-example-placeholder-multiple").select2()
+        renderTableP2T1()
+    });
+
+    //Chứa danh sách nội dung
+    var listNoiDung = []
+    //Chứa id của nội dung
+    var listContent = []
+    var listPhanLoai = ["Lý thuyết", "Bài tập lý luận", "Thực hành kỹ năng", "Đồ án"]
+
+    let count = 1;
+
+    function addAccorditionFromList(noidung) {
+        let t = new Date()
+        let tParse = t.getMinutes() + '-' + t.getMilliseconds() + '-' + count
+        listContent.push(tParse)
+        //noidung.idNoiDung = tParse
+        //Header of Accordition area
+        let divFather = document.createElement('div');
+        divFather.setAttribute('class', 'card card-custom m-b-10');
+        divFather.setAttribute('id', 'card-id-' + tParse)
+        let divCardHeader = document.createElement('div');
+        divCardHeader.setAttribute('class', 'card-header p-t-0 p-b-0 p-l-0 p-r-10');
+        let tagH = document.createElement('h5');
+        tagH.setAttribute('class', 'mb-0');
+        let divButton = document.createElement('button');
+        divButton.setAttribute('class', 'btn btn-link collapsed p-l-10')
+        divButton.setAttribute('data-toggle', 'collapse')
+        divButton.setAttribute('data-target', '#collapse-' + tParse);
+        divButton.setAttribute('aria-expanded', 'false');
+        divButton.setAttribute('aria-controls', 'collapse-' + tParse);
+        divButton.innerHTML = noidung.noiDungNgan
+        divButton.setAttribute('id', 'title-' + tParse)
+
+        tagH.appendChild(divButton)
+        divCardHeader.appendChild(tagH)
+        divFather.appendChild(divCardHeader)
+
+        //Body of Accordition
+        let collapseArea = document.createElement('div');
+        collapseArea.setAttribute('id', 'collapse-' + tParse);
+        collapseArea.setAttribute('class', 'm-l-10 m-r-10 collapse');
+        collapseArea.setAttribute('aria-labelledby', 'headingOne');
+        collapseArea.setAttribute('data-parent', '#testAccordition');
+        let collapseRow = document.createElement('row');
+        collapseRow.setAttribute('class', 'input-group')
+        collapseRow.setAttribute('id', 'rowNumNoiDung-' + tParse)
+        let collapseCol9 = document.createElement('div')
+        collapseCol9.setAttribute('class', 'col-md-6 p-l-0 p-t-10')
+        let collapColForm = document.createElement('div')
+        collapColForm.setAttribute('class', 'form-group required-field')
+        let collapColLabel = document.createElement('label')
+        collapColLabel.innerHTML = "A. Tên nội dung:"
+        let collapTA = document.createElement('input')
+        collapTA.setAttribute('class', 'required form-control')
+        collapTA.setAttribute('id', 'tennoidung-' + tParse)
+        collapTA.setAttribute('placeholder', 'Nhập tên nội dung')
+        collapTA.setAttribute('readonly', '');
+        let collapTANoiDungFB = document.createElement("div")
+        collapTANoiDungFB.setAttribute('class', 'invalid-feedback')
+        collapTANoiDungFB.innerHTML = "Không được để trống hoặc trùng với tên nội dung đã có"
+        collapColForm.appendChild(collapColLabel)
+        collapColForm.appendChild(collapTA)
+        collapColForm.appendChild(collapTANoiDungFB)
+        collapseCol9.appendChild(collapColForm)
+
+        let collapCol3One = document.createElement('div')
+        collapCol3One.setAttribute('class', 'col-md-3 p-l-0 p-t-10')
+        let collapCol3OneForm = document.createElement('div')
+        collapCol3OneForm.setAttribute('class', 'form-group required-field')
+        let collapCol3OneLabel = document.createElement('label')
+        collapCol3OneLabel.innerHTML = "B. Phân loại:"
+        let collapCol3OneSelect = document.createElement('select')
+        collapCol3OneSelect.setAttribute('class', 'form-control custom-select')
+        collapCol3OneSelect.setAttribute('style', 'width: 100%; height:36px;')
+        collapCol3OneSelect.setAttribute('id', 'phanloai-' + tParse)
+        let collapCol3OneSelectOpt = document.createElement('option')
+        collapCol3OneSelect.appendChild(collapCol3OneSelectOpt)
+        for (let item of listPhanLoai) {
+            let collapCol3SelectOpt = document.createElement('option')
+            collapCol3SelectOpt.setAttribute('value', item)
+            collapCol3SelectOpt.innerHTML = item
+            collapCol3OneSelect.appendChild(collapCol3SelectOpt)
+        }
+        let collapCol3OneSelectFB = document.createElement("div")
+        collapCol3OneSelectFB.setAttribute('class', 'invalid-feedback')
+        collapCol3OneSelectFB.innerHTML = "Không được để trống"
+        collapCol3OneForm.appendChild(collapCol3OneLabel)
+        collapCol3OneForm.appendChild(collapCol3OneSelect)
+        collapCol3OneForm.appendChild(collapCol3OneSelectFB)
+        collapCol3One.appendChild(collapCol3OneForm)
+
+        let collapCol3 = document.createElement('div')
+        collapCol3.setAttribute('class', 'col-md-6 p-l-0')
+        let collapCol3Form = document.createElement('div')
+        collapCol3Form.setAttribute('class', 'form-group required-field')
+        let collapCol3Label = document.createElement('label')
+        collapCol3Label.innerHTML = "C. Kết quả học tập mong đợi tương ứng:"
+        let collapCol3Select = document.createElement('select')
+        collapCol3Select.setAttribute('class', 'js-example-placeholder-multiple js-states form-control')
+        collapCol3Select.setAttribute('multiple', 'multiple')
+        collapCol3Select.setAttribute('style', 'width: 100%; height:36px;')
+        collapCol3Select.setAttribute('id', 'kqht-' + tParse)
+        for (let item of listCDR) {
+            let collapCol3SelectOpt = document.createElement('option')
+            collapCol3SelectOpt.setAttribute('value', item.MaCELO)
+            collapCol3SelectOpt.innerHTML = item.MaHT
+            collapCol3Select.appendChild(collapCol3SelectOpt)
+        }
+        let collapCol3SelectFB = document.createElement("div")
+        collapCol3SelectFB.setAttribute('class', 'invalid-feedback')
+        collapCol3SelectFB.innerHTML = "Không được để trống"
+        collapCol3Form.appendChild(collapCol3Label)
+        collapCol3Form.appendChild(collapCol3Select)
+        collapCol3Form.appendChild(collapCol3SelectFB)
+        collapCol3.appendChild(collapCol3Form)
+
+        let collapseCol9B = document.createElement('div')
+        collapseCol9B.setAttribute('class', 'col-md-12 p-l-0')
+        let collapseCol9BForm = document.createElement('div')
+        collapseCol9BForm.setAttribute('class', 'form-group')
+        let collapseCol9BLabel = document.createElement('label')
+        collapseCol9BLabel.innerHTML = "D. Nội dung chi tiết (nếu có):"
+        let collapseCol9TA = document.createElement('textarea')
+        collapseCol9TA.setAttribute('class', 'form-control')
+        collapseCol9TA.setAttribute('rows', '5')
+        collapseCol9TA.setAttribute('placeholder', 'Nhập nội dung chi tiết (nếu có)')
+        collapseCol9TA.setAttribute('id', 'noidung-' + tParse)
+        collapseCol9TA.setAttribute('readonly', '')
+        collapseCol9BForm.appendChild(collapseCol9BLabel)
+        collapseCol9BForm.appendChild(collapseCol9TA)
+        collapseCol9B.appendChild(collapseCol9BForm)
+
+        collapseRow.appendChild(collapseCol9)
+        collapseRow.appendChild(collapCol3One)
+        collapseRow.appendChild(collapCol3)
+        collapseRow.appendChild(collapseCol9B)
+
+        collapseArea.appendChild(collapseRow)
+
+        divFather.appendChild(collapseArea)
+        accorditionArea.appendChild(divFather)
+
+        $("#rowNumNoiDung-" + tParse).ready(function () {
+            $("#kqht-" + tParse).select2();
+            $("#kqht-" + tParse).prop("disabled", true);
+            $("#phanloai-" + tParse).select2();
+            $("#phanloai-" + tParse).val(noidung.phanLoai).trigger('change')
+            let listKQHT = []
+            for (let item of noidung.kqht) {
+                listKQHT.push(item.id)
+            }
+            $("#phanloai-" + tParse).prop("disabled", true);
+            $("#kqht-" + tParse).val(listKQHT).trigger('change');
+            noidung.idNoiDung = tParse
+            $("#tennoidung-" + tParse).val(noidung.noiDungNgan)
+            $("#noidung-" + tParse).val(noidung.noiDung)
+        })
+        count++
+    }
+</script>

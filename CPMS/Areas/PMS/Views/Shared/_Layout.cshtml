@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    @*@Styles.Render("~/Areas/PMS/Content/css")
+        @Scripts.Render("~/bundles/modernizr")*@
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Areas/PMS/Content/images/logo-vlu.png" />
+    <title>@ViewBag.Title</title>
+    <!-- Custom CSS -->
+    <link href="~/Areas/PMS/Content/assets/libs/flot/css/float-chart.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="~/Areas/PMS/Content/css/style.min.css" rel="stylesheet">
+    <link href="~/Areas/PMS/Content/assets/libs/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="~/Areas/PMS/Content/assets/extra-libs/calendar/calendar.css" rel="stylesheet">
+    <link href="~/Areas/PMS/Content/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/Areas/PMS/Content/css/style-rev.css">
+    <link href="~/Areas/PMS/Content/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+    <link href="~/Areas/PMS/Content/css/progress-wizard.min.css" rel="stylesheet" />
+    <link href="~/Areas/PMS/Content/css/res.css" rel="stylesheet" />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    @*Import Jquery Library*@
+    <script src="~/Areas/PMS/Content/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/select2/dist/js/select2.full.min.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/select2/dist/js/select2.min.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/flot/jquery.flot.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/flot/jquery.flot.pie.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/flot/jquery.flot.time.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/flot/jquery.flot.stack.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/flot/jquery.flot.crosshair.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+    <script src="~/Areas/PMS/Content/dist/js/Chart.js"></script>
+    <script src="~/Areas/PMS/Content/dist/js/Chart.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader" id="loading-image">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        @Html.Partial("_LoginPartial")
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and content here!!!! -->
+            <!-- ============================================================== -->
+            @RenderBody()
+            <!-- ============================================================== -->
+            <a id="back2top" @*data-toggle="tooltip" data-placement="left"*@ title="Trở về đầu trang"><i class="fal fa-arrow-to-top"></i></a>
+            <!-- ============================================================== -->
+            <!-- End bread crumb and content -->
+            <!-- ============================================================== -->
+            <footer class="footer text-center">
+                Bản quyền Template thuộc về Matrix-admin. Thiết kế và phát triển bởi Revolution Team - Capstone.
+            </footer>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="~/Areas/PMS/Content/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/Areas/PMS/Content/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/Areas/PMS/Content/assets/extra-libs/sparkline/sparkline.js"></script>
+    <!--Wave Effects -->
+    <script src="~/Areas/PMS/Content/dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="~/Areas/PMS/Content/dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="~/Areas/PMS/Content/dist/js/custom.min.js"></script>
+    <!--This page JavaScript -->
+    <script src="~/Areas/PMS/Content/assets/libs/inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
+    <script src="~/Areas/PMS/Content/dist/js/pages/mask/mask.init.js"></script>
+    <!-- <script src="../../dist/js/pages/dashboards/dashboard1.js"></script> -->
+    <!-- Charts js Files -->
+    <script src="~/Areas/PMS/Content/assets/libs/flot/excanvas.js"></script>
+    <script src="~/Areas/PMS/Content/dist/js/pages/chart/chart-page-init.js"></script>
+    <!-- Include JS file. -->
+    <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@2.9.1/js/froala_editor.min.js'></script>
+
+    <!-- this page js -->
+    <script src="~/Areas/PMS/Content/assets/libs/toastr/build/toastr.min.js"></script>
+    <script src="~/Areas/PMS/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Areas/PMS/Scripts/moment.js"></script>
+    <script src="~/Areas/PMS/Scripts/vi.js"></script>
+
+    <script src="~/Areas/PMS/Content/assets/libs/toastr/build/toastr.min.js"></script>
+
+    <script type="text/javascript">
+        //Kiểm tra event scroll để xác định độ cao của page khi scroll, từ đó xuất hiện nút back2top hoặc ẩn
+        $(document).ready(function () {
+            $(window).scroll(function () {
+                var height = $(window).scrollTop();
+                if (height > 100) {
+                    $('#back2top').fadeIn();
+                } else {
+                    $('#back2top').fadeOut();
+                }
+            });
+            $('#back2top').click(function () {
+                $("html, body").animate({ scrollTop: 0 }, 0);
+                return false;
+            });
+        });
+    </script>
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)*@
+</body>
+
+</html>

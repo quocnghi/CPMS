@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "HopThuDen";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-wrapper">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Hộp Thư Đến</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/#">Trang Chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Hộp thư đến</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="col-md-12 bg_content">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" id="parent-unseen" href="#unseen" role="tab"><span class="hidden-sm-up"></span> <span id="text-unseen" class="hidden-xs-down">Chưa xem (2)</span></a> </li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" id="parent-seen" href="#seen" role="tab"><span class="hidden-sm-up"></span><span id="text-seen" class="hidden-xs-down">Đã xem</span></a> </li>
+                    @*<div class="form-group m-b-0">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control fa-search" id="fname" placeholder="Tìm kiếm">
+                            </div>
+                        </div>*@
+                    @*<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab3</span></a> </li>*@
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content tabcontent-border">
+                    <div class="tab-pane active" id="unseen" role="tabpanel">
+                        <div class="comment-widgets scrollable" style="height: 550px;">
+                            <!-- Comment Row -->
+                            <a data-toggle="collapse" data-target="#collapseE" aria-expanded="true" aria-controls="collapseOne" >
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/images/us1.png" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Phan Thị Hồng</h6>
+                                        <b><span class="d-block">Đồng ý lời mời giảng dạy</span></b>
+                                        <div id="collapseE" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Ghi chú: Tôi đồng ý với lời mời giảng dạy, tuy nhiên Khoa cần sắp xếp lại thời gian biểu.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Comment Row -->
+                            <a data-toggle="collapse" data-target="#collapseF" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/images/us2.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Bùi Minh Phụng</h6>
+                                        <b><span class="d-block">Từ chối lời mời giảng dạy</span></b>
+                                        <div id="collapseF" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Lý do: Do một số lý do nên tôi không thể giảng dạy các môn học như Khoa đề xuất.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="seen" role="tabpanel">
+                        <div class="comment-widgets scrollable" style="height: 550px;">
+                            <!-- Comment Row -->
+                            <a data-toggle="collapse" data-target="#collapseA" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/images/us10.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Phan Thị Hồng</h6>
+                                        <span class="d-block">Đồng ý lời mời giảng dạy</span>
+                                        <div id="collapseA" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Ghi chú: Tôi đồng ý với lời mời giảng dạy, tuy nhiên Khoa cần sắp xếp lại thời gian biểu.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Comment Row -->
+                            <a data-toggle="collapse" data-target="#collapseB" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/images/us3.png" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Bùi Minh Phụng</h6>
+                                        <span class="d-block">Từ chối lời mời giảng dạy</span>
+                                        <div id="collapseB" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Lý do: Do một số lý do nên tôi không thể giảng dạy các môn học như Khoa đề xuất.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Comment Row -->
+                            <a data-toggle="collapse" data-target="#collapseC" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/images/us4.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Phạm Ngọc Duy</h6>
+                                        <span class="d-block">Từ chối lời mời giảng dạy</span>
+                                        <div id="collapseC" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Ghi chú: Tôi không có ý kiến gì thêm.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Comment Row -->
+                            <a data-toggle="collapse" data-target="#collapseD" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/images/us5.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Nguyễn Đắc Quỳnh My</h6>
+                                        <span class="d-block">Từ chối lời mời giảng dạy</span>
+                                        <div id="collapseD" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Lý do: Do một số lý do nên tôi không thể giảng dạy các môn học như Khoa đề xuất.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    @*<div class="tab-pane" id="messages" role="tabpanel">
+                                <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment..</p>
+                                <img src="../../assets/images/background/img4.jpg" class="img-fluid">
+                        </div>*@
+                </div>
+            </div>
+
+        </div>
+        @*3633+++333+<div id="snackbar">Some text some message..</div>
+        <div id="loader" style="display: none;"></div>*@
+
+        <div style="display:none;" id="myDiv" class="animate-bottom"></div>
+    </div>
+</div>
+    <script type="text/javascript">
+        document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+        document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+        $(document).ready(function () {
+            $("#parent-seen").click(function () {
+                document.getElementById("text-seen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+                document.getElementById("text-unseen").setAttribute("style", "color: #4F5467;");
+            })
+            $("#parent-unseen").click(function () {
+                document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+                document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+            })
+        });
+    </script>
+

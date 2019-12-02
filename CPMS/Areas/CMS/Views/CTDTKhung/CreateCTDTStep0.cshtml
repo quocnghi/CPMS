@@ -1,0 +1,58 @@
+﻿@using Capstone.Areas.CMS.Controllers.Training.Curriculum
+@using Capstone.Models
+@model IEnumerable<t_CTDaotao>
+@{
+    ViewBag.Title = "CreateCTDTStep0";
+}
+
+<div class="page-wrapper">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Thêm Mới Chương Trình Đào Tạo - Bước 0 </h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lý CTDT</li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("List","CTDTKhung", new { area = "CMS" })">Danh sách CTDT khung</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Thêm mới CTDT</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <h6 class="card-subtitle"></h6>
+                <div>
+                    <div class="tab-content row">
+                        <div class="container col-12 tab-pane active" id="list">
+                            <div class="row">
+                                <div>
+                                    <a class="btn btn-primary" href="@(Url.Action<CTDTKhungController>(c => nameof(c.CreateCTDTStep1), new { maCT = 0 }))">Thêm mới</a> hoặc
+                                </div>
+                                <table class="table table-hover table-striped">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Phienban</td>
+                                            <td>@item.TenCT</td>
+                                            <td>
+                                                <a class="btn btn-success" href="@(Url.Action<CTDTKhungController>(c => nameof(c.CreateCTDTStep1), new { maCT = item.MaCT }))">Tiếp tục</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                                <br />
+                                <hr />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

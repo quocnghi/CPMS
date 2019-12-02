@@ -1,0 +1,1368 @@
+﻿@model Tuple<IEnumerable<Capstone.Models.t_CTDaotao>, IEnumerable<Capstone.Models.sc_HeNganh>>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+    int i = 1;
+    var CTDaoTaos = Model.Item1;
+    var HeNganhs = Model.Item2;
+    var CTDaoTao = CTDaoTaos.FirstOrDefault() ?? new Capstone.Models.t_CTDaotao();
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css">
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<div class="page-wrapper">
+    <div id="content">
+        <div class="page-breadcrumb">
+            <div class="row">
+                <div class="col-12 d-flex no-block align-items-center">
+                    <h4 class="page-title">Danh Sách Chương Trình Đào Tạo Kế Hoạch</h4>
+                    <div class="ml-auto text-right">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                                <li class="breadcrumb-item " aria-current="page">Quản lí CTDT</li>
+                                <li class="breadcrumb-item active" aria-current="page">Danh sách CTDT kế hoạch</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*Thêm CTDT Kế hoạch*@
+        <div class="modal fade" id="addCTDTKHModal" tabindex="-1" role="dialog" aria-labelledby="addCTDTKHModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCTDTKHModalLabel">Thêm CTĐT Kế Hoạch</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horiontal">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="control-group">
+                                        <select class="select2 form-control custom-select" id="he" onchange="changeNganh()">
+                                            <option hidden>Chọn hệ</option>
+                                            @foreach (var item in HeNganhs.Where(s => s.MaQH == null))
+                                            {
+                                                <option value="@item.MaHN">@item.Mota</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="control-group">
+                                        <select class="select2 form-control custom-select" id="nganh" name="nganh">
+                                            @*<option hidden>Chọn ngành</option>
+                                                @foreach (var item in Model.henganh)
+                                                {
+                                                    <option value="@item.MaHN">@item.Mota</option>
+                                                }*@
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <button class="btn btn-outline-success" id="btnApply">Xem CTĐT Khung</button>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                            <div class="col-sm-4" id="the"></div>
+                            <div class="tab-content">
+                                <div class="card card-body printableArea tab-pane active" id="noidung"></div>
+                                <div class="card card-body printableArea tab-pane fade" id="monhoc" style="margin-top:40px"></div>
+                            </div>
+                            <div class="col-lg-3" id="lop">
+
+                            </div>
+                            <br />
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-success" id="btnAddSubject">Áp dụng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <hr>
+            <div class="tab-content row">
+
+                <div class="container col-12 tab-pane active">
+                    <div class="card">
+                        <div class="card-body">
+                            @*<h2 class="card-title">HỌC KỲ 1</h2>*@
+                            @if (User.IsInRole(CommonLibrary.ROLES.ADMIN) || User.IsInRole(CommonLibrary.ROLES.HEADOFEDITOR))
+                            {
+                                <div class="table-responsive">
+                                    <button class="btn btn-success" style="position:inherit" data-toggle="modal" data-target="#addCTDTKHModal" id="themctdt">Thêm CTĐT</button>
+                                    <br />
+                                    <br />
+                                    <table id="zero_config" class="table table-striped table-bordered">
+                                        <thead style="text-align:center ; background-color: firebrick; color: white">
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Hệ</th>
+                                                <th>Ngành</th>
+                                                <th>Khối lớp</th>
+                                                <th>Tình trạng</th>
+                                                <th>Thao tác khác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in CTDaoTaos)
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center">@i</td>
+                                                    <td style="text-align:center">@item.Trinhdo</td>
+                                                    <td style="text-align:center">@item.sc_HeNganh.Mota</td>
+                                                    <td style="text-align:center">@item.sc_Khoilop.TenKhoi</td>
+                                                    <td style="text-align:center">@item.Tinhtrang</td>
+                                                    <td style="text-align:center">
+                                                        @if (item.Tinhtrang == CommonLibrary.TinhTrang.HieuLuc)
+                                                        {
+                                                            <a data-id="@item.MaCT" class="edit" title="Xem lại" href="javascript:void(0)" data-toggle="modal" data-target="#reviewCTDT" style="margin:5px;"><img src="~/Areas/CMS/images/IconCheck2.png" style="width:25px"></a>
+                                                        }
+                                                        @if (item.Tinhtrang == CommonLibrary.TinhTrang.LuuTru)
+                                                        {
+                                                            <a data-id="@item.MaCT" class="edit" title="Xem lại" href="javascript:void(0)" data-toggle="modal" data-target="#reviewCTDT" style="margin:5px;"><img src="~/Areas/CMS/images/IconCheck2.png" style="width:25px"></a>
+                                                        }
+                                                        @if (item.Tinhtrang == CommonLibrary.TinhTrang.LuuTam)
+                                                        {
+                                                            <a href="@Url.Action("EditCTDTKehoachStep1", "CTDTKeHoach",new { area = "CMS", id = item.MaCT })"><img src="~/Areas/CMS/images/IconEdit.png" style="width:28px;"></a>
+                                                            <a data-id="@item.MaCT" class="edit" title="Xem lại" href="javascript:void(0)" data-toggle="modal" data-target="#reviewCTDT" style="margin:5px;"><img src="~/Areas/CMS/images/IconCheck2.png" style="width:25px"></a>
+                                                        }
+                                                        @*<a href="@Url.Action("EditCTDTStep1", "CTDTKhung", new { id = item.MaCTDT })"><img src="~/images/IconEdit.png" style="width:28px;"></a>*@
+
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                            @*<tr></tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else if (User.IsInRole(CommonLibrary.ROLES.EDITOR))
+                            {
+                                <div class="table-responsive">
+                                    @*<button class="btn btn-success" style="position:inherit" data-toggle="modal" data-target="#addCTDTKHModal" id="themctdt">Thêm CTĐT</button>*@
+
+                                    <table id="zero_config" class="table table-striped table-bordered">
+                                        <thead style="text-align:center ; background-color: firebrick; color: white">
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Hệ</th>
+                                                <th>Ngành</th>
+                                                <th>Khối lớp</th>
+                                                <th>Tình trạng</th>
+                                                <th>Thao tác khác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in CTDaoTaos)
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center">@i</td>
+                                                    <td style="text-align:center">@item.Trinhdo</td>
+                                                    <td style="text-align:center">@item.sc_HeNganh.Mota</td>
+                                                    <td style="text-align:center">@item.sc_Khoilop.TenKhoi</td>
+                                                    <td style="text-align:center">@item.Tinhtrang</td>
+                                                    <td style="text-align:center">
+                                                        <a data-id="@item.MaCT" class="edit" title="Xem lại" href="javascript:void(0)" data-toggle="modal" data-target="#reviewCTDT" style="margin:5px;"><img src="~/Areas/CMS/images/IconCheck2.png" style="width:25px"></a>
+
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                            @*<tr></tr>*@
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else if (User.IsInRole(CommonLibrary.ROLES.EVALUATOR))
+                            {
+                                <div class="table-responsive">
+                                    @*<button class="btn btn-success" style="position:inherit" data-toggle="modal" data-target="#addCTDTKHModal" id="themctdt">Thêm CTĐT</button>*@
+
+                                    <table id="zero_config" class="table table-striped table-bordered">
+                                        <thead style="text-align:center ; background-color: firebrick; color: white">
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Hệ</th>
+                                                <th>Ngành</th>
+                                                <th>Khối lớp</th>
+                                                <th>Tình trạng</th>
+                                                <th>Thao tác khác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in CTDaoTaos)
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center">@i</td>
+                                                    <td style="text-align:center">@item.Trinhdo</td>
+                                                    <td style="text-align:center">@item.sc_HeNganh.Mota</td>
+                                                    <td style="text-align:center">@item.sc_Khoilop.TenKhoi</td>
+                                                    <td style="text-align:center">@item.Tinhtrang</td>
+                                                    <td style="text-align:center">
+                                                        <a data-id="@item.MaCT" class="edit" title="Xem lại" href="javascript:void(0)" data-toggle="modal" data-target="#reviewCTDT" style="margin:5px;"><img src="~/Areas/CMS/images/IconCheck2.png" style="width:25px"></a>
+                                                        @*<a href="@Url.Action("EditCTDTStep1", "CTDTKhung", new { id = item.MaCTDT })"><img src="~/images/IconEdit.png" style="width:28px;"></a>*@
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                            @*<tr></tr>*@
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                        @*Form Review CTDT kế hoạch*@
+                        <div class="modal fade" id="reviewCTDT" tabindex="-1" role="dialog" aria-labelledby="reviewCTDTLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" style="width:95%;font-size:medium">
+                                <div class="modal-content" style="background-color:#eeeeee">
+                                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                                        <h5 class="modal-title" id="evaluteCTDTLabel">Xem lại chương trình đào tạo</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row" style="background-color:white ; margin-left:auto;margin-right:auto">
+                                            <hr />
+                                            <div class="col-md-12" style="margin-top:10px">
+                                                <ul class="nav nav-pills nav-justified" role="tablist">
+                                                    <li class="nav-item" style="border-radius: 5px">
+                                                        <a class="nav-link noiDungCTDTr active" data-toggle="tab" style="border-color:black">Thông tin chung</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link mucTieuCDRr" data-toggle="tab">Mục tiêu - CĐR</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link hocPhanr" data-toggle="tab">Nội dung</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link danhGiar" data-toggle="tab">Đánh giá</a>
+                                                    </li>
+                                                </ul>
+                                                <hr />
+                                            </div>
+                                            <div class="card card-body printableArea">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @*Thông tin chung*@
+                                                        <div id="Content1r">
+                                                            <input id="timmactdt" hidden value="@CTDaoTao.MaCT"/>
+                                                            <h4>I. Thông tin chung chương trình đào tạo</h4>
+                                                            <div class="showThongtin" id="li">
+                                                                <ol>
+                                                                    <li>Tên chương trình đào tạo: <span id="dgtenctdtrv"></span></li>
+                                                                    <li>Ngành đào tạo: <span id="dgnganhdaotaorv"></span></li>
+                                                                    <li>Phiên bản: <span id="dgphienbanrv"></span></li>
+                                                                    <li>Trình độ đào tạo: <span id="dgtrinhdodaotaorv"></span></li>
+                                                                    <li>Loại hình đào tạo: <span id="dgloaihinhdaotaorv"></span></li>
+                                                                    <li>Thời gian đào tạo: <span id="dgthoigiandaotaorv"></span></li>
+                                                                    <li>
+                                                                        Quy trình đào tạo và điều kiện tốt nghiệp:
+                                                                        <br />
+                                                                        <div id="dgquytrinhdaotaorv"></div>
+                                                                    </li>
+                                                                    <li>
+                                                                        Đối tượng tuyển sinh:
+                                                                        <br />
+                                                                        <div id="dgdoituongtuyensinhrv"></div>
+                                                                    </li>
+                                                                    <li>
+                                                                        Cơ sở vật chất phục vụ học tập:
+                                                                        <br />
+                                                                        <div id="dgcosovatchatrv"></div>
+                                                                    </li>
+                                                                </ol>
+                                                            </div>
+                                                        </div>
+                                                        @*Mục tiêu và chuẩn đầu ra*@
+                                                        <div id="Content2r">
+                                                            <h4>II. Mục tiêu và chuẩn đầu ra chương trình đào tạo</h4>
+                                                            <ol>
+                                                                <li>
+                                                                    Mục tiêu chung CTDT: <br /> <span id="dgmuctieuchungrv"></span>
+                                                                </li>
+                                                                @*Danh sách mục tiêu đào tạo cụ thể*@
+                                                                <li>
+                                                                    Mục tiêu đào tạo cụ thể
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Phân loại</th>
+                                                                            <th style="text-align:center">Mô tả</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="mtdtcutherv">
+                                                                     
+                                                                    </tbody>
+                                                                </table>
+                                                                @*Danh sách kết quả học tập mong đợi*@
+                                                                <li>
+                                                                    Kết quả học tập mong đợi
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã hiển thị</th>
+                                                                            <th style="text-align:center">Mô tả</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="chuandauraCTDTrv">
+                                                                   
+                                                                    </tbody>
+                                                                </table>
+                                                                <li>
+                                                                    Ma trận giữa mục tiêu đào tạo cụ thể và chuẩn đầu ra CTDT
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Phân loại</th>
+                                                                            <th style="text-align:center">Mô tả mục tiêu đào tạo cụ thể</th>
+                                                                            <th style="text-align:center">Mô tả chuẩn đầu ra</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="matranmt-cdrrv"></tbody>
+                                                                </table>
+                                                            </ol>
+                                                        </div>
+                                                        @*Danh sách học phần*@
+                                                        <div id="Content3r">
+                                                            <h4>III. Nội dung Chương trình đào tạo</h4>
+                                                            <ol>
+                                                                <li>
+                                                                    Danh sách học phần
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã học phần</th>
+                                                                            <th style="text-align:center">Tên học phần</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="noidungctdtrv">
+                                                                        <tr>
+                                                                            <td style="text-align:center;vertical-align: middle"></td>
+                                                                            <td id="mahprv" style="text-align:center;vertical-align: middle"></td>
+                                                                            <td id="tenhprv" style="text-align:center;vertical-align: middle"><a title="Xem lại" href="#" data-toggle="modal" data-target="#hpReview" style="margin:5px;"></a></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <li>
+                                                                    Ma trận học phần và chuẩn đầu ra
+                                                                </li>
+                                                                <table class="table table-striped table-bordered">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã học phần</th>
+                                                                            <th style="text-align:center">Tên học phần</th>
+                                                                            <th style="text-align:center">Mô tả chuẩn đầu ra</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="matranhp-cdrrv"></tbody>
+                                                                </table>
+                                                            </ol>
+                                                        </div>
+                                                        @*Đánh giá*@
+                                                        <div id="Content4r">
+                                                            <h5>IV. Nội dung đánh giá Chương trình đào tạo</h5>
+                                                            <ol>
+                                                                <li>
+                                                                    Nội dung đánh giá:
+                                                                    <br />
+                                                                    <div id="noidungdanhgiarv"></div>
+                                                                </li>
+                                                                <li>
+                                                                    Download file:
+                                                                    <br />
+                                                                </li>
+                                                            </ol>
+                                                            @*Tệp đính kèm*@
+                                                            <form id="formluutailieurv" class="form-horizontal style-form" method="post" action="/CTDTKhung/getExcel" enctype="multipart/form-data">
+                                                                <br />
+                                                                <div class="form-group">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="apDungr" class="modal-footer" style="background-color:white">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*End form Review CTĐT*@
+
+                        @*Form dánh giá CTDT kế hoạch*@
+                        <div class="modal fade" id="evaluateCTDT    " tabindex="-1" role="dialog" aria-labelledby="evaluateCTDTLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" @*role="document"*@ style="width:95%;font-size:medium">
+                                <div class="modal-content" style="background-color:#eeeeee">
+                                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                                        <h5 class="modal-title" id="evaluteCTDTLabel">Ðánh giá chương trình đào tạo</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row" style="background-color:white ; margin-left:auto;margin-right:auto">
+                                            <hr />
+                                            <div class="col-md-12" style="margin-top:10px">
+                                                <ul class="nav nav-pills nav-justified" role="tablist">
+                                                    <li class="nav-item" style="border-radius: 5px">
+                                                        <a class="nav-link noiDungCTDT active" data-toggle="tab" style="border-color:black">Thông tin chung</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link mucTieuCDR" data-toggle="tab">Mục tiêu - CĐR</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link hocPhan" data-toggle="tab">Nội dung</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link danhGia" data-toggle="tab">Đánh giá</a>
+                                                    </li>
+                                                </ul>
+                                                <hr />
+                                            </div>
+                                            <div class="card card-body printableArea">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @*Thông tin chung*@
+                                                        <div id="Content1">
+                                                            <input id="timmactdt" hidden value="@CTDaoTao.MaCT" />
+                                                            <h4>I. Thông tin chung chương trình đào tạo</h4>
+                                                            <div class="showThongtin" id="li">
+                                                                <ol>
+                                                                    <li>Tên chương trình đào tạo: <span id="dgtenctdt"></span></li>
+                                                                    <li>Ngành đào tạo: <span id="dgnganhdaotao"></span></li>
+                                                                    <li>Phiên bản: <span id="dgphienban"></span></li>
+                                                                    <li>Trình độ đào tạo: <span id="dgtrinhdodaotao"></span></li>
+                                                                    <li>Loại hình đào tạo: <span id="dgloaihinhdaotao"></span></li>
+                                                                    <li>Thang điểm: <span id="thangdiem"></span></li>
+                                                                    <li>Thời gian đào tạo: <span id="dgthoigiandaotao"></span></li>
+                                                                    <li>
+                                                                        Quy trình đào tạo và điều kiện tốt nghiệp:
+                                                                        <br />
+                                                                        <div id="dgquytrinhdaotao"></div>
+                                                                    </li>
+                                                                    <li>
+                                                                        Đối tượng tuyển sinh:
+                                                                        <br />
+                                                                        <div id="dgdoituongtuyensinh"></div>
+                                                                    </li>
+                                                                    <li>
+                                                                        Cơ sở vật chất phục vụ học tập:
+                                                                        <br />
+                                                                        <div id="dgcosovatchat"></div>
+                                                                    </li>
+                                                                </ol>
+                                                            </div>
+                                                        </div>
+                                                        @*Mục tiêu và chuẩn đầu ra*@
+                                                        <div id="Content2">
+                                                            <h4>II. Mục tiêu và chuẩn đầu ra chương trình đào tạo</h4>
+                                                            <ol>
+                                                                <li>
+                                                                    Mục tiêu chung CTDT: <br /> <span id="dgmuctieuchung"></span>
+                                                                </li>
+                                                                <li>
+                                                                    Mục tiêu đào tạo cụ thể
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Phân loại</th>
+                                                                            <th style="text-align:center">Mô tả</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="mtdtcuthe"></tbody>
+                                                                </table>
+                                                                <li>
+                                                                    Kết quả học tập mong đợi
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã hiển thị</th>
+                                                                            <th style="text-align:center">Mô tả</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="chuandauraCTDT"></tbody>
+                                                                </table>
+                                                                <li>
+                                                                    Ma trận giữa mục tiêu đào tạo cụ thể và chuẩn đầu ra CTDT
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Phân loại</th>
+                                                                            <th style="text-align:center">Mô tả mục tiêu đào tạo cụ thể</th>
+                                                                            <th style="text-align:center">Mô tả chuẩn đầu ra</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="matranmt-cdr">
+
+                                                                    </tbody>
+                                                                </table>
+
+                                                            </ol>
+                                                        </div>
+                                                        @*Danh sách học phần*@
+                                                        <div id="Content3">
+                                                            <h4>III. Nội dung Chương trình đào tạo</h4>
+                                                            <ol>
+                                                                <li>
+                                                                    Danh sách học phần
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã học phần</th>
+                                                                            <th style="text-align:center">Tên học phần</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="noidungctdt"></tbody>
+                                                                </table>
+                                                                <li>
+                                                                    Ma trận học phần và chuẩn đầu ra
+                                                                </li>
+                                                                <table class="table table-striped table-bordered">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã học phần</th>
+                                                                            <th style="text-align:center">Tên học phần</th>
+                                                                            <th style="text-align:center">Mô tả chuẩn đầu ra</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="matranhp-cdr"></tbody>
+                                                                </table>
+                                                            </ol>
+                                                            
+                                                        </div>
+                                                        @*Đánh giá*@
+                                                        <div id="Content4">
+                                                            <h4>IV. Đánh giá</h4>
+                                                            <textarea id="noidungdanhgia" rows="6" style="width:100%;"></textarea>
+                                                            <br />
+                                                            <div class="form-group row">
+                                                                <div class="col-md-9">
+                                                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                                                        <input type="checkbox" class="custom-control-input" id="dongy">
+                                                                        <label class="custom-control-label" for="dongy">&nbsp; &nbsp; &nbsp; Đồng ý với nội dung CTDT </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            @*Tệp đính kèm*@
+                                                            <form id="formluutailieu" class="form-horizontal style-form" method="post" action="/CTDTKhung/getPDF" enctype="multipart/form-data">
+                                                                <br />
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-3">
+                                                                        <input type="file" id="FilePDF" name="FileExcel" accept="application/pdf" />
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                            <div class="row">
+                                                                <button id="luutailieudinhkem" class="btn btn-round btn-success" style="margin-left:1%">Lưu tài liệu</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="apDung" class="modal-footer" style="background-color:white">
+                                            <hr />
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                            <button type="button" class="btn btn-success" onclick="javascript" id="btnhoanthanhdanhgia">Hoàn thành</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*End form đánh giá CTDT kế hoạch*@
+
+                        @*Form Review CTDT kế hoạch*@
+                        <div class="modal fade" id="reviewCTDT" tabindex="-1" role="dialog" aria-labelledby="reviewCTDTLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" style="width:95%;font-size:medium">
+                                <div class="modal-content" style="background-color:#eeeeee">
+                                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                                        <h5 class="modal-title" id="evaluteCTDTLabel">Xem lại chương trình đào tạo</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row" style="background-color:white ; margin-left:auto;margin-right:auto">
+                                            <hr />
+                                            <div class="col-md-12" style="margin-top:10px">
+                                                <ul class="nav nav-pills nav-justified" role="tablist">
+                                                    <li class="nav-item" style="border-radius: 5px">
+                                                        <a class="nav-link noiDungCTDTr active" data-toggle="tab" style="border-color:black">Thông tin chung</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link mucTieuCDRr" data-toggle="tab">Mục tiêu - CĐR</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link hocPhanr" data-toggle="tab">Nội dung</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link danhGiar" data-toggle="tab">Đánh giá</a>
+                                                    </li>
+                                                </ul>
+                                                <hr />
+                                            </div>
+                                            <div class="card card-body printableArea">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @*Thông tin chung*@
+                                                        <div id="Content1r">
+                                                            <input id="timmactdt" hidden value="@CTDaoTao.MaCT" />
+                                                            <h4>I. Thông tin chung chương trình đào tạo</h4>
+                                                            <div class="showThongtin" id="li">
+                                                                <ol>
+                                                                    <li>Tên chương trình đào tạo: <span id="dgtenctdtrv"></span></li>
+                                                                    <li>Ngành đào tạo: <span id="dgnganhdaotaorv"></span></li>
+                                                                    <li>Phiên bản: <span id="dgphienbanrv"></span></li>
+                                                                    <li>Trình độ đào tạo: <span id="dgtrinhdodaotaorv"></span></li>
+                                                                    <li>Loại hình đào tạo: <span id="dgloaihinhdaotaorv"></span></li>
+                                                                    <li>Thời gian đào tạo: <span id="dgthoigiandaotaorv"></span></li>
+                                                                    <li>
+                                                                        Quy trình đào tạo và điều kiện tốt nghiệp:
+                                                                        <br />
+                                                                        <div id="dgquytrinhdaotaorv"></div>
+                                                                    </li>
+                                                                    <li>
+                                                                        Đối tượng tuyển sinh:
+                                                                        <br />
+                                                                        <div id="dgdoituongtuyensinhrv"></div>
+                                                                    </li>
+                                                                    <li>
+                                                                        Cơ sở vật chất phục vụ học tập:
+                                                                        <br />
+                                                                        <div id="dgcosovatchatrv"></div>
+                                                                    </li>
+                                                                </ol>
+                                                            </div>
+                                                        </div>
+                                                        @*Mục tiêu và chuẩn đầu ra*@
+                                                        <div id="Content2r">
+                                                            <h4>II. Mục tiêu và chuẩn đầu ra chương trình đào tạo</h4>
+                                                            <ol>
+                                                                <li>
+                                                                    Mục tiêu chung CTDT: <br /> <span id="dgmuctieuchungrv"></span>
+                                                                </li>
+                                                                @*Danh sách mục tiêu đào tạo cụ thể*@
+                                                                <li>
+                                                                    Mục tiêu đào tạo cụ thể
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Phân loại</th>
+                                                                            <th style="text-align:center">Mô tả</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="mtdtcutherv">
+                                                                        <tr>
+                                                                            <td style="text-align:center;vertical-align: middle"></td>
+                                                                            <td id="phanloaimtdtcutherv" style="text-align:center;vertical-align: middle"></td>
+                                                                            <td id="motamtdtcutherv" style="text-align:center;vertical-align: middle"></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                @*Danh sách kết quả học tập mong đợi*@
+                                                                <li>
+                                                                    Kết quả học tập mong đợi
+                                                                </li>
+                                                                <table class="table table-bordered" style="font-size:16px;">
+                                                                    <thead>
+                                                                        <tr style="text-align:center; color:black; ">
+                                                                            <th style="text-align:center">STT</th>
+                                                                            <th style="text-align:center">Mã hiển thị</th>
+                                                                            <th style="text-align:center">Mô tả</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="chuandauraCTDTrv">
+                                                                        <tr>
+                                                                            <td style="text-align:center;vertical-align: middle"></td>
+                                                                            <td id="mahienthicdrrv" style="text-align:center;vertical-align: middle"></td>
+                                                                            <td id="motacdrrv" style="text-align:center;vertical-align: middle"></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <li>
+                                                                    Ma trận giữa mục tiêu đào tạo cụ thể và chuẩn đầu ra CTDT
+                                                                </li>
+                                                                <li>
+                                                                    Ma trận giữa học phần và chuẩn đầu ra CTDT
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                        @*Danh sách học phần*@
+                                                        <div id="Content3r">
+                                                            <h4>III. Nội dung Chương trình đào tạo</h4>
+                                                            <table class="table table-bordered" style="font-size:16px;">
+                                                                <thead>
+                                                                    <tr style="text-align:center; color:black; ">
+                                                                        <th style="text-align:center">STT</th>
+                                                                        <th style="text-align:center">Mã học phần</th>
+                                                                        <th style="text-align:center">Tên học phần</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="noidungctdtrv">
+                                                                    <tr>
+                                                                        <td style="text-align:center;vertical-align: middle"></td>
+                                                                        <td id="mahprv" style="text-align:center;vertical-align: middle"></td>
+                                                                        <td id="tenhprv" style="text-align:center;vertical-align: middle"><a title="Xem lại" href="#" data-toggle="modal" data-target="#hpReview" style="margin:5px;"></a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        @*Đánh giá*@
+                                                        <div id="Content4r">
+                                                            <h5>IV. Nội dung đánh giá Chương trình đào tạo</h5>
+                                                            <ol>
+                                                                <li>
+                                                                    Nội dung đánh giá:
+                                                                    <br />
+                                                                    <div id="noidungdanhgiarv"></div>
+                                                                </li>
+                                                                <li>
+                                                                    Download file:
+                                                                    <br />
+                                                                </li>
+                                                            </ol>
+                                                            @*Tệp đính kèm*@
+                                                            <form id="formluutailieurv" class="form-horizontal style-form" method="post" action="/CTDTKhung/getExcel" enctype="multipart/form-data">
+                                                                <br />
+                                                                <div class="form-group">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="apDungr" class="modal-footer" style="background-color:white">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*End form Review CTĐT*@
+                        @*nut len dau trang*@
+                        <div class='lentop'>
+                            <div>
+                                <img src='~/Areas/CMS/images/top.png' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/DataTables/datatables.min.js"></script>
+<script>
+    /****************************************
+     *       Basic Table                   *
+     ****************************************/
+    $('#zero_config').DataTable();
+</script>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script>
+    // Show hiden Ðánh giá CTDT
+    $(document).ready(function () {
+
+        $("#Content2").hide();
+        $("#Content3").hide();
+        $("#Content4").hide();
+        $("#apDung").hide();
+
+        $('.noiDungCTDT').click(function () {
+            $("#Content1").show('slow');
+            $("#Content2").hide();
+            $("#Content3").hide();
+            $("#Content4").hide();
+            $("#apDung").hide();
+        });
+        $('.mucTieuCDR').click(function () {
+            $(".mucTieuCDR").addClass('activeshow');
+            $(".mucTieuCDR").addClass('show');
+            $("#Content1").hide();
+            $("#Content2").show('slow');
+            $("#Content3").hide();
+            $("#Content4").hide();
+            $("#apDung").hide();
+        });
+        $('.hocPhan').click(function () {
+            $("#Content1").hide();
+            $("#Content2").hide();
+            $("#Content3").show('slow');
+            $("#Content4").hide();
+            $("#apDung").hide();
+        });
+        $('.danhGia').click(function () {
+            $("#Content1").hide();
+            $("#Content2").hide();
+            $("#Content3").hide();
+            $("#Content4").show('slow');
+            $("#apDung").show('slow');
+        });
+    });
+    // Hiện form Review CTDT
+
+    $(document).ready(function () {
+        $("#Content2r").hide();
+        $("#Content3r").hide();
+        $("#Content4r").hide();
+        $("#apDungr").hide();
+        $('.noiDungCTDTr').click(function () {
+            $("#Content1r").show('slow');
+            $("#Content2r").hide();
+            $("#Content3r").hide();
+            $("#Content4r").hide();
+            $("#apDungr").hide();
+        });
+        $('.mucTieuCDRr').click(function () {
+            $(".mucTieuCDRr").addClass('activeshow');
+            $(".mucTieuCDRr").addClass('show');
+            $("#Content1r").hide();
+            $("#Content2r").show('slow');
+            $("#Content3r").hide();
+            $("#Content4r").hide();
+            $("#apDungr").hide();
+        });
+        $('.hocPhanr').click(function () {
+            $("#Content1r").hide();
+            $("#Content2r").hide();
+            $("#Content3r").show('slow');
+            $("#Content4r").hide();
+            $("#apDungr").hide();
+        });
+        $('.danhGiar').click(function () {
+            $("#Content1r").hide();
+            $("#Content2r").hide();
+            $("#Content3r").hide();
+            $("#Content4r").show('slow');
+            $("#apDungr").show('slow');
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/ckeditor.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/samples/js/sample.js"></script>
+<script>
+    CKEDITOR.replace('noidungdanhgia');
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/dist/js/CTDTKeHoach.js"></script>
+
+@*JS hiển thị thông tin đánh giá CTDT*@
+<script>
+    $(document).ready(function () {
+        $('.edit').on('click', function (event) {
+            event.preventDefault();
+            console.log(event)
+            document.getElementById("noidungctdt").innerHTML = ""
+            document.getElementById("mtdtcuthe").innerHTML = ""
+            document.getElementById("chuandauraCTDT").innerHTML = ""
+            document.getElementById("matranhp-cdr").innerHTML = ""
+            document.getElementById("matranmt-cdr").innerHTML = ""
+
+            var mactdt = $(this).data("id");
+            mactdthientai = mactdt;
+            const data = {
+                MaCT: mactdt,
+            };
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("LaydulieudanhgiaCTDT", "CTDTKeHoach", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    alert(data.Message);
+                },
+                success: function (data) {
+                    console.log(data)
+                    console.log(data.thongtinctdt)
+                    console.log(data.mtdtcuthe)
+                    console.log(data.chuandaura)
+                    $("#dgtenctdt").text(data.thongtinctdt.TenCT);
+                    $("#dgnganhdaotao").text(data.tenHN);
+                    $("#dgphienban").text(data.thongtinctdt.Phienban);
+                    $("#thangdiem").text(data.thongtinctdt.Thangdiem);
+                    $("#dgtrinhdodaotao").text(data.thongtinctdt.Trinhdo);
+                    $("#dgloaihinhdaotao").text(data.thongtinctdt.HinhthucDT);
+                    $("#dgthoigiandaotao").text(data.thongtinctdt.ThoigianDT);
+
+                    document.getElementById('dgdoituongtuyensinh').innerHTML = data.thongtinctdt.Doituong
+                    document.getElementById('dgcosovatchat').innerHTML = data.thongtinctdt.CosoVC
+                    document.getElementById('dgmuctieuchung').innerHTML = data.thongtinctdt.Muctieu
+                    document.getElementById('dgquytrinhdaotao').innerHTML = data.thongtinctdt.QuytrinhDT
+
+
+                    //Load học phần
+                    for (let i = 0; i < data.dshocphan.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.dshocphan[i].MaHT
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.dshocphan[i].TenMH
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+
+                        document.getElementById("noidungctdt").appendChild(tr);
+
+                    }
+
+                    //Load Mục tiêu đào tạo cụ thể
+                    for (let i = 0; i < data.mtdtcuthe.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.mtdtcuthe[i].Phanloai
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.mtdtcuthe[i].Mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+
+                        document.getElementById("mtdtcuthe").appendChild(tr);
+                    }
+
+                    //Load Chuẩn đầu ra CTDT
+                    for (let i = 0; i < data.chuandaura.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.chuandaura[i].MaHT
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.chuandaura[i].Mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+
+                        document.getElementById("chuandauraCTDT").appendChild(tr);
+                    }
+
+                    //Load ma trận mục tiêu - chuẩn đầu ra
+                    for (let i = 0; i < data.mtdtcuthe.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+                        let td4 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.mtdtcuthe[i].Phanloai
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.mtdtcuthe[i].Mota
+
+                        let mota = '';
+
+                        for (let j = 0; j < data.mtdtcuthe[i].CDR.length; j++) {
+                            mota += data.mtdtcuthe[i].CDR[j].Mota + '\n\r'
+                        }
+
+                        mota = mota.substr(0, mota.length - 1)
+                        td4.style = "text-align:center;vertical-align: middle "
+                        td4.innerText = mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+                        tr.appendChild(td4)
+
+                        document.getElementById("matranmt-cdr").appendChild(tr);
+                    }
+
+                    //Load ma trận học phần - chuẩn đầu ra
+                    for (let i = 0; i < data.dshocphan.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+                        let td4 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.dshocphan[i].MaHT
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.dshocphan[i].TenMH
+
+                        let mota = '';
+
+                        for (let j = 0; j < data.dshocphan[i].CDR.length; j++) {
+                            mota += data.dshocphan[i].CDR[j].Mota + ' \n\r'
+                        }
+
+                        mota = mota.substr(0, mota.length - 1)
+                        td4.style = "text-align:center;vertical-align: middle "
+                        td4.innerText = mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+                        tr.appendChild(td4)
+
+                        document.getElementById("matranhp-cdr").appendChild(tr);
+                    }
+
+
+                }
+            })
+        });
+    });
+</script>
+
+@*JS cho nút hoàn thành đánh giá CTDT Khung*@
+<script>
+    document.getElementById("btnhoanthanhdanhgia").addEventListener("click", function (event) {
+        event.preventDefault();
+        var danhgia = CKEDITOR.instances['noidungdanhgia'].getData();
+        var mactdt = mactdthientai;
+        var xetduyet = $('#dongy:checked').val();
+        if (xetduyet == "on") {
+            xetduyet = true;
+        } else {
+            xetduyet = false;
+        }
+        var tinhtrang = "";
+        console.log(mactdt)
+        var data = {
+            MaCT: mactdt,
+            Ghichu: danhgia,
+            Xetduyet: xetduyet,
+            Tinhtrang: tinhtrang,
+        };
+        console.log(data)
+
+        $.ajax({
+            async: true,
+            data: JSON.stringify(data),
+            type: 'POST',
+            url: '@Url.Action("Hoanthanhdanhgia", "CTDTKhung", new { area = "CMS" })',
+            dataType: "json",
+            contentType: "application/json",
+            cache: false,
+            error: function (data) {
+                toastr.alert(data.Message);
+            },
+            success: function (data) {
+                toastr.success(data.Message, 'Thông báo');
+                location.href = '@Url.Action("List", "CTDTKhung", new { area = "CMS" })'
+            }
+        });
+
+    })
+</script>
+@*JS cho nút lưu tài liệu đính kèm*@
+@*<script>
+    document.getElementById("luutailieudinhkem").addEventListener("click", function (event) {
+        event.preventDefault();
+        var tailieudinhkem = $('#FilePDF')[0].files[0];
+        var data = new FormData();
+        var formData = new FormData($('formluutailieu')[0]);
+        data.append("FilePDF", tailieudinhkem)
+        console.log(data)
+        $.ajax({
+            async: true,
+            data: data,
+            type: 'POST',
+            url: '/CTDTKhung/getPDF',
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            cache: false,
+            error: function (data) {
+                if (data.responseText == 'done') {
+                    toastr.success(data.Message, 'Lưu tài liệu thành công');
+                }
+
+                //toastr.alert(data.Message, 'Thông báo');
+            },
+            success: function (data) {
+                if (data.responseText == 'done') {
+                    toastr.success(data.Message, 'Lưu tài liệu thành công');
+                }
+            }
+        });
+    })
+</script>*@
+
+
+@*JS hiển thị thông tin form Review CTDT*@
+<script>
+    $(document).ready(function () {
+        $('.edit').on('click', function (event) {
+            event.preventDefault();
+            console.log(event)
+            document.getElementById("mtdtcutherv").innerHTML = ""
+            document.getElementById("chuandauraCTDTrv").innerHTML = ""
+            document.getElementById("matranhp-cdrrv").innerHTML = ""
+            document.getElementById("matranmt-cdrrv").innerHTML = ""
+            document.getElementById("noidungctdtrv").innerHTML = ""
+
+
+            var mactdt = $(this).data("id");
+            mactdthientai = mactdt;
+            const data = {
+                MaCT: mactdt,
+            };
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("LaydulieudanhgiaCTDT", "CTDTKeHoach", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    alert(data.Message);
+                },
+                success: function (data) {
+                    console.log(data)
+                    console.log(data.thongtinctdt)
+                    console.log(data.mtdtcuthe)
+                    console.log(data.chuandaura)
+                    
+                    $("#dgtenctdtrv").text(data.thongtinctdt.TenCT);
+                    $("#dgnganhdaotaorv").text(data.tenHN);
+                    $("#dgphienbanrv").text(data.thongtinctdt.Phienban);
+                    $("#thangdiemrv").text(data.thongtinctdt.Thangdiem);
+                    $("#dgtrinhdodaotaorv").text(data.thongtinctdt.Trinhdo);
+                    $("#dgloaihinhdaotaorv").text(data.thongtinctdt.HinhthucDT);
+                    $("#dgthoigiandaotaorv").text(data.thongtinctdt.ThoigianDT);
+                    $("#noidungdanhgiarv").text(data.thongtinctdt.Ghichu);
+
+
+
+                    document.getElementById('noidungdanhgiarv').innerHTML = data.kqdanhgia.Ghichu
+                    document.getElementById('dgdoituongtuyensinhrv').innerHTML = data.thongtinctdt.Doituong
+                    document.getElementById('dgcosovatchatrv').innerHTML = data.thongtinctdt.CosoVC
+                    document.getElementById('dgmuctieuchungrv').innerHTML = data.thongtinctdt.Muctieu
+                    document.getElementById('dgquytrinhdaotaorv').innerHTML = data.thongtinctdt.QuytrinhDT
+
+
+                    //Load học phần
+                    for (let i = 0; i < data.dshocphan.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.dshocphan[i].MaHT
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.dshocphan[i].TenMH
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+
+                        document.getElementById("noidungctdtrv").appendChild(tr);
+
+                    }
+                    //Load Mục tiêu đào tạo cụ thể
+                    for (let i = 0; i < data.mtdtcuthe.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.mtdtcuthe[i].Phanloai
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.mtdtcuthe[i].Mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+
+                        document.getElementById("mtdtcutherv").appendChild(tr);
+                    }
+                    //Load Chuẩn đầu ra CTDT
+                    for (let i = 0; i < data.chuandaura.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.chuandaura[i].MaHT
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.chuandaura[i].Mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+
+                        document.getElementById("chuandauraCTDTrv").appendChild(tr);
+                    }
+
+                    //Load ma trận mục tiêu - chuẩn đầu ra (Review)
+                    for (let i = 0; i < data.mtdtcuthe.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+                        let td4 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.mtdtcuthe[i].Phanloai
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.mtdtcuthe[i].Mota
+
+                        let mota = '';
+
+                        for (let j = 0; j < data.mtdtcuthe[i].CDR.length; j++) {
+                            mota += data.mtdtcuthe[i].CDR[j].Mota + '\n\r'
+                        }
+
+                        mota = mota.substr(0, mota.length - 1)
+                        td4.style = "text-align:center;vertical-align: middle "
+                        td4.innerText = mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+                        tr.appendChild(td4)
+
+                        document.getElementById("matranmt-cdrrv").appendChild(tr);
+                    }
+
+                    //Load ma trận học phần và chuẩn đầu ra (review)
+                    for (let i = 0; i < data.dshocphan.length; i++) {
+                        let tr = document.createElement("tr");
+                        let td1 = document.createElement("td");
+                        let td2 = document.createElement("td");
+                        let td3 = document.createElement("td");
+                        let td4 = document.createElement("td");
+
+                        td1.style = "text-align:center;vertical-align: middle"
+                        td1.innerText = i + 1
+
+                        td2.style = "text-align:center;vertical-align: middle"
+                        td2.innerText = data.dshocphan[i].MaHT
+
+                        td3.style = "text-align:center;vertical-align: middle "
+                        td3.innerText = data.dshocphan[i].TenMH
+
+                        let mota = '';
+
+                        for (let j = 0; j < data.dshocphan[i].CDR.length; j++) {
+                            mota += data.dshocphan[i].CDR[j].Mota + ' \n\r'
+                        }
+
+                        mota = mota.substr(0, mota.length - 1)
+                        td4.style = "text-align:center;vertical-align: middle "
+                        td4.innerText = mota
+
+                        tr.appendChild(td1)
+                        tr.appendChild(td2)
+                        tr.appendChild(td3)
+                        tr.appendChild(td4)
+
+                        document.getElementById("matranhp-cdrrv").appendChild(tr);
+                    }
+
+
+
+                }
+            })
+        });
+    });
+</script>

@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "QuanlyKhoa";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<div class="page-wrapper" ng-controller="QLKhoaController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Quản Lý Khoa</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lí chung</li>
+                            <li class="breadcrumb-item" aria-current="page">Quản lý danh mục</li>
+                            <li class="breadcrumb-item active" aria-current="page">QL khoa</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <div class="table-responsive">
+                    <button class="btn btn-success" style="position:inherit;" data-toggle="modal" data-target="#addKhoa" id="">Thêm khoa</button>
+                    <br />
+                    <br />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align: middle; text-align:center">STT</th>
+                                <th style="vertical-align: middle; text-align:center">Tên khoa</th>
+                                <th style="vertical-align: middle; text-align:center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="kh in KHOA">
+                                <th style="vertical-align: middle; text-align:center">{{$index+1}}</th>
+                                <td style="vertical-align: middle;text-align:center">{{kh.TenKhoa}}</td>
+                                <td style="vertical-align: middle; text-align:center">
+                                    <a title="Chỉnh sửa" href="javascript:void(0)" data-toggle="modal" data-target="#editKhoa" ng-click="getKhoa(kh)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                    <a title="Xóa" href="javascript:void(0)" ng-click="deleteKhoa(kh,$index)"><img src="~/Areas/CMS/images/IconBin3.png" style="width:35px; "></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*nut len dau trang*@
+    <div class='lentop'>
+        <div>
+            <img src='~/Areas/CMS/images/top.png' />
+        </div>
+    </div>
+    @*Form them Khoa*@
+    <div class="modal fade" id="addKhoa">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm khoa </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Tên khoa</label>
+                    <input type="text" class="form-control" ng-model="them.TenKhoa" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="addKhoa(them)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Form chinh Khoa*@
+    <div class="modal fade" id="editKhoa">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Chỉnh sửa khoa </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Tên khoa</label>
+                    <input type="text" class="form-control" ng-model="sua.TenKhoa" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="editKhoa(sua)">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLKhoa/QLKhoaModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLKhoa/QLKhoaController.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLKhoa/QLKhoaService.js"></script>
+

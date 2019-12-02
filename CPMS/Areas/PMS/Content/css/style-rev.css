@@ -1,0 +1,1615 @@
+﻿/*
+* Author Minh Nguyen
+* Views: List danh giao vien them mon
+*/
+
+
+.bg_content {
+    background: white;
+    padding: 20px;
+}
+
+.bg_table {
+    background-color: white !important;
+    margin-top: 50px;
+    /* font-size: 18px; */
+}
+
+.tablecenter {
+    text-align: center;
+    font-size: 16px;
+    /*font-weight: bold;*/
+}
+
+.bg_table > thead.thead_ct {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+.bg_table > thead > tr {
+    text-align: center;
+}
+
+    .bg_table > thead > tr > th {
+        padding: 10px;
+        vertical-align: inherit;
+    }
+
+        .bg_table > thead > tr > th:nth-Child(3) {
+            width: 80px;
+        }
+
+        .bg_table > thead > tr > th:nth-Child(6) {
+            /*width cua div chinh sua*/
+            width: 100px;
+        }
+
+        .bg_table > thead > tr > th:nth-Child(5) {
+            width: 200px;
+        }
+
+        .bg_table > thead > tr > th:nth-Child(5) {
+            width: 200px;
+        }
+
+    .bg_table > thead > tr > td:nth-Child(1) {
+        width: 80px;
+    }
+
+    .bg_table > thead > tr > td:nth-Child(2) {
+        width: 80px;
+    }
+
+    .bg_table > thead > tr > td:nth-Child(4) {
+        width: 80px;
+    }
+
+    .bg_table > thead > tr > td:nth-Child(5) {
+        width: 80px;
+    }
+
+.bg_table > thead_ct > tr > th:nth-Child(4) {
+    width: 10%;
+}
+
+.bg_table tbody tr:hover td input {
+    background-color: #f7f7f9;
+}
+
+.bg_table > thead_ct > tr > th:nth-Child(4) {
+    width: 10%;
+}
+
+.group_button {
+    position: absolute;
+    right: 15px;
+}
+
+#bg_sub {
+    padding: 0;
+}
+
+    #bg_sub > p {
+        margin-bottom: 10px;
+    }
+
+#ct_tbody > tr:hover {
+    background-color: #f4f6f9;
+}
+
+#ct_tbody > tr {
+    text-align: center;
+}
+
+        #ct_tbody > tr > td:nth-Child(3) {
+            text-align: left;
+            width: 80px;
+        }
+
+/*#ct_tbody > tr > td:nth-Child(7) {
+            line-height: 54px;
+            padding-top: 0px;
+        }*/
+
+#bg_sub {
+    padding-left: 10px;
+    /*background-color: #d1d1d1;*/
+    width: 420px;
+}
+
+.liHead {
+    background-color: #2a2f43;
+    color: white !important;
+    font-weight: bold;
+    text-align: center;
+}
+
+div.btn-gv-area {
+    text-align: center;
+}
+
+/*-- ============================================================== 
+ Css View treelist
+ ============================================================== */
+/* .treelistChinhqui {
+    
+    font-size: 18px;
+    font-style: initial;
+}
+.treelistChinhqui .hide-menu {
+    color: #4A4545;
+}
+.treelistChinhqui .mdi-chevron-right{
+    color: #4A4545;
+}
+.treelistChinhqui .collapse{
+    list-style-type: none;
+}
+.treelistChinhqui .first-level{
+    list-style-type: none;
+}
+.treelisttaichuc{
+    color: black;
+}
+.aNganh{
+    display: none;
+
+}
+.aYear{
+    display: none;
+}
+.Semester{
+    display: none;
+} */
+
+.card-custom {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    /*border-bottom: 1px solid #e9ecef;
+    */ -webkit-border-radius: 5px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+    .card-custom:focus {
+        border: 1px solid white;
+        outline-color: red;
+        outline-style: dashed;
+        outline-width: 1px;
+    }
+
+    .card-custom h5 button {
+        color: #444;
+    }
+
+        .card-custom h5 button:hover {
+            color: #444;
+        }
+
+/*-- ============================================================== 
+ Css View treelist
+ ============================================================== */
+/* Thong ke so gio khi Phan cong giang vien */
+.quickview-wrapper {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    text-align: center;
+    overflow: scroll;
+}
+
+    .quickview-wrapper .quick-modal {
+        max-width: 40%;
+        /*width: 50%;
+    */ margin: 0 auto;
+        margin-top: 20%;
+        border-radius: 2px;
+        vertical-align: middle;
+        background: #fff;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+    }
+
+.closebtn {
+    position: absolute;
+    right: 32px;
+    top: 32px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+}
+
+    .closebtn:hover {
+        opacity: 1;
+    }
+
+    .closebtn:before,
+    .closebtn:after {
+        position: absolute;
+        left: 15px;
+        content: ' ';
+        height: 33px;
+        width: 2px;
+        background-color: #333;
+    }
+
+    .closebtn:before {
+        transform: rotate(45deg);
+    }
+
+    .closebtn:after {
+        transform: rotate(-45deg);
+    }
+
+/* Stop scrolling when cofirming dialog is opening
+*/
+.stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+}
+
+.card-custom h5 button:hover {
+    color: #444;
+}
+
+/* CSS xem ke hoach dao tao */
+/*
+ * Css toat
+ */
+.btnMeoRight {
+    float: right;
+}
+
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #d63333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+
+    #snackbar.show {
+        visibility: visible;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    #snackbar.showSuccess {
+        visibility: visible;
+        background-color: #2255a4 !important;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+/*Loader for web*/
+#loader {
+    position: fixed;
+    left: 45%;
+    margin-top: 10%;
+    z-index: 100;
+    width: 120px;
+    height: 120px;
+    /*margin: -75px 0 0 -75px;*/
+    border: 10px solid white;
+    border-radius: 50%;
+    border-top: 10px solid #3498db;
+    width: 70px;
+    height: 70px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+#backgroundLoader {
+    background-color: blue;
+    opacity: 0.1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 49;
+}
+
+/*Loader for web*/
+#loaderEmail {
+    position: absolute;
+    left: 45%;
+    margin-top: -20%;
+    z-index: 100;
+    width: 120px;
+    height: 120px;
+    /*margin: -75px 0 0 -75px;*/
+    border: 10px solid white;
+    border-radius: 50%;
+    border-top: 10px solid #3498db;
+    width: 70px;
+    height: 70px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/*Notification number in Menu Bar*/
+.notification-number {
+    position: absolute;
+    left: 55%;
+    top: 20%;
+    color: hsla(0,0%,100%,1);
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 15px;
+    border: 2px solid #141619;
+    border-radius: 3px;
+    padding: 0px 3px;
+    background-color: red;
+}
+
+/*
+
+* Author Minh Nguyen
+* Views: Phan Cong Giang Vien - Table
+*/
+.bg_content_gv {
+    background: white;
+    padding: 20px;
+}
+
+
+/*
+* Author Minh Nguyen
+* Views: List danh giao vien them mon
+*/
+
+
+.bg_table_htd {
+    background-color: white !important;
+    margin-top: 50px;
+    /* font-size: 18px; */
+}
+
+
+.bg_table_gv > thead {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+.bg_table_htd > thead {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+.bg_table_gv > thead > tr {
+    text-align: center;
+}
+
+    .bg_table_gv > thead > tr > th {
+        padding: 10px;
+        vertical-align: inherit;
+    }
+
+        .bg_table_gv > thead > tr > th:nth-Child(1) {
+            width: 80px;
+        }
+
+        .bg_table_gv > thead > tr > th:nth-Child(2) {
+            width: 80px;
+        }
+
+
+.bg_table_gv > thead > tr > th:nth-Child(5) {
+    width: 250px;
+}
+
+.bg_table_gv > thead > tr > th:nth-Child(6) {
+    width: 250px;
+}
+
+
+.bg_table_gv > thead > tr > td:nth-Child(1) {
+    width: 80px;
+}
+
+.bg_table_gv > thead > tr > td:nth-Child(2) {
+    width: 80px;
+}
+
+.bg_table_gv > thead > tr > td:nth-Child(3) {
+    width: 80px;
+}
+
+.bg_table_gv > thead > tr > td:nth-Child(4) {
+    width: 80px;
+}
+
+.bg_table_gv > thead > tr > td:nth-Child(5) {
+    width: 80px;
+}
+
+#ct_body > tr:hover {
+    background-color: #f4f6f9;
+}
+
+#ct_body > tr {
+    text-align: center;
+    padding: 10px;
+}
+
+    /*#ct_tbody > tr > td {
+        padding-bottom: 0px;
+        vertical-align: baseline;
+    }*/
+
+    #ct_body > tr > td:nth-Child(3) {
+        text-align: left;
+    }
+
+#bg_sub {
+    padding-left: 10px;
+    background-color: #d1d1d1;
+    width: 420px;
+}
+
+.liHead {
+    background-color: #2a2f43;
+    color: white !important;
+    font-weight: bold;
+    text-align: center;
+}
+
+.thead_ct > tr > th {
+    margin-top: 5px;
+}
+
+/**
+  * Change Color  gray Box
+*/
+.box-Border-U {
+    border-bottom: 1px #dee2e6 solid;
+    border-right: 1px #dee2e6 solid;
+    border-left: 1px #dee2e6 solid;
+}
+
+.bg_table_htd > thead > tr {
+    text-align: center;
+}
+
+    .bg_table_htd > thead > tr > th {
+        padding: 10px;
+        vertical-align: inherit;
+    }
+
+        .bg_table_htd > thead > tr > th:nth-Child(1) {
+            width: 80px;
+        }
+
+        .bg_table_htd > thead > tr > th:nth-Child(2) {
+            width: 80px;
+        }
+
+
+        .bg_table_htd > thead > tr > th:nth-Child(4) {
+            width: 80px;
+        }
+
+    .bg_table_htd > thead > tr > td:nth-Child(1) {
+        width: 80px;
+    }
+
+    .bg_table_htd > thead > tr > td:nth-Child(2) {
+        width: 80px;
+    }
+
+    .bg_table_htd > thead > tr > td:nth-Child(3) {
+        width: 80px;
+    }
+
+.bg_table_htd > hopthuden_gv > tr > th:nth-Child(4) {
+    width: 10%;
+}
+
+#hopthuden_gv_body > tr:hover {
+    background-color: #f4f6f9;
+}
+
+#hopthuden_gv_body > tr {
+    text-align: center;
+}
+
+
+        #hopthuden_gv_body > tr > td:nth-Child(3) {
+            text-align: left;
+        }
+
+
+        #hopthuden_gv_body > tr > td:nth-Child(8) {
+            /*line-height: 54px;*/
+            /*padding-top: 0px;*/
+            width: 160px;
+            /*text-align: left;*/
+        }
+
+.subject-ar {
+    display: inline-block;
+}
+
+
+/*View: MonHocGiangDay
+    Controller: DeCuongMonHoc
+    User: Giang vien
+    Develop by: Nguyen
+*/
+.bg-table-mhgd-p5-t1 > thead {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+
+.bg-table-mhgd-gv > thead > tr {
+    text-align: center;
+}
+
+
+.bg-table-mhgd-p5-t1 > thead > tr
+{
+    text-align: center;
+    height: 85px;
+}
+
+.bg-table-mhgd-p5-t1 > thead > tr > th {
+    padding: 10px;
+    vertical-align: inherit;
+}
+
+    .bg-table-mhgd-p5-t1 > thead > tr > th:nth-Child(1) {
+        width: 6%;
+    }
+
+    .bg-table-mhgd-p5-t1 > thead > tr > th:nth-Child(2) {
+        width: 17%;
+    }
+
+    .bg-table-mhgd-p5-t1 > thead > tr > th:nth-Child(3) {
+        width: 62%;
+    }
+
+    .bg-table-mhgd-p5-t1 > thead > tr > th:nth-Child(4) {
+        width: 15%;
+    }
+
+.bg-table-mhgd-p5-t1 > tbody > tr > td:nth-child(1) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p5-t1 > tbody > tr > td:nth-child(2) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p5-t1 > tbody > tr > td:nth-child(4) {
+    text-align: center;
+}
+
+/*View: ChinhSuaDeCuong - Page 2
+    Controller: DeCuongMonHoc
+    User: Giang vien
+    Develop by: Nguyen
+*/
+/*Table 1*/
+.bg-table-mhgd-p2-t1 > thead {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+    .bg-table-mhgd-p2-t1 > thead > tr {
+        text-align: center;
+        height: 85px;
+    }
+
+        .bg-table-mhgd-p2-t1 > thead > tr > th {
+            padding: 10px;
+            vertical-align: inherit;
+        }
+
+
+.bg-table-mhgd-gv > thead > tr > th:nth-Child(1) {
+    width: 80px;
+    height: 85px;
+}
+
+.bg-table-mhgd-gv > thead > tr > th:nth-Child(2) {
+    width: 80px;
+}
+
+.bg-table-mhgd-gv > thead > tr > th:nth-Child(4) {
+    width: 240px;
+}
+
+.bg-table-mhgd-gv > thead > tr > th:nth-Child(5) {
+    width: 240px;
+}
+
+.bg-table-mhgd-gv > thead > tr > th:nth-Child(6) {
+    width: 240px;
+}
+
+.bg-table-mhgd-p2-t1 > thead > tr > th:nth-Child(1) {
+    width: 6%;
+}
+
+.bg-table-mhgd-p2-t1 > thead > tr > th:nth-Child(2) {
+    width: 17%;
+}
+
+.bg-table-mhgd-p2-t1 > thead > tr > th:nth-Child(3) {
+    width: 17%;
+}
+
+.bg-table-mhgd-p2-t1 > thead > tr > th:nth-Child(4) {
+    width: 45%;
+}
+
+.bg-table-mhgd-p2-t1 > thead > tr > th:nth-Child(5) {
+    width: 15%;
+}
+
+.bg-table-mhgd-p2-t1 > tbody > tr > td:nth-child(1) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p2-t1 > tbody > tr > td:nth-child(3) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p2-t1 > tbody > tr > td:nth-child(5) {
+    text-align: center;
+}
+
+/*Table 2*/
+.bg-table-mhgd-p2-t2 > thead {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+    .bg-table-mhgd-p2-t2 > thead > tr {
+        text-align: center;
+        height: 85px;
+    }
+
+        .bg-table-mhgd-p2-t2 > thead > tr > th {
+            padding: 10px;
+            vertical-align: inherit;
+        }
+
+            .bg-table-mhgd-p2-t2 > thead > tr > th:nth-Child(1) {
+                width: 6%;
+            }
+
+            .bg-table-mhgd-p2-t2 > thead > tr > th:nth-Child(2) {
+                width: 17%;
+            }
+
+            .bg-table-mhgd-p2-t2 > thead > tr > th:nth-Child(3) {
+                width: 17%;
+            }
+
+            .bg-table-mhgd-p2-t2 > thead > tr > th:nth-Child(4) {
+                width: 60%;
+            }
+
+.bg-table-mhgd-p2-t2 > tbody > tr > td:nth-child(1) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p2-t2 > tbody > tr > td:nth-child(2) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p2-t2 > tbody > tr > td:nth-child(3) {
+    text-align: center;
+}
+
+/*View: ChinhSuaDeCuong - Page 4
+    Controller: DeCuongMonHoc
+    User: Giang vien
+    Develop by: Nguyen
+*/
+/*Table 1*/
+.bg-table-mhgd-p4-t1 > thead {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+    .bg-table-mhgd-p4-t1 > thead > tr {
+        text-align: center;
+        height: 85px;
+    }
+
+        .bg-table-mhgd-p4-t1 > thead > tr > th {
+            padding: 10px;
+            vertical-align: inherit;
+        }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(1) {
+                width: 6%;
+            }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(2) {
+                width: 17%;
+            }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(3) {
+                width: 15%;
+            }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(4) {
+                width: 6%;
+            }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(5) {
+                width: 15%;
+            }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(6) {
+                width: 15%;
+            }
+
+            .bg-table-mhgd-p4-t1 > thead > tr > th:nth-Child(7) {
+                width: 15%;
+            }
+
+.bg-table-mhgd-p4-t1 > tbody > tr > td:nth-child(1) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p4-t1 > tbody > tr > td:nth-child(3) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p4-t1 > tbody > tr > td:nth-child(4) {
+    text-align: center;
+}
+
+.bg-table-mhgd-p4-t1 > tbody > tr > td:nth-child(7) {
+    text-align: center;
+}
+
+/*View: XemTruocPhanCongGiangVien
+    Controller: GiangVien
+    User: TruongBoMon
+    Develop by: Nguyen
+*/
+.bg-table-xtpcgv-gv > thead.thead-xtpcgv {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+.bg-table-xtpcgv-gv > thead > tr > th {
+    padding: 10px;
+    vertical-align: inherit;
+}
+
+/*View: DeCuongMonHoc
+    Controller: DeCuongMonHoc
+    User: TruongBoMon
+    Develop by: Nguyen
+*/
+.bg-table-dcmh-tbm > .thead_ct {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+.bg-table-xtpcgv-gv > thead.thead-xtpcgv > tr {
+    text-align: center;
+}
+
+.bg-table-dcmh-tbm > .thead_ct > tr {
+    text-align: center;
+}
+
+    .bg-table-dcmh-tbm > .thead_ct > tr > th {
+        padding: 10px;
+        vertical-align: inherit;
+    }
+
+.bg-table-xtpcgv-gv > thead.thead-xtpcgv > tr > th:nth-Child(1) {
+    width: 80px;
+}
+
+.bg-table-xtpcgv-gv > thead.thead-xtpcgv > tr > th:nth-Child(2) {
+    width: 80px;
+}
+
+.bg-table-xtpcgv-gv > thead.thead-xtpcgv > tr > th:nth-Child(6) {
+    width: 240px;
+}
+
+tbody.body-xtpcgv > tr:hover {
+    background-color: #f4f6f9;
+}
+
+tbody.body-xtpcgv > tr {
+    text-align: center;
+    padding: 10px;
+}
+
+.bg-table-dcmh-tbm > .thead_ct > tr > th:nth-Child(1) {
+    width: 80px;
+    height: 85px;
+}
+
+.bg-table-dcmh-tbm > .thead_ct > tr > th:nth-Child(3) {
+    width: 240px;
+}
+
+.bg-table-dcmh-tbm > .thead_ct > tr > th:nth-Child(4) {
+    width: 240px;
+}
+
+.body-dcmh-tbm > tr:hover {
+    background-color: #f4f6f9;
+}
+
+.body-dcmh-tbm > tr {
+    text-align: center;
+    padding: 10px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(1) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(2) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(3) {
+    text-align: left;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(4) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(5) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(6) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(7) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(8) {
+    width: 80px;
+}
+
+tbody.body-xtpcgv > tr > td:nth-Child(9) {
+    width: 240px;
+}
+
+.date-submit-form {
+    border-color: white;
+}
+
+/*PhanCongGiangVien view label*/
+/** Style for Input Row Table Xem Ke Hoach Dao Tao **/
+
+/**Style for Row ReadOnly*/
+.ipStyRow {
+    text-align: center;
+    width: 45px;
+    border: none;
+    cursor: default;
+}
+
+.body-dcmh-tbm > tr > td:nth-Child(2) {
+    text-align: left;
+}
+
+.body-dcmh-tbm > tr > td:nth-Child(3) {
+    text-align: center;
+}
+
+
+ul {
+    margin: 0;
+    padding: 0.4em;
+    list-style-type: square;
+}
+
+code {
+    /*font-family: Monaco, Consolas, "Lucida Console", monospace;*/
+    background-color: #f1f1f1;
+    font-size: 70%;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.subdued {
+    font-size: 80%;
+    opacity: 0.6;
+}
+
+/* A totally custom override */
+
+.progress-indicator.custom-complex {
+    background-color: #f1f1f1;
+    padding: 10px 5px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+    .progress-indicator.custom-complex > li .bubble {
+        height: 12px;
+        width: 99%;
+        border-radius: 2px;
+        box-shadow: inset -5px 0 12px rgba(0, 0, 0, 0.2);
+    }
+
+        .progress-indicator.custom-complex > li .bubble:before,
+        .progress-indicator.custom-complex > li .bubble:after {
+            display: none;
+        }
+
+/* Demo for vertical bars */
+
+.progress-indicator.stepped.stacked {
+    width: 48%;
+    display: inline-block;
+}
+
+    .progress-indicator.stepped.stacked > li {
+        height: 150px;
+    }
+
+        .progress-indicator.stepped.stacked > li .bubble {
+            padding: 0.1em;
+        }
+
+        .progress-indicator.stepped.stacked > li:first-of-type .bubble {
+            padding: 0.5em;
+        }
+
+        .progress-indicator.stepped.stacked > li:last-of-type .bubble {
+            padding: 0em;
+        }
+
+/* Nocenter */
+
+.progress-indicator.nocenter.stacked > li {
+    min-height: 100px;
+}
+
+    .progress-indicator.nocenter.stacked > li span {
+        display: block;
+    }
+
+/* Demo for Timeline vertical bars */
+
+#timeline-speaker-example {
+    background-color: #2b4a6d;
+    color: white;
+    padding: 1em 2em;
+    text-align: center;
+    border-radius: 10px;
+}
+
+    #timeline-speaker-example .progress-indicator {
+        width: 100%;
+    }
+
+    #timeline-speaker-example .bubble {
+        padding: 0;
+    }
+
+    #timeline-speaker-example .progress-indicator > li {
+        color: white;
+    }
+
+    #timeline-speaker-example .time {
+        position: relative;
+        left: -80px;
+        top: 30px;
+        font-size: 130%;
+        text-align: right;
+        opacity: 0.6;
+        font-weight: 100;
+    }
+
+    #timeline-speaker-example .current-time .time {
+        font-size: 170%;
+        opacity: 1;
+    }
+
+    #timeline-speaker-example .stacked-text {
+        top: -37px;
+        left: -50px;
+    }
+
+    #timeline-speaker-example .subdued {
+        font-size: 10px;
+        display: block;
+    }
+
+    #timeline-speaker-example > li:hover {
+        color: #ff3d54;
+    }
+
+        #timeline-speaker-example > li:hover .bubble,
+        #timeline-speaker-example > li:hover .bubble:before,
+        #timeline-speaker-example > li:hover .bubble:after {
+            background-color: #ff3d54;
+        }
+
+    #timeline-speaker-example .current-time .sub-info {
+        font-size: 60%;
+        line-height: 0.2em;
+        text-transform: capitalize;
+        color: #6988be;
+    }
+
+/*
+    View: ChinhSuaDeCuongHocPhan - Page 1
+    Develop by: Nguyen
+    Date: 6/4/2019
+*/
+.bg-table-mhgd-p1-t1 > .thead_ct > tr {
+    text-align: center;
+    background-color: #31548c;
+    color: white;
+}
+
+.bg-table-mhgd-p1-t1 > thead > tr > th {
+    padding: 10px;
+    vertical-align: inherit;
+    height: 85px;
+}
+
+    .bg-table-mhgd-p1-t1 > thead > tr > th:nth-Child(1) {
+        width: 6%;
+    }
+
+    .bg-table-mhgd-p1-t1 > thead > tr > th:nth-Child(2) {
+        width: 15%;
+    }
+
+    .bg-table-mhgd-p1-t1 > thead > tr > th:nth-Child(3) {
+        width: 17%;
+    }
+
+    .bg-table-mhgd-p1-t1 > thead > tr > th:nth-Child(4) {
+        width: 17%;
+    }
+
+    .bg-table-mhgd-p1-t1 > thead > tr > th:nth-Child(5) {
+        width: 30%;
+    }
+
+    .bg-table-mhgd-p1-t1 > thead > tr > th:nth-Child(6) {
+        width: 15%;
+    }
+
+#table-body-p1-t1 > tr:hover {
+    background-color: #f4f6f9;
+}
+
+#table-body-p1-t1 > tr {
+    text-align: center;
+    padding: 10px;
+}
+
+    #table-body-p1-t1 > tr > td:nth-Child(1) {
+        text-align: center;
+    }
+
+    #table-body-p1-t1 > tr > td:nth-Child(2) {
+        text-align: center;
+    }
+
+    #table-body-p1-t1 > tr > td:nth-Child(3) {
+        text-align: center;
+    }
+
+    #table-body-p1-t1 > tr > td:nth-Child(4) {
+        text-align: center;
+    }
+
+    #table-body-p1-t1 > tr > td:nth-Child(5) {
+        text-align: left;
+    }
+
+    #table-body-p1-t1 > tr > td:nth-Child(6) {
+        text-align: center;
+    }
+
+.fw-7 {
+    font-weight: 700 !important;
+}
+
+/*View: MonHocGiangDay
+    Controller: DeCuongMonHoc
+    User: Giang vien
+    Develop by: Nguyen
+*/
+
+.bg-table-mhgd-gv > .thead_ct > tr {
+    text-align: center;
+    background-color: #31548c;
+    color: white;
+}
+
+.bg-table-mhgd-gv > thead > tr > th {
+    padding: 10px;
+    vertical-align: inherit;
+    height: 85px;
+}
+
+    .bg-table-mhgd-gv > thead > tr > th:nth-Child(1) {
+        width: 6%;
+    }
+
+    .bg-table-mhgd-gv > thead > tr > th:nth-Child(2) {
+        width: 15%;
+    }
+
+    .bg-table-mhgd-gv > thead > tr > th:nth-Child(3) {
+        width: 34%;
+    }
+
+    .bg-table-mhgd-gv > thead > tr > th:nth-Child(4) {
+        width: 15%;
+    }
+
+    .bg-table-mhgd-gv > thead > tr > th:nth-Child(5) {
+        width: 15%;
+    }
+
+    .bg-table-mhgd-gv > thead > tr > th:nth-Child(6) {
+        width: 15%;
+    }
+
+#ct-body-mhgd-gv > tr:hover {
+    background-color: #f4f6f9;
+}
+
+#ct-body-mhgd-gv > tr {
+    text-align: center;
+    padding: 10px;
+}
+
+    #ct-body-mhgd-gv > tr > td:nth-Child(2) {
+        text-align: center;
+    }
+
+    #ct-body-mhgd-gv > tr > td:nth-Child(3) {
+        text-align: left;
+    }
+
+
+.btnDelSession {
+    float: right;
+    color: dimgrey;
+    background-color: transparent;
+}
+/*  
+    Button back2top
+    View: Layout
+    Develop by: Nguyen
+*/
+#back2top {
+    width: 50px;
+    line-height: 50px;
+    overflow: hidden;
+    z-index: 999;
+    display: none;
+    cursor: pointer;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    /*color: #555;*/
+    /*background-color: rgba(255, 255, 255, 0.7);*/
+    background-color: rgba(62, 85, 105, 0.95);
+    color: white;
+    text-align: center;
+    font-size: 30px;
+    border-radius: 4px;
+}
+
+    #back2top:hover {
+        background-color: rgba(39, 174, 96, 0.75);
+        color: white;
+    }
+
+/*  
+    View: TrienKhaiChiTiet - Trang 4
+    Develop by: Minh
+*/
+
+.btnDelSession {
+    float: right;
+    color: dimgrey;
+    background: transparent;
+    cursor: pointer;
+}
+
+    .btnDelSession:hover {
+        color: red !important;
+        font-weight: bold;
+        transition: 0.4s;
+    }
+
+    .btnDelSession:not(:hover) {
+        color: dimgrey;
+        transition: 0.4s;
+    }
+
+/**
+  *     Css by Judasfate for tab browser
+ */
+
+
+
+/*
+    View: ChinhSuaDeCuongHocPhan - Trang 4
+    Develop by: Nguyen
+*/
+.feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #da542e;
+}
+
+.feedback-show {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #da542e;
+}
+
+/*
+    View: ChinhSuaDeCuongHocPhan - Trang 3
+    Develop by: Minh
+*/
+
+.tableBworser {
+    background-color: #e7eaed;
+    margin-top: 10px;
+    padding: 0px 5px 0px 5px;
+}
+
+    .tableBworser .tabBrowser-Link {
+        padding: 0px 10px 0px 5px
+    }
+/**Css button last***/
+/*.tableBworser > li:last-child > .nav-link-Customs {
+/**Css button last***/
+/*.tableBworser > li:last-child > .nav-link-Customs {
+        width: 50px;
+    }*/
+
+/**Remove tab browser*/
+.btnDelTab {
+    float: right;
+    color: dimgrey;
+    background-color: transparent;
+    border-color: transparent;
+    width: 20px;
+    height: 20px;
+}
+
+    .btnDelTab:hover {
+        color: red !important;
+        font-weight: bold;
+        transition: 0.4s;
+    }
+
+    .btnDelTab:not(:hover) {
+        color: dimgrey;
+        transition: 0.4s;
+        border-color: transparent;
+    }
+
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    color: #4F5467;
+}
+
+    .nav-tabs .nav-link-Customs {
+        border: 1px solid transparent;
+        /*border-top-left-radius: 2px;
+        border-top-right-radius: 2px;*/
+        padding: 12px 12px 6px 12px;
+        border-radius: 10px 10px 0 0;
+        color: black;
+        margin: 0;
+        width: 185px;
+    }
+
+    .nav-tabs .nav-link-Last {
+        border: 1px solid transparent;
+        width: 50px;
+        padding: 12px 12px 6px 12px;
+        /*border-radius: 10px 10px 0 0;*/
+        border-left: 2px solid gray;
+        margin: 0;
+        height: 40px;
+    }
+
+    .nav-tabs .nav-link-Customs:focus,
+    .nav-tabs .nav-link-Customs:hover {
+        border-color: #e9ecef #e9ecef aliceblue #dee2e6;
+        background-image: linear-gradient(#c4c4c4, gray);
+    }
+
+    .nav-tabs .nav-link-Customs.disabled {
+        color: #6c757d;
+        background-color: transparent;
+        border-color: transparent
+    }
+
+    .nav-tabs .nav-item.show .nav-link-Customs,
+    .nav-tabs .nav-link-Customs.active {
+        color: #4F5467;
+        background-color: #fff;
+        border-color: #dee2e6 #dee2e6 #fff;
+        font-weight: bold;
+    }
+
+    .nav-tabs .dropdown-menu {
+        margin-top: -1px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0
+    }
+
+/***Header Level***/
+
+.tcHLevel {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.tcHTextArea {
+    min-height: 89px;
+}
+/***Text a delete vision*/
+.tcBDel {
+    font-weight: normal;
+    font-size: 15px;
+    color: black;
+}
+
+    .tcBDel:hover {
+        transition: 0.5s;
+        text-decoration: none;
+        color: red;
+    }
+
+.underline {
+    display: inline;
+    position: relative;
+    overflow: hidden;
+}
+
+    .underline:after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        right: 0;
+        width: 0;
+        bottom: -5px;
+        background: #000;
+        height: 4px;
+        transition-property: width;
+        transition-duration: 0.3s;
+        transition-timing-function: ease-out;
+    }
+
+    .underline:hover:after,
+    .underline:focus:after,
+    .underline:active:after {
+        left: 0;
+        right: auto;
+        width: 100%;
+    }
+/*
+    Objective: Thêm biểu tượng bắt buộc vào sau label của mỗi field
+    Develop by: Nguyen
+    Date: 6/4/2019
+*/
+.required-field label::after {
+    content: "*";
+    color: red;
+}
+/*view phancongGiangVien Số giờ dự kiến input*/
+.sogiodk {
+    width: 40px;
+    height: 40px;
+    border: none;
+}
+
+.icons:hover  {
+    color: #3c90be;
+}
+
+/*View PheDuyetDeCuong*/
+.bg-table-pheduyet {
+    background-color: white !important;
+    margin-top: 50px;
+}
+
+.bg-table-pheduyet > thead.thead_ct {
+    background: #31548c;
+    color: white;
+    text-align: justify;
+}
+
+    .bg-table-pheduyet > thead > tr {
+        text-align: center;
+        height: 85px;
+    }
+
+    .bg-table-pheduyet > thead > tr > th {
+        padding: 10px;
+        vertical-align: inherit;
+    }
+
+        .bg-table-pheduyet > thead > tr > th:nth-Child(1) {
+            width: 8%;
+        }
+
+        .bg-table-pheduyet > thead > tr > th:nth-Child(4) {
+            width: 33%;
+        }
+
+        .bg-table-pheduyet > thead > tr > th:nth-Child(3) {
+            width: 16%;
+        }
+
+        .bg-table-pheduyet > thead > tr > th:nth-Child(4) {
+            width: 16%;
+        }
+
+        .bg-table-pheduyet > thead > tr > th:nth-Child(5) {
+            width: 25%;
+        }
+
+.bg-table-pheduyet > thead_ct > tr > th:nth-Child(4) {
+    width: 10%;
+}
+
+.bg-table-pheduyet tbody tr:hover td input {
+    background-color: #f7f7f9;
+}
+
+    .bg-table-pheduyet > tbody > tr > th {
+        padding: 10px;
+        vertical-align: inherit;
+    }
+
+    .bg-table-pheduyet > tbody > tr > td:nth-Child(1) {
+        width: 8%;
+        text-align: center;
+    }
+
+    .bg-table-pheduyet > tbody > tr > td:nth-Child(2) {
+        width: 33%;
+        text-align: left;
+    }
+
+    .bg-table-pheduyet > tbody > tr > td:nth-Child(3) {
+        width: 16%;
+        text-align: center;
+    }
+
+    .bg-table-pheduyet > tbody > tr > td:nth-Child(4) {
+        width: 16%;
+        text-align: center;
+    }
+
+    .bg-table-pheduyet > tbody > tr > td:nth-Child(5) {
+        width: 25%;
+        text-align: left;
+    }

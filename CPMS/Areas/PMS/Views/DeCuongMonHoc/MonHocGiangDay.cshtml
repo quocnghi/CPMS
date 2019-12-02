@@ -1,0 +1,674 @@
+﻿@using Capstone.Models
+@model List<sc_HeNganh>
+
+@{
+    ViewBag.Title = "Môn học giảng dạy";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Môn học giảng dạy</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Môn học giảng dạy</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title">Danh sách học phần giảng dạy</h4>
+                        @*<h5 class="card-subtitle">Ngành: aaaa</h5>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 p-0">
+            <div class="card m-b-10">
+                <!-- <div class="treelistChinhqui"> -->
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Hệ học">Hệ đào tạo:</label>
+                            <select id="xkhdt_system" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                                @foreach (sc_HeNganh item in Model)
+                                {
+                                    <option value="@item.MaHN">@item.Mota</option>
+                                }
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Ngành học">Ngành đào tạo:</label>
+                            <select id="xkhdt_branch" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Năm học">Năm học:</label>
+                            <select id="xkhdt_year" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Học kỳ">Học kỳ:</label>
+                            <select id="xkhdt_semester" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+            </div>
+        </div>
+        <div class="card m-b-0" id="table-content" style="overflow-x: auto;">
+            <table class="table table-hover table-bordered bg-table-mhgd-gv m-t-0" id="table-header">
+                <thead class="thead_ct" id="tableHead"></thead>
+                <tbody id='ct-body-mhgd-gv'></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="loader" style="display: none;"></div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.js-example-placeholder-multiple').select2({
+            placeholder: "Chọn Giảng viên"
+        });
+        $('.js-example-placeholder-multiple').tooltip({
+            title: function () {
+                return $(this).next().attr("title");
+            },
+        });
+    });
+</script>
+<script type="text/javascript">
+    //Truyền mã KHDT để lấy view Xem chi tiết Đề Cương Học Phần
+    function getViewXemChiTietDeCuong(maKHDT) {
+        var form = document.createElement("form")
+        form.setAttribute("action", "@Url.Action("XemChiTietDeCuong", "DeCuongMonHoc")")
+        form.setAttribute("method", "POST")
+
+        var input1 = document.createElement("input")
+        input1.setAttribute("name", "id")
+        input1.setAttribute("value", maKHDT)
+
+        form.appendChild(input1)
+        document.body.appendChild(form);
+        form.submit()
+    }
+    //Truyền mã KHDT để lấy view Chỉnh sửa Đề Cương Học Phần
+    function getViewChinhSuaDeCuong(maKHDT) {
+        var form = document.createElement("form")
+        form.setAttribute("action", "@Url.Action("ChinhSuaDeCuongHocPhan", "DeCuongMonHoc")")
+        form.setAttribute("method", "POST")
+
+        var input1 = document.createElement("input")
+        input1.setAttribute("name", "id")
+        input1.setAttribute("value", maKHDT)
+
+        form.appendChild(input1)
+        document.body.appendChild(form);
+        form.submit()
+    }
+    $(".select2").select2();
+    $(document).ready(function () {
+        //Id User current
+        let idUser = document.getElementById('userIdMeo').value
+        /**
+        * variable param for save
+        */
+        let pr_system, pr_branch, pr_category, pr_year, pr_semester
+        let ltMainSub = [] // Save all list subject
+
+        //Tìm body table
+        var bodyTable = document.getElementById("ct-body-mhgd-gv")
+
+        //Header of Table
+        var tableHeader = document.getElementById("tableHead");
+
+        var daLuu = false;
+
+        /**
+         *  Get Semester for View
+         *  It's solid Thuc Thi
+         */
+        var listSemeserIC = [
+            {
+                id: 'hk_1',
+                name: 'Học kỳ 1'
+            },
+            {
+                id: 'hk_2',
+                name: 'Học kỳ 2'
+            },
+            {
+                id: 'hk_3',
+                name: 'Học kỳ 3'
+            }
+        ]
+
+        $('.Default').trigger("click");
+        $('.js-example-basic-single').select2();
+        $('#xkhdt_system').select2({
+            placeholder: "Chọn Hệ",
+            allowClear: true
+        })
+        $('#xkhdt_system').val('').trigger('change');
+        $('#xkhdt_branch').select2({
+            placeholder: "Chọn Ngành học",
+            allowClear: true
+        })
+        $('#xkhdt_branch').val('').trigger('change');
+        $('#xkhdt_year').select2({
+            placeholder: "Chọn Năm học",
+            allowClear: true
+        })
+        $('#xkhdt_year').val('').trigger('change');
+        $('#xkhdt_semester').select2({
+            placeholder: "Chọn Học kỳ",
+            allowClear: true
+        })
+        $('#xkhdt_semester').val('').trigger('change');
+
+        $('#xkhdt_system').on('select2:unselecting', function (e) {
+            $('#xkhdt_branch').empty()
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            deleteTable()
+        })
+        $('#xkhdt_branch').on('select2:unselecting', function (e) {
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            deleteTable()
+        })
+        $('#xkhdt_year').on('select2:unselecting', function (e) {
+            $('#xkhdt_semester').empty()
+            deleteTable()
+        })
+
+        // Getting data from URL
+        var mahe = "@Request.QueryString["mahe"]"
+        var manganh = "@Request.QueryString["manganh"]"
+        var namhoc = "@Request.QueryString["namhoc"]"
+        var hocky = "@Request.QueryString["hocky"]"
+
+        //window.history.pushState("", "", "/GiangVien/PhanCongGiangVien/")
+
+        // Running function auto fill combobox
+        autoFill(mahe, manganh, namhoc, hocky)
+
+        // If data of url is not null, combobox will be filled data which is got from URL
+        function autoFill(mahe, manganh, namhoc, hocky) {
+            if (mahe != "" && manganh != "" && namhoc != "" && hocky != "") {
+                $('#xkhdt_system').val(mahe).trigger('change');
+                appendOptionToBranch(mahe);
+            }
+        }
+
+        $('#xkhdt_system').on('select2:select', (e) => {
+            let id_system = e.params.data.id;
+            $('#xkhdt_branch').empty();
+            $('#xkhdt_year').empty();
+            $('#xkhdt_semester').empty();
+            deleteTable()
+            appendOptionToBranchB(id_system)
+        });
+
+        // Loading list majors from db with data which got from URL
+        function appendOptionToBranch(id) {
+            $.getJSON('@Url.Action("GetListBranch", "API")/' + '?id_system=' + id, data => {
+                for (let item of data) {
+                    // var newOption = new Option(item.name, item._id, false, false)
+                    if ($('#xkhdt_branch').find("option[value='" + item._id + "']").length) {
+                        $('#xkhdt_branch').val(item._id).trigger('change')
+                    } else {
+                        if (mahe != "" && manganh != "" && namhoc != "" && hocky != "" && item._id == parseInt(manganh)) {
+                            var newOption = new Option(item.name, item._id, false, true);
+                            $('#xkhdt_branch').append(newOption).trigger('change')
+                            appendOptionToYear(manganh)
+                        } else {
+                            // Create a DOM Option and pre-select by default
+                            var newOption = new Option(item.name, item._id, false, false);
+                            // Append it to the select
+                            $('#xkhdt_branch').append(newOption).trigger('change')
+                        }
+                    }
+                }
+            });
+        }
+
+        // Loading list majors from db with data when user click on
+        function appendOptionToBranchB(id) {
+            $.getJSON('@Url.Action("GetListBranch", "api")/?id_system=' + id, data => {
+                for (let item of data) {
+                    // var newOption = new Option(item.name, item._id, false, false)
+                    if ($('#xkhdt_branch').find("option[value='" + item._id + "']").length) {
+                        $('#xkhdt_branch').val(item._id).trigger('change')
+                    } else {
+                            // Create a DOM Option and pre-select by default
+                            var newOption = new Option(item.name, item._id, false, false);
+                            // Append it to the select
+                            $('#xkhdt_branch').append(newOption).trigger('change')
+                    }
+                }
+                /**
+                 * Add option null for display select placeholder
+                 */
+                    // Create a DOM Option and pre-select by default
+                    var optionNull = new Option('', '', true, true);
+                    //// Append it to the select
+                $('#xkhdt_branch').append(optionNull).trigger('change')
+                $('#xkhdt_branch').select2('open');
+            });
+        }
+
+            /**
+             *   and Semester
+             */
+        $('#xkhdt_branch').on('select2:select', (e) => {
+            let mahn = e.params.data.id
+            $('#xkhdt_semester').empty()
+            $('#xkhdt_year').empty()
+            deleteTable()
+
+            appendOptionToYearB(mahn)
+        });
+
+        // Loading list years from db with data which got from URL
+        function appendOptionToYear(id) {
+            $.getJSON('@Url.Action("GetListYearNew", "API")/' + '?mahn=' + id, (data) => {
+                if (data.length != 0) {
+                    for (let item of data) {
+                        if (item.namhoc == namhoc) {
+                            // Create a DOM Option and pre-select by default
+                            let newOption = new Option(item.namhoc, item.namhoc, false, true);
+                            // Append it to the select
+                            $('#xkhdt_year').append(newOption).trigger('change')
+                            appendOptionToSemester(listSemeserIC)
+                        } else {
+                            // Create a DOM Option and pre-select by default
+                            let newOption = new Option(item.namhoc, item.namhoc, false, false);
+                            // Append it to the select
+                            $('#xkhdt_year').append(newOption).trigger('change')
+                        }
+                    }
+                    /**
+                     * Add option null for display select placeholder
+                     */
+                    if (mahe == "" && manganh == "" && namhoc == "" && hocky == "") {
+                        // Create a DOM Option and pre-select by default
+                        let optionNull = new Option('', '', true, true)
+                        // Append it to the select
+                        $('#xkhdt_year').append(optionNull).trigger('change')
+                    }
+                } else {
+                    //tNotifi('Year empty...! Please choose other field <3')
+                    toastr.warning('@CommonRS.Resources.VI.mes_NamHocChuaCoDL', 'Lưu ý!');
+                }
+
+            });
+        }
+
+        // Loading list years from db with data when user click on
+        function appendOptionToYearB(id) {
+            $.getJSON('@Url.Action("GetListYearNew", "API")/?mahn=' + id, (data) => {
+                if (data.length != 0) {
+                    for (let item of data) {
+                            // Create a DOM Option and pre-select by default
+                            let newOption = new Option(item.namhoc, item.namhoc, false, false);
+                            // Append it to the select
+                            $('#xkhdt_year').append(newOption).trigger('change')
+
+                    }
+                    /**
+                     * Add option null for display select placeholder
+                     */
+                        // Create a DOM Option and pre-select by default
+                        let optionNull = new Option('', '', true, true)
+                        // Append it to the select
+                    $('#xkhdt_year').append(optionNull).trigger('change')
+                    $('#xkhdt_year').select2('open')
+                } else {
+                    //tNotifi('Year empty...! Please choose other field <3')
+                    toastr.warning('@CommonRS.Resources.VI.mes_ChuaDuocPC', 'Lưu ý!');
+                }
+            });
+        }
+
+            /**
+             *  Handler get id year
+             *  Get List Year
+             */
+        $('#xkhdt_year').on('select2:select', (e) => {
+            pr_year = e.params.data.id
+            $('#xkhdt_semester').empty()
+            //let semester = listSemeserIC
+            deleteTable()
+
+            pr_branch = $("#xkhdt_branch").val()
+            pr_year = $("#xkhdt_year").val()
+
+            //Null option to placeholder
+            let optionNull = new Option('', '', true, true)
+            $('#xkhdt_semester').append(optionNull).trigger('change')
+
+
+            let url = '@Url.Action("GetGrSemester", "API")/' + '?mahn=' + pr_branch + '&year=' + pr_year
+            $.getJSON(url, data => {
+                for (let item of data) {
+                    let id = 'hk_' + item.hocky
+                    let name = 'Học kỳ ' + item.hocky
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(name, id, false, false);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+                }
+                $('#xkhdt_semester').select2('open')
+            })
+
+            //appendOptionToSemesterB(semester);
+        });
+
+        // Loading list semesters with data which got from URL
+        function appendOptionToSemester(semester) {
+            for (let item of semester) {
+                if (item.id == hocky) {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(item.name, item.id, false, true);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+                    createTableWithData($("#xkhdt_branch").val(), $("#xkhdt_year").val(), hocky.split('_')[1]);
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(item.name, item.id, false, false);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+                }
+            }
+        }
+
+        // Loading list semester from db with data when user click on combobox
+        function appendOptionToSemesterB(semester) {
+            for (let item of semester) {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(item.name, item.id, false, false);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+
+            }
+            /**
+            * Add option null for display select placeholder
+            */
+                // Create a DOM Option and pre-select by default
+                var optionNull = new Option('', '', true, true);
+                // Append it to the select
+                $('#xkhdt_semester').append(optionNull).trigger('change')
+        }
+
+            //Action select semester
+        $('#xkhdt_semester').on('select2:select', (e) => {
+            pr_semester = e.params.data.id.split('_')[1]
+            pr_branch = $("#xkhdt_branch").val()
+            pr_year = $("#xkhdt_year").val();
+            deleteTable()
+
+            $('#xkhdt_semester').prop("disabled", true); //Disable
+
+            createTableWithData(pr_branch, pr_year, pr_semester);
+        });
+
+        //Lấy danh sách giáo viên đã được phân công giảng dạy theo từng KHDT trong db
+        function createTableWithData(idbranch, idyear, idsemester) {
+            let url = '@Url.Action("DC_MonHocGiangDayGV", "API")/' + '?idBranch=' + idbranch
+                + '&idYear=' + idyear + '&idSemester=' + idsemester + '&idUser=' + idUser
+            $.getJSON(url, data => {
+                if (data.length == 0) {
+                    toastr.warning('@CommonRS.Resources.VI.mes_ChuaDuocPC', 'Lưu ý!');
+                    $('#xkhdt_semester').prop("disabled", false) //Disable
+                } else {
+                    //Học kỳ mới - có cột trạng thái:
+                    let cStatus = false
+                    for (let item of data) {
+                        if (item.TrangthaiKH != '@CommonRS.Resources.Variables.TrangthaiKH_ThucThi' && item.TrangthaiKH != '@CommonRS.Resources.Variables.TrangthaiKH_LuuTru') {
+                            cStatus = true
+                            break
+                        }
+                        cStatus = false
+                    }
+                    cStatus ? renderTableHeader() : renderTableHeaderWithoutStatus()
+                    // console.log(data)
+                    //Học kỳ cũ - không có cột trạng thái, ngày hết hạn:
+                    //renderTableHeaderWithoutStatus()
+                    for (let index = 0; index < data.length; index++) {
+                        //Học kỳ mới - có cột trạng thái:
+                        /** Trạng thái
+                         * 0 Đã từ chối
+                         * 1 Đã phê duyệt
+                         * 2 Chờ phê duyệt
+                         * 4 Chua Nhap
+                         * Gom nhom lai 1,2 : True
+                         * Else : false
+                         */
+                        // console.log(data[index].TrangThai)
+                        if (cStatus) {
+                            switch (data[index].TrangThai) {
+                                case '0':
+                                    RenderTable(data[index], index + 1, 0)
+                                    break
+                                case '1':
+                                    RenderTable(data[index], index + 1, 1)
+                                    break
+                                case '2':
+                                    RenderTable(data[index], index + 1, 2)
+                                    break
+                                case '3':
+                                    RenderTable(data[index], index + 1, 3)
+                                    break
+                                case '4':
+                                    RenderTable(data[index], index + 1, 4)
+                                    break
+                            }
+                        } else {
+                            RenderTableWithoutStatus(data[index], index + 1)
+                        }
+
+
+                        //Học kỳ cũ - không có cột trạng thái, ngày hết hạn:
+
+                    }
+                    //document.getElementById("idBtnLuu").style.display = "block";
+                    $('#xkhdt_semester').prop("disabled", false) //Disable
+                }
+
+            });
+        }
+
+        //Render table header
+        function renderTableHeader() {
+            tableHeader.innerHTML = '<tr>'
+                + '<th rowspan="2">STT</th>'
+                + '<th rowspan="2">Khóa</th>'
+                + '<th rowspan="2">Tên học phần</th>'
+                + '<th rowspan="2">Ngày hết hạn</th>'
+                + '<th rowspan="2">Đề cương học phần</th>'
+                + '<th rowspan="2">Trạng thái</th>'
+                + '</tr>'
+        }
+
+        //Render table header for second table without column status
+        function renderTableHeaderWithoutStatus() {
+            tableHeader.innerHTML = '<tr>'
+                + '<th rowspan="2">STT</th>'
+                + '<th rowspan="2">Khóa</th>'
+                + '<th rowspan="2">Tên học phần</th>'
+                + '<th rowspan="2">Đề cương học phần</th>'
+                + '</tr>'
+        }
+
+        //Delete table header
+        function deleteTable() {
+            bodyTable.innerHTML = "";
+            tableHeader.innerHTML = "";
+            //document.getElementById("idBtnLuu").style.display = "none";
+        }
+
+
+        function RenderTableWithoutStatus(obj, index) {
+            //tạo dòng
+            let row = document.createElement("tr")
+            row.setAttribute("id", "rowNum" + index)
+            let ts = parseInt(obj.GioLT) + parseInt(obj.GioTH) + parseInt(obj.GioDa) + parseInt(obj.GioTT)
+            //Từng cột
+            //STT
+            let col1 = document.createElement("td")
+            col1.innerText = index
+            //Khóa
+            let col2 = document.createElement("td")
+            col2.innerHTML = obj.TenKhoi
+            //Tên học phần
+            let col3 = document.createElement("td")
+            col3.innerText = obj.TenMH
+            //Đề cương học phần
+            let col4 = document.createElement("td")
+            let btnView = document.createElement('a')
+            btnView.setAttribute('class', 'btn btn-info btn-sm m-r-10')
+            //Đường dẫn request đến view xem đề cương học phần
+            btnView.innerHTML = 'Xem chi tiết'
+            btnView.setAttribute('href', 'javascript:void(0)')
+            btnView.setAttribute('onclick', 'getViewXemChiTietDeCuong(' + maKHDT + ')')
+            col4.appendChild(btnView)
+
+            row.appendChild(col1)
+            row.appendChild(col2)
+            row.appendChild(col3)
+            row.appendChild(col4)
+
+            bodyTable.appendChild(row)
+        }
+
+        //Render ra table
+        function RenderTable(obj, index, nStataus) {
+            var maKHDT = obj.MaKhdt;
+            //tạo dòng
+            let row = document.createElement("tr")
+            row.setAttribute("id", "rowNum" + index)
+            let ts = parseInt(obj.GioLT) + parseInt(obj.GioTH) + parseInt(obj.GioDa) + parseInt(obj.GioTT)
+            //Từng cột
+            //STT
+            let col1 = document.createElement("td")
+            col1.innerText = index
+            //Khóa
+            let colKhoa = document.createElement("td")
+            colKhoa.innerHTML = obj.TenKhoi
+            //Tên học phần
+            let col2 = document.createElement("td")
+            col2.innerText = obj.TenMH
+            //Ngày hết hạn
+            let col3 = document.createElement("td")
+            col3.innerText = obj.NgayHh
+            //Đề cương học phần
+            let col4 = document.createElement("td")
+            let btnView = document.createElement('a')
+            //KHÔNG hiển thị nút chỉnh sửa với môn học có đề cương ở trạng thái "Đã duyệt" và "Chờ duyệt"
+            let btnEdit = document.createElement('a')
+            btnEdit.setAttribute('class', 'btn btn-warning btn-sm m-r-10')
+            btnEdit.setAttribute('href', 'javascript:void(0)')
+            btnEdit.setAttribute('onclick', 'getViewChinhSuaDeCuong(' + maKHDT + ')')
+            btnEdit.innerHTML = 'Chỉnh sửa'
+            btnView.setAttribute('class', 'btn btn-info btn-sm')
+            //Đường dẫn request đến view xem đề cương học phần
+            btnView.innerHTML = 'Xem chi tiết'
+            btnView.setAttribute('href', 'javascript:void(0)')
+            btnView.setAttribute('onclick', 'getViewXemChiTietDeCuong(' + maKHDT + ')')
+            btnView.innerHTML = 'Xem chi tiết'
+
+            let col5 = document.createElement("td")
+
+            switch (nStataus) {
+                case 0:
+                    col4.appendChild(btnEdit)
+                    col4.appendChild(btnView)
+                    col5.innerHTML = '<span class="badge badge-pill badge-danger">Đã từ chối</span>'
+                    break
+                case 1:
+                    let btnExportWord = document.createElement('a')
+                    let link = '@Url.Action("ExportWord", "DeCuongMonHoc", new { maKHDT = "val" })';
+                    link = link.replace("val", maKHDT);
+                    btnExportWord.setAttribute('class', 'btn btn-info btn-sm m-l-10')
+                    btnExportWord.setAttribute('href', link)
+                    btnExportWord.innerHTML = 'Xuất File'
+                    col4.appendChild(btnView)
+                    col4.appendChild(btnExportWord)
+                    col5.innerHTML = '<span class="badge badge-pill badge-success">Đã phê duyệt</span>'
+                    break
+                case 2:
+                    col4.appendChild(btnView)
+                    col5.innerHTML = '<span class="badge badge-pill badge-warning">Chờ phê duyệt</span>'
+                    break
+                case 3:
+                    col4.appendChild(btnEdit)
+                    col4.appendChild(btnView)
+                    col5.innerHTML = '<span class="badge badge-pill badge-light">Chưa cập nhật</span>'
+                    break
+                case 4:
+                    col4.appendChild(btnEdit)
+                    col4.appendChild(btnView)
+                    col5.innerHTML = '<span class="badge badge-pill badge-light">Lưu nháp</span>'
+                    break
+            }
+            //Trạng thái đề cương học phần
+
+
+            //Trạng thái: Chờ phê duyệt Đề cương học phần
+            //col9.innerHTML = '<span class="badge badge-pill badge-warning">Chờ phê duyệt</span>'
+            //Trạng thái: Đã từ chối Đề cương học phần
+            //col9.innerHTML = '<span class="badge badge-pill badge-danger">Đã từ chối</span>'
+            //Trạng thái: Đang lưu nháp Đề cương học phần
+            //col9.innerHTML = '<span class="badge badge-pill badge-secondary">Đang lưu nháp</span>'
+            //Trạng thái: Chưa nhập Đề cương học phần
+            //col9.innerHTML = '<span class="badge badge-pill badge-badge-light">Chưa nhập</span>'
+
+            row.appendChild(col1)
+            row.appendChild(colKhoa)
+            row.appendChild(col2)
+            row.appendChild(col3)
+            row.appendChild(col4)
+            row.appendChild(col5)
+
+            bodyTable.appendChild(row)
+        }
+    });
+    document.querySelector("#layout-father").classList.add("active");
+    document.querySelector("#layout-ul").classList.add("in");
+    document.querySelector("#list-course").classList.add("active");
+</script>
+
+

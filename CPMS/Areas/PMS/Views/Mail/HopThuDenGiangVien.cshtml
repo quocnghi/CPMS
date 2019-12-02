@@ -1,0 +1,422 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Hộp thư đến";
+}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Hộp thư đến</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action(" Index", "Home" , new { area="CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Hộp thư đến</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mainMeoRoot" class="container-fluid">
+    <div class="col-md-12 bg_content" id="detail-invitation" style="display: none;">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Thư mời Giảng dạy môn học Học kỳ 1, Năm học 2017-2018</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="d-flex flex-row comment-row p-l-14">
+                <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                <div class="comment-text w-100">
+                    <h6 class="font-medium">Khoa Công nghệ Thông tin</h6>
+                    <span class="d-block">Ngày gửi: 01/01/2019</span>
+                    <div class="form-group row m-t-10">
+                        <div class="col-md-12">
+                            <span>Thầy/Cô $tenGV thân mến,</span><br>
+                            <br>
+                            <span>Thầy/Cô nhận được lời mời giảng dạy môn học $tenMH, $tenMH thuộc ngành học $tenNganh trong Học kỳ $soHK, Năm học $namHoc. Để chấp nhận lời mời giảng dạy hoặc từ chối, cũng như biết thêm thông tin chi tiết, thân mời Thầy/Cô truy cập vào đường dẫn bên dưới.</span><br />
+                            <br>
+                            <div class="d-flex justify-content-center">
+                                <a href="@Url.Action("ThuMoiGiangDay","Mail")" class="btn btn-info">Chi tiết Lời mời giảng dạy</a>
+                            </div>
+                            <br>
+                            <span>Cám ơn Thầy/Cô.</span><br>
+                            <br>
+                            <span>Trân trọng,</span><br>
+                            <span>Khoa $tenKhoa</span><br>
+                            <br>
+                            <span>Đây là Email được gửi tự động từ Hệ thống quản lý chương trình Giảng dạy, thuộc Đại học Văn Lang. Vui lòng không trả lời.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="display: block;">
+                <div class="col-md-6 float-md-right">
+                    <div class="border-top">
+                        <div class="card-body p-0 m-t-10">
+                            <div class="d-flex justify-content-end">
+                                <a href="javascript:void(0)" class="btn btn-warning" id="btnBack">Quay lại</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 bg_content" id="mailBox" style="display: block;">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Danh sách thư đến</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" id="parent-unseen" href="#unseen" role="tab"><span class="hidden-sm-up"></span> <span id="text-unseen" class="hidden-xs-down">Chưa xem</span></a> </li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" id="parent-seen" href="#seen" role="tab"><span class="hidden-sm-up"></span><span id="text-seen" class="hidden-xs-down">Đã xem</span></a> </li>
+                @*<div class="form-group m-b-0">
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control fa-search" id="fname" placeholder="Tìm kiếm">
+                        </div>
+                    </div>*@
+                @*<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab3</span></a> </li>*@
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content tabcontent-border">
+                <div class="tab-pane active" id="unseen" role="tabpanel">
+                    <div id="useen_box" class="comment-widgets scrollable" style="height: 550px;">
+                        <!-- Comment Row -->
+                        @*<a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Khoa Tài chính - Kế toán</h6>
+                                        <span class="d-block">Thư mời Giảng dạy môn học Học kỳ 1, Năm học 2017-2018</span>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-warning float-left" style="font-size: 12px;">Chưa trả lời</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                        <!-- Comment Row -->
+                        @*<a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Khoa Tài chính - Kế toán</h6>
+                                        <span class="d-block">Thư mời Giảng dạy môn học Học kỳ 2, Năm học 2017-2018</span>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-warning float-left" style="font-size: 12px;">Chưa trả lời</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                    </div>
+                </div>
+                <div class="tab-pane" id="seen" role="tabpanel">
+                    <div class="comment-widgets scrollable" style="height: 550px;">
+                        <!-- Comment Row -->
+                        <a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;">
+                            <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                <div class="comment-text w-100">
+                                    <h6 class="font-medium">Khoa Công nghệ Thông tin</h6>
+                                    <span class="d-block">Thư mời Giảng dạy môn học Học kỳ 1, Năm học 2018-2019</span>
+                                    <div class="comment-footer m-t-10">
+                                        <span class="text-muted float-right">01/01/2019</span>
+                                        <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- Comment Row -->
+                        <a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;">
+                            <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                <div class="comment-text w-100">
+                                    <h6 class="font-medium">Khoa Tài chính - Kế toán</h6>
+                                    <span class="d-block">Thư mời Giảng dạy môn học Học kỳ 2, Năm học 2018-2019</span>
+                                    <div class="comment-footer m-t-10">
+                                        <span class="text-muted float-right">01/01/2019</span>
+                                        <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- Comment Row -->
+                        <a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;">
+                            <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                <div class="comment-text w-100">
+                                    <h6 class="font-medium">Khoa Du lịch</h6>
+                                    <span class="d-block">Thư mời Giảng dạy môn học Học kỳ 1, Năm học 2016-2017</span>
+                                    <div class="comment-footer m-t-10">
+                                        <span class="text-muted float-right">01/01/2019</span>
+                                        <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- Comment Row -->
+                        <a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;">
+                            <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                <div class="comment-text w-100">
+                                    <h6 class="font-medium">Khoa Tài chính - Kế toán</h6>
+                                    <span class="d-block">Thư mời Giảng dạy môn học Học kỳ 2, Năm học 2016-2017</span>
+                                    <div class="comment-footer m-t-10">
+                                        <span class="text-muted float-right">01/01/2019</span>
+                                        <span class="badge badge-pill badge-warning float-left" style="font-size: 12px;">Chưa trả lời</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                @*<div class="tab-pane" id="messages" role="tabpanel">
+                            <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment..</p>
+                            <img src="../../assets/images/background/img4.jpg" class="img-fluid">
+                    </div>*@
+            </div>
+        </div>
+
+    </div>
+    <div id="snackbar">Some text some message..</div>
+    <div id="loader" style="display: none;"></div>
+
+    <div style="display:none;" id="myDiv" class="animate-bottom"></div>
+</div>
+<script src="~/Scripts/moment.js"></script>
+<script type="text/javascript">
+    moment.locale('vi')
+    document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+    document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+    $(document).ready(function () {
+        $("#parent-seen").click(function () {
+            document.getElementById("text-seen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+            document.getElementById("text-unseen").setAttribute("style", "color: #4F5467;");
+        });
+        $("#parent-unseen").click(function () {
+            document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+            document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+        });
+        $("#detailInvite").click(function () {
+            document.getElementById('mailBox').style.display = "none";
+            document.getElementById('detail-invitation').style.display = "block";
+        });
+        $("#btnBack").click(function () {
+            document.getElementById('mailBox').style.display = "block"
+            document.getElementById('detail-invitation').style.display = "none"
+        })
+    });
+
+    //===============================================================<3=================================================================//
+    let useen_box = document.getElementById('useen_box')
+    let mainMeoRoot = document.getElementById('mainMeoRoot')
+    let textUnseen = document.getElementById('text-unseen')
+    let userIdMeo = document.getElementById('userIdMeo').value // ID User
+    $(function () {
+        let notifiGiaoVien = $.connection.notification
+        let count =0
+        notifiGiaoVien.client.listNotSeenContent = (context) => {
+            if (count !== context.length) {
+                textUnseen.innerText = 'Chưa xem (' + context.length + ')'
+                for (let item of context) {
+                    addRowNotiTeacher(useen_box, mainMeoRoot, item)
+                }
+                // console.log(context)
+                count = context.length
+            }
+        }
+        $.connection.hub.start().done(function () {
+            // notifiGiaoVien.server.getListNoti(true, emailCheckLogin)
+        })
+    })
+
+    function addRowNotiTeacher(useen_box, mainMeoRoot, { DaXem, GhiChu, Kieu, MANO, NguoiGui, Nguon, ThongTin, TrangThai, idNguoiGui, idNguoiNhan, NguoiNhan, ThoiGianRaDoi }) {
+        let aboundFirst = document.createElement('a')
+        aboundFirst.setAttribute('href', 'javascript:void(0)')
+        let idA = 'detailInvite_' + MANO
+        aboundFirst.setAttribute('id', idA)
+        aboundFirst.style.color = '#3e5569'
+
+        let divSecond = document.createElement('div')
+        divSecond.setAttribute('class', 'd-flex flex-row comment-row')
+        divSecond.setAttribute('data-toggle', 'tooltip')
+        divSecond.setAttribute('title', 'Nhấn để xem chi tiết')
+
+        let divThird = document.createElement('div')
+        divThird.setAttribute('class', 'p-2')
+        divThird.innerHTML = '<img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle">'
+
+        let divThirdSecond = document.createElement('div')
+        divThirdSecond.setAttribute('class', 'comment-text w-100')
+        let h6Fourth = document.createElement('h6')
+        h6Fourth.setAttribute('class', 'font-medium')
+        h6Fourth.innerText = NguoiGui
+        let spanFourth = document.createElement('span')
+        spanFourth.setAttribute('class', 'd-block')
+        let hocky = ThongTin.split('|')[1]
+        let namhoc = ThongTin.split('|')[2]
+        spanFourth.innerText = 'Thư mời Giảng dạy môn học Học kỳ ' + hocky + ', Năm học ' + namhoc
+        let divFourth = document.createElement('div')
+        divFourth.setAttribute('class', 'comment-footer m-t-10')
+        let spanFiveth = document.createElement('span')
+        spanFiveth.setAttribute('class', 'text-muted float-right')
+        let duration = moment(ThoiGianRaDoi).fromNow()
+        let checkDay = duration.split(' ')
+        checkDay[1] === 'giờ' ? duration : checkDay[1] === 'phút' ? duration : duration = moment(ThoiGianRaDoi).format('dddd, MMMM-Do-YYYY')
+        spanFiveth.innerText = duration
+        let spanFivethSecond = document.createElement('span')
+        spanFivethSecond.setAttribute('class', 'badge badge-pill badge-warning float-left')
+        spanFivethSecond.style.fontSize = '12px'
+        spanFivethSecond.innerText = 'Chưa trả lời' // mốt kết hợp vs DB khi accept để check tl chưa
+
+        // Append
+        divFourth.appendChild(spanFiveth)
+        divFourth.appendChild(spanFivethSecond)
+        divThirdSecond.appendChild(h6Fourth)
+        divThirdSecond.appendChild(spanFourth)
+        divThirdSecond.appendChild(divFourth)
+
+        divSecond.appendChild(divThird)
+        divSecond.appendChild(divThirdSecond)
+
+        aboundFirst.appendChild(divSecond)
+
+        useen_box.appendChild(aboundFirst)
+
+        $.getJSON("@Url.Action("GetLSTeacher", "API")", { hocky, namhoc, userId : userIdMeo })
+            .done(function (json) {
+                detailEmail(mainMeoRoot, MANO, hocky, namhoc, json)
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                var err = textStatus + ", " + error
+                console.log("Request Failed: " + err)
+            })
+
+        $('#' + idA).on('click', function () {
+            document.getElementById('mailBox').style.display = "none"
+            document.getElementById('detail-invitation_' + MANO).style.display ='block'
+        })
+        // mainMeoRoot.innerHTML =''
+    }
+
+    function detailEmail(mainMeoRoot, MANO, hocky, namhoc, json) {
+        console.log(json)
+
+        // Sap xeo lai object
+        let id
+
+        let divBoundFirst = document.createElement('div')
+        divBoundFirst.setAttribute('class', 'col-md-12 bg_content')
+        let idDetailEmail = 'detail-invitation_' + MANO
+        divBoundFirst.setAttribute('id', idDetailEmail)
+        divBoundFirst.style.display = 'none'
+        // console.log(divBoundFirst)
+        let divCardSecond = document.createElement('div')
+        divCardSecond.setAttribute('class', 'card')
+        let divCbodyThird = document.createElement('div')
+        divCbodyThird.setAttribute('class', 'card-body p-0')
+        let divRowFourth = document.createElement('div')
+        divRowFourth.setAttribute('class', 'row')
+        let divFiveth = document.createElement('div')
+        divFiveth.setAttribute('class', 'col-md-6')
+        divFiveth.innerHTML = '<h4 class="card-title">Thư mời Giảng dạy môn học Học kỳ ' + hocky + ', Năm học ' + namhoc + '</h4>'
+
+        let divCardSecondSecond = document.createElement('div')
+        divCardSecondSecond.setAttribute('class', 'card')
+        let divSecondThirdth = document.createElement('div')
+        divSecondThirdth.setAttribute('class', 'd-flex flex-row comment-row p-l-14')
+        let divSecondFourth = document.createElement('div')
+        divSecondFourth.setAttribute('class', 'p-2')
+        divSecondFourth.innerHTML = '<img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle">'
+        let divSecondFiveth = document.createElement('div')
+        divSecondFiveth.setAttribute('class', 'comment-text w-100')
+        let h6SecondFivethFirst = document.createElement('h6')
+        h6SecondFivethFirst.setAttribute('class', 'font-medium')
+        h6SecondFivethFirst.innerText = 'Khoa Công nghệ Thông tin'
+        let spanSecondFivethSecond = document.createElement('span')
+        spanSecondFivethSecond.setAttribute('class', 'd-block')
+        spanSecondFivethSecond.innerText = 'Ngày gửi: 01/01/2019'
+        let divSecondSixth = document.createElement('div')
+        divSecondSixth.setAttribute('class', 'form-group row m-t-10')
+        let divSeventh = document.createElement('div')
+        divSeventh.setAttribute('class', 'col-md-12')
+        divSeventh.innerHTML = '<span>Thầy/Cô '+ 'NguoiNhan' + ' thân mến,</span><br>/'
+                            + '<br>'
+                            + '<span>Thầy/Cô nhận được lời mời giảng dạy môn học $tenMH, $tenMH thuộc ngành học $tenNganh trong Học kỳ $soHK, Năm học $namHoc. Để chấp nhận lời mời giảng dạy hoặc từ chối, cũng như biết thêm thông tin chi tiết, thân mời Thầy/Cô truy cập vào đường dẫn bên dưới.</span><br />'
+                            + '<br>'
+                            + '<div class="d-flex justify-content-center">'
+                            +    '<a href="@Url.Action("ThuMoiGiangDay","Mail")" class="btn btn-info">Chi tiết Lời mời giảng dạy</a>'
+                            + '</div>'
+                            + '<br>'
+                            + '<span>Cám ơn Thầy/Cô.</span><br>'
+                            + '<br>'
+                            + '<span>Trân trọng,</span><br>'
+                            + '<span>Khoa $tenKhoa</span><br>'
+                            + '<br>'
+            + '<span>Đây là Email được gửi tự động từ Hệ thống quản lý chương trình Giảng dạy, thuộc Đại học Văn Lang. Vui lòng không trả lời.</span>'
+
+        let rowSecondThirdSecond = document.createElement('div')
+        rowSecondThirdSecond.setAttribute('class', 'row')
+        rowSecondThirdSecond.style.display = 'block'
+        let divSecondThirdThird = document.createElement('div')
+        divSecondThirdThird.setAttribute('class', 'col-md-6 float-md-right')
+        let divSecondThirdFourth = document.createElement('div')
+        divSecondThirdFourth.setAttribute('class', 'border-top')
+        let divSecondThirdFiveth = document.createElement('div')
+        divSecondThirdFiveth.setAttribute('class', 'card-body p-0 m-t-10')
+        let idbtnBackFv = 'btnBack_' + MANO
+        divSecondThirdFiveth.innerHTML = '<div class="d-flex justify-content-end">'
+            + '<a href = "javascript:void(0)" class="btn btn-warning" id = "'+idbtnBackFv+'" > Quay lại</a>'
+                                        + '</div >'
+
+
+        // AppendCHild
+        // First
+        divRowFourth.appendChild(divFiveth)
+        divCbodyThird.appendChild(divRowFourth)
+        divCardSecond.appendChild(divCbodyThird)
+        // Second
+        divSecondThirdFourth.appendChild(divSecondThirdFiveth)
+        divSecondThirdThird.appendChild(divSecondThirdFourth)
+        rowSecondThirdSecond.appendChild(divSecondThirdThird)
+        // divSeventh.appendChild(rowSecondThirdSecond)
+        divSecondSixth.appendChild(divSeventh)
+        spanSecondFivethSecond.appendChild(divSecondSixth)
+        h6SecondFivethFirst.appendChild(spanSecondFivethSecond)
+        divSecondFiveth.appendChild(h6SecondFivethFirst)
+        divSecondFourth.appendChild(divSecondFiveth)
+
+        divSecondThirdth.appendChild(divSecondFourth)
+        divSecondThirdth.appendChild(divSecondFiveth)
+        // divSecondThirdth.appendChild(rowSecondThirdSecond)
+        divCardSecondSecond.appendChild(divSecondThirdth)
+        divCardSecondSecond.appendChild(rowSecondThirdSecond)
+
+        divBoundFirst.appendChild(divCardSecond)
+        divBoundFirst.appendChild(divCardSecondSecond)
+
+        mainMeoRoot.appendChild(divBoundFirst)
+
+        // console.log(divBoundFirst)
+        $("#" + idbtnBackFv).click(function () {
+            document.getElementById('mailBox').style.display = "block"
+            document.getElementById(idDetailEmail).style.display = "none"
+        })
+    }
+
+</script>

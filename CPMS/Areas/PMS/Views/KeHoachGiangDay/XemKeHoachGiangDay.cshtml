@@ -1,0 +1,1298 @@
+﻿@using Capstone.Models;
+@using Microsoft.AspNet.Identity;
+@model List<sc_HeNganh>
+@{
+    ViewBag.Title = "Xem kế hoạch giảng dạy";
+    fit_misDBEntities db = new fit_misDBEntities();
+    bool roleTruongBoMon = false;
+    if (Request.IsAuthenticated)
+    {
+        roleTruongBoMon = User.IsInRole(UserRoles.roleTruongBoMon);
+    }
+}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Xem kế hoạch giảng dạy</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Xem kế hoạch giảng dạy</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Kế hoạch giảng dạy</h4>
+                        @*<h5 class="card-subtitle">Khóa học: K21</h5>*@
+                    </div>
+                    @if (roleTruongBoMon)
+                    {
+                        <div class="col-md-6" style="text-align: right;">
+                            <a id='direc_link' href='javascript:void(0)' class="btn btn-info" style="display: none;">Lập kế hoạch giảng dạy</a>
+                            <a id='otherButton' href='javascript:void(0)' class="btn btn-light">Lập kế hoạch giảng dạy</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="direc_link"></div>
+                        <div id="otherButton"></div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 p-0">
+            <div class="card m-b-10">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="Hệ học">Hệ đào tạo:</label>
+                            <select id="xkhdt_system" class="select2-system form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                                @foreach (sc_HeNganh item in Model)
+                                {
+                                    <option value="@item.MaHN">@item.Mota</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Ngành học">Ngành đào tạo:</label>
+                            <select id="xkhdt_branch" class="select2-branch form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="Năm học">Năm học:</label>
+                            <select id="xkhdt_year" class="select2-year form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="Học kỳ">Học kỳ:</label>
+                            <select id="xkhdt_semester" class="select2-semester form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion" id="accordionExample">
+        </div>
+        <div id="loader" style="display: none;"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    const IconRight = document.querySelector("#IconRight");
+    const IconDown = document.querySelector("#IconDown");
+    const li_list = document.getElementById("li_list");
+    const count = 1;
+    $(document).ready(function () {
+        $("#IconDown").toggle();
+        $(".sidebar-item").click(function () {
+            $("#IconRight").toggle();
+            $("#IconDown").toggle();
+        });
+    });
+</script>
+<script type="text/javascript">
+    let roleUser = '@roleTruongBoMon';
+    roleUser = roleUser.toLowerCase();
+    $(".select2").select2()
+    $(document).ready(function () {
+        /**
+         * variable param for save
+         */
+        let accordionExample = document.getElementById('accordionExample')
+        let pr_system, pr_branch, pr_category, pr_year, pr_semester
+        let ltMainSub = [] // Save all list subject
+
+        $(".btneditdate").click(function () {
+            $(".buyerpopup").show()
+        })
+        $(".closebtn").click(function () {
+            $(".buyerpopup").hide()
+        })
+        $("#btncancel").click(function () {
+            $(".buyerpopup").hide()
+        })
+        $('.Default').trigger("click")
+        /**
+         *  PlaceHolder All Input
+         */
+        $(".select2-system").select2({
+            placeholder: "Chọn Hệ",
+            allowClear: true
+        })
+        $(".select2-branch").select2({
+            placeholder: "Chọn Ngành",
+            allowClear: true
+        })
+        //$(".select2-category").select2({
+        //    placeholder: "Loại Chương Trình",
+        //    allowClear: true
+        //})
+        $(".select2-year").select2({
+            placeholder: "Chọn Năm học",
+            allowClear: true
+        })
+        $(".select2-semester").select2({
+            placeholder: "Chọn Học kỳ",
+            allowClear: true
+        })
+        /***
+         * Clear Holder
+         */
+        $('#xkhdt_system').on('select2:unselecting', function (e) {
+            $('#xkhdt_branch').empty()
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            accordionExample.innerHTML = ''
+            document.getElementById("direc_link").style.display = "none";
+            document.getElementById("otherButton").style.display = "";
+        })
+        $('#xkhdt_branch').on('select2:unselecting', function (e) {
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            accordionExample.innerHTML = '';
+            document.getElementById("direc_link").style.display = "none";
+            document.getElementById("otherButton").style.display = "";
+        })
+        $('#xkhdt_year').on('select2:unselecting', function (e) {
+            $('#xkhdt_semester').empty()
+            accordionExample.innerHTML = ''
+        })
+        var checkBranch = true;
+        $("#xkhdt_branch").change(function () {
+            if ($(this).val() == "")
+                checkBranch = true;
+            else
+                checkBranch = false;
+        })
+        $('#otherButton').click(function () {
+            if (checkBranch) {
+                toastr.warning("@CommonRS.Resources.VI.mes_ChonNganhHoc", "Lưu ý!");
+            }
+        });
+
+
+        /**
+           * Get List Branch
+           *
+         */
+        $('#xkhdt_system').on('select2:select', (e) => {
+            let id_system = e.params.data.id
+            pr_system = id_system
+            $('#xkhdt_branch').empty()
+            // $('#xkhdt_category').empty()
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            accordionExample.innerHTML = ''
+            $.getJSON('@Url.Action("GetListBranch", "API")/' + '?id_system=' + id_system, data => {
+                for (let item of data) {
+                    // var newOption = new Option(item.name, item._id, false, false)
+                    if ($('#xkhdt_branch').find("option[value='" + item._id + "']").length) {
+                        $('#xkhdt_branch').val(item._id).trigger('change')
+                    } else {
+                        // Create a DOM Option and pre-select by default
+                        var newOption = new Option(item.name, item._id, false, false);
+                        // Append it to the select
+                        $('#xkhdt_branch').append(newOption).trigger('change')
+                    }
+                }
+                /**
+                 * Add option null for display select placeholder
+                 */
+                // Create a DOM Option and pre-select by default
+                var optionNull = new Option('', '', true, true);
+                // Append it to the select
+                $('#xkhdt_branch').append(optionNull).trigger('change')
+                $('#xkhdt_branch').select2('open');
+            })
+        })
+        /**
+         *  Get Semester for View
+         *  It's solid Thuc Thi
+         */
+        let listSemeserIC = [
+            {
+                id: 'hk_1',
+                name: 'Học kỳ I'
+            },
+            {
+                id: 'hk_2',
+                name: 'Học kỳ II'
+            }
+        ]
+        /**
+          *  Get Semester for View
+          *  It's solid Ke Hoach
+          */
+        let listSemeserPC = [
+            {
+                id: 'hk_1',
+                name: 'Học kỳ I'
+            },
+            {
+                id: 'hk_2',
+                name: 'Học kỳ II'
+            },
+            {
+                id: 'hk_3',
+                name: 'Học kỳ III'
+            },
+            {
+                id: 'hk_4',
+                name: 'Học kỳ IV'
+            },
+            {
+                id: 'hk_5',
+                name: 'Học kỳ V'
+            },
+            {
+                id: 'hk_6',
+                name: 'Học kỳ VI'
+            },
+            {
+                id: 'hk_7',
+                name: 'Học kỳ VII'
+            },
+            {
+                id: 'hk_8',
+                name: 'Học kỳ VIII'
+            }
+        ]
+        /**
+         *   and Semester
+         */
+        $('#xkhdt_branch').on('select2:select', (e) => {
+            let id_branch = e.params.data.id
+            pr_branch = id_branch
+            let linkA = document.getElementById('direc_link')
+            linkA.style.display = "";
+            document.getElementById("otherButton").style.display = "none";
+            direc_link.setAttribute('href', '@Url.Action("LapKeHoachGiangDay", "KeHoachGiangDay")/' + id_branch) // redirect page
+            // $('#xkhdt_category').empty()
+            $('#xkhdt_semester').empty()
+            $('#xkhdt_year').empty()
+            accordionExample.innerHTML = ''
+            $.getJSON('@Url.Action("GetListYearNew", "API")' + '?mahn=' + id_branch, data => {
+                // console.log(data)
+                if (data.length > 0) {
+                    for (let item of data) {
+                        // var newOption = new Option(item.name, item._id, false, false)
+                        // _ mahn _ loaict
+                        let id = item.namhoc
+                        // Create a DOM Option and pre-select by default
+                        var newOption = new Option(item.namhoc, id, false, false);
+                        // Append it to the select
+                        $('#xkhdt_year').append(newOption).trigger('change')
+                    }
+                } else {
+                    //tNotifi('Vui lòng chọn Ngành khác')
+                    toastr.warning('@CommonRS.Resources.VI.mes_ChonNganhHocKhac');
+                }
+                /**
+                  * Add option null for display select placeholder
+                  */
+                // Create a DOM Option and pre-select by default
+                var optionNull = new Option('', '', true, true);
+                // Append it to the select
+                $('#xkhdt_year').append(optionNull).trigger('change')
+                $('#xkhdt_year').select2('open');
+            })
+        })
+        /**
+         *  Get year for branch and type
+         */
+        //$('#xkhdt_category').on('select2:select', (e) => {
+        //    let { id } = e.params.data
+        //    let mahn = id.split('_')[1]
+        //    let loaict = id.split('_')[2]
+        //    pr_category = loaict
+        //    $('#xkhdt_semester').empty()
+        //    $('#xkhdt_year').empty()
+        //    accordionExample.innerHTML = ''
+        //    $.getJSON('/api/GetListYearNew?mahn=' + mahn + '&loaict=' + loaict, data => {
+        //        // console.log(data)
+        //        if (data.length > 0) {
+        //            for (let item of data) {
+        //                // var newOption = new Option(item.name, item._id, false, false)
+
+        //                // Create a DOM Option and pre-select by default
+        //                var newOption = new Option(item.namhoc, item.namhoc, false, false);
+        //                // Append it to the select
+        //                $('#xkhdt_year').append(newOption).trigger('change')
+        //            }
+        //        } else {
+        //            tNotifi('Year empty...! Please choose other field <3')
+        //        }
+        //        /**
+        //         * Add option null for display select placeholder
+        //         */
+        //        // Create a DOM Option and pre-select by default
+        //        var optionNull = new Option('', '', true, true);
+        //        // Append it to the select
+        //        $('#xkhdt_year').append(optionNull).trigger('change')
+        //    })
+        //})
+        /**
+         *  Handler get id year
+         *  Get List Year
+         */
+        $('#xkhdt_year').on('select2:select', (e) => {
+            pr_year = e.params.data.id
+            $('#xkhdt_semester').empty()
+            accordionExample.innerHTML = ''
+            let semester
+            //switch (pr_category) {
+            //    case "PC":
+            //        // code block
+            //        semester = listSemeserPC
+            //        break;
+            //    case "IC":
+            //        // code block
+            //        semester = listSemeserIC
+            //        break;
+            //    default:
+            //    // code block
+            //}
+            //for (let item of semester) {
+            //    // Create a DOM Option and pre-select by default
+            //    var newOption = new Option(item.name, item.id, false, false);
+            //    // Append it to the select
+            //    $('#xkhdt_semester').append(newOption).trigger('change')
+            //}
+
+            let url = '@Url.Action("GetGrSemester", "API")' + '?mahn=' + pr_branch + '&year=' + pr_year
+            $.getJSON(url, data => {
+                for (let item of data) {
+                    let id = 'hk_' + item.hocky
+                    let name = 'Học kỳ ' + item.hocky
+                // Create a DOM Option and pre-select by default
+                var newOption = new Option(name,id, false, false);
+                // Append it to the select
+                $('#xkhdt_semester').append(newOption).trigger('change')
+                }
+                $('#xkhdt_semester').select2('open');
+            })
+            /**
+            * Add option null for display select placeholder
+            */
+            // Create a DOM Option and pre-select by default
+            var optionNull = new Option('', '', true, true);
+            // Append it to the select
+            $('#xkhdt_semester').append(optionNull).trigger('change')
+        })
+        /**
+         *  Handler Return View Chuong Trinh Dao Tao
+         *  Action: semester
+         */
+        $('#xkhdt_semester').on('select2:select', (e) => {
+            document.getElementById("loader").style.display = "block";
+            //loadingSelection('<p>Đang tải dữ liệu</p>')
+            statusKHGD = 0;
+            pr_semester = e.params.data.id.split('_')[1]
+            accordionExample.innerHTML = ''
+            $('#xkhdt_semester').prop("disabled", true); //Disable
+            // console.log(pr_category + ' ' + pr_branch + ' ' + pr_year + ' ' + pr_semester)
+            let url = '@Url.Action("GetListSub", "API")' + '?pr_branch=' + pr_branch
+                + '&&pr_year=' + pr_year
+                + '&&pr_semester=' + pr_semester
+            //console.log(url)
+            $.getJSON(url)
+                .done(function (data) {
+                    //console.log(data);
+                    if (data.length == 0) {
+                        //tNotifi('Năm đang để trống')
+                        toastr.error('@CommonRS.Resources.VI.mes_NamHocTrong', 'Lỗi!');
+                        $('#xkhdt_semester').prop("disabled", false) //Disable
+                    } else {
+                        console.log("data",data)
+                        let dataCurrent = data[0]
+                        let allSub = data[1]
+                        let listBranch = data[2]
+                        // console.log(allSub)
+                        let json = {}
+                        let itemFirst = ''
+                        let hpKeyList = {}
+
+                        let jsonGroupBr = {}
+                        /***
+                         *  Json Group by nhom lai
+                         *
+                         */
+                        for (let item of listBranch) {
+                            let id_pro = item.mactdt + '_' + item.makh + '_' + item.tenkh
+                            jsonGroupBr[id_pro] = []
+                        }
+                        // console.log(jsonGroupBr)
+                        // set exist key for append
+                        for (let item of listBranch) {
+                            hpKeyList[item.mactdt] = []
+                        }
+                        // console.log(hpKeyList)
+                        for (let item of dataCurrent) {
+                            let id_pro = item.mactdt + '_' + item.makh + '_' + item.tenkh
+                            jsonGroupBr[id_pro].push(item)
+                        }
+                        // console.log(jsonGroupBr)
+                        for (let item of dataCurrent) {
+                            let id_pro = item.mactdt + '_' + item.makh + '_' + item.tenkh
+                            if (itemFirst == '') {
+                                itemFirst = id_pro
+                                json[itemFirst] = []
+                                json[itemFirst].push(item)
+                                continue
+                            }
+                            if (itemFirst == id_pro) {
+                                json[itemFirst].push(item)
+                            } else {
+                                id_pro = item.mactdt + '_' + item.makh + '_' + item.tenkh
+                                itemFirst = id_pro
+                                json[itemFirst] = []
+                                json[itemFirst].push(item)
+                            }
+                        }
+                        for (let item of allSub) {
+                            hpKeyList[item.matcIC].push(item)
+                        }
+                        for (let item in jsonGroupBr) { //get Property
+                            let mactdt = item.split('_')[0]
+                            // let makh = item.split('_')[1]
+                            let tenkh = item.split('_')[2]
+                            // console.log(item)
+                            renderNodeCourse(mactdt, accordionExample, tenkh, jsonGroupBr[item], hpKeyList)
+                        }
+                        if (statusKHGD != 0 && roleUser == 'true') {
+                            let divEnd = document.createElement('div')
+                            let p = document.createElement('p')
+                            divEnd.setAttribute('class', 'card m-b-10 m-t-20')
+                            let aHref = document.createElement('a')
+                            aHref.setAttribute('href', '@Url.Action("PhanCongGiangVien", "GiangVien")' + '?mahe=' + document.getElementById('xkhdt_system').value + '&manganh=' + document.getElementById('xkhdt_branch').value + '&namhoc=' + document.getElementById('xkhdt_year').value + '&hocky=' + document.getElementById('xkhdt_semester').value)
+                            aHref.innerText = 'Phân công Giảng viên'
+                            aHref.setAttribute('class', 'btn btn-success btnMeoRight')
+                            aHref.setAttribute('id', 'btnPhanCongGV')
+                            p.appendChild(aHref)
+                            divEnd.appendChild(p)
+                            accordionExample.appendChild(divEnd)
+                        }
+                        $('#xkhdt_semester').prop("disabled", false)
+                        document.getElementById("loader").style.display = "none"
+                    }
+                }).always(function () {
+                    //var x = document.getElementById("snackbar");
+                    //x.className = x.className.replace("showSuccess", "");
+                });
+        })
+        /**
+         * allow append Child Node inside Id youget
+         * Params id you need append
+         * idCollpas help avoid interaction is mactdt
+         * idChild main Child for appendChild
+         * arrSubject are Subject default choose in CTDT
+         * allSubject all subject in CTDT
+         */
+        var statusKHGD = 0;
+        function renderNodeCourse(idCollpas, idChild, title, arrSubject, hpKeyList) {
+            // console.log(arrSubject)
+            // Design property MAHP is primary Key
+            let arrSelectSub = []
+            let checkStatus = false
+            let checkID = ''
+            for (let item of arrSubject) {
+                if (item.trangthaiKH != '@CommonRS.Resources.Variables.TrangthaiKH_LuuTru' && item.trangthaiKH != '@CommonRS.Resources.Variables.TrangthaiKH_ThucThi') {
+                    checkStatus = true
+                    statusKHGD += 1;
+                } else {
+                    checkStatus = false
+                }
+            }
+            // console.log(hpKeyList)
+            // let yearStart = allSubject[0].year.split('-')[0] // year minimum
+            // console.log(hanlderSemester(allSubject[0], yearStart))
+            let divCard = document.createElement('div') // Card include
+            divCard.setAttribute('class', 'card card-custom m-b-10')
+            /**
+             * Header Title
+             */
+            let divCardHeader = document.createElement('div') // Card header
+            divCardHeader.setAttribute('class', 'card-header p-t-0 p-b-0 p-l-0')
+            divCardHeader.setAttribute('id', 'headingOne')
+            let h5Header = document.createElement('h5') //  Header title in Card title
+            h5Header.setAttribute('class', 'mb-0')
+            let btnHeader = document.createElement('button')
+            btnHeader.setAttribute('class', 'btn btn-link collapsed p-l-10')
+            btnHeader.setAttribute('data-toggle', 'collapse')
+            btnHeader.setAttribute('data-target', '#collapse' + idCollpas)
+            btnHeader.setAttribute('aria-expanded', 'false')
+            btnHeader.setAttribute('type', 'button')
+            btnHeader.setAttribute('id', idCollpas)
+            btnHeader.setAttribute('aria-controls', 'collapse' + idCollpas)
+            btnHeader.innerText = 'Kế hoạch giảng dạy của Khóa ' + title
+            //if (checkStatus) {
+            //    let aLinkDirec = document.createElement('a')
+            //    aLinkDirec.setAttribute('class', 'btn btn-warning btnMeoRight')
+            //    aLinkDirec.innerText = 'Chỉnh sửa'
+            //    aLinkDirec.href = '/KeHoachGiangDay/LapKeHoachGiangDay/' + pr_branch + '? namhoc=' + pr_year + '& hocky=' + pr_semester + '&khoilop=' + title
+            //    h5Header.appendChild(aLinkDirec)
+            //}
+
+            h5Header.appendChild(btnHeader)
+            divCardHeader.appendChild(h5Header)
+            // divCardHeader.appendChild(btnHeader)
+            divCard.appendChild(divCardHeader)
+            idChild.appendChild(divCard)
+            /**
+             * Content collapseOne
+             */
+            let divContent = document.createElement('div') // Div collapseOne
+            divContent.setAttribute('id', 'collapse' + idCollpas)
+            divContent.setAttribute('class', 'collapse m-l-10 m-r-10 m-t-10')
+            divContent.setAttribute('aria-labelledby', 'headingOne')
+            divContent.setAttribute('data-parent', '#accordionExample')
+            let tableContent = document.createElement('table') // Table content
+            tableContent.setAttribute('class', 'table table-hover table-bordered bg_table m-t-0')
+            let headTable = document.createElement('thead')
+            headTable.setAttribute('class', 'thead_ct')
+            //let headTableSecond = document.createElement('thead')
+            //headTableSecond.setAttribute('class', 'thead_ct')
+            var cSubject = 0;
+            for (cSubject of arrSubject) {
+                cSubject++;
+            }
+            if (checkStatus && roleUser == 'true') {
+                headTable.innerHTML = '<tr>'
+                    + '<th rowspan="2">STT</th>'
+                    + '<th rowspan="2">Tên môn học</th>'
+                    + '<th rowspan="2">Số TC</th>'
+                    + '<th colspan="5">Số giờ</th>'
+                    + '<th rowspan="2">Chỉnh sửa</th>'
+                    + '</tr>'
+                    + '<tr>'
+                    + '<td>TS</td>'
+                    + '<td>LT</td>'
+                    + '<td>TH/BT</td>'
+                    + '<td>Da</td>'
+                    + '<td>TT</td>'
+                    + '</tr>'
+            } else if (cSubject != 0) {
+                headTable.innerHTML = '<tr>'
+                    + '<th rowspan="2">STT</th>'
+                    + '<th rowspan="2">Tên môn học</th>'
+                    + '<th rowspan="2">Số TC</th>'
+                    + '<th colspan="5">Số giờ</th>'
+                    + '</tr>'
+                    + '<tr>'
+                    + '<td>TS</td>'
+                    + '<td>LT</td>'
+                    + '<td>TH/BT</td>'
+                    + '<td>Da</td>'
+                    + '<td>TT</td>'
+                    + '</tr>'
+            } else {
+                headTable.setAttribute('class', '')
+                headTable.innerHTML = 'Chưa có kế hoạch giảng dạy'
+                //headTable.setAttribute('background-color', 'none');
+                tableContent.setAttribute('class','table tablecenter')
+            }
+            let bodyTable = document.createElement('tbody')
+            bodyTable.setAttribute('id', 'ct_tbody' + idCollpas)
+            let count = 1
+            let seriesTh = ''
+            let arrBtnId = []
+            //Loading all subject infomation have been saved in db
+            if (arrSubject.length > 0) {
+                for (let item of arrSubject) {
+                    let btn_id
+                    let gioFDA = item.gioda === null ? 0 : item.gioda
+                    let gioFTT = item.giott === null ? 0 : item.giott
+                    let total = parseInt(item.giolt) + parseInt(item.gioth) + parseInt(gioFDA) + parseInt(gioFTT)
+                    if (checkStatus && roleUser == 'true') {
+                        seriesTh += '<tr id="' + item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth +'_1">'
+                            + '<td style="text-align: center;">' + count + '</td>'
+                            + '<td>' + item.tenmh + '</td>'
+                            + '<td style="text-align: center;">' + item.sotc + '</td>'
+                            + '<td id="total_' + item.mactdt + '_' + item.makhdt +'" style="text-align: center;">' + total + '</td>'
+                            + '<td ><input class="ipStyRow" id="giolt_' + item.mactdt + '_' + item.makhdt +'" value="' + item.giolt + '"readonly/></td>'
+                            + '<td ><input class="ipStyRow" id="gioth_' + item.mactdt + '_' + item.makhdt +'" value="' + item.gioth + '"readonly/></td>'
+                            + '<td ><input class="ipStyRow" id="gioda_' + item.mactdt + '_' + item.makhdt +'" value="' + gioFDA + '"readonly/></td>'
+                            + '<td ><input class="ipStyRow" id="giott_' + item.mactdt + '_' + item.makhdt + '" value="' + gioFTT + '"readonly/></td>'
+                            + '<td style="text-align: center;"><button id="btnEdit_' + item.mactdt + '_' + item.makhdt + '" class="btn btn-warning btn-sm" >Sửa</button></td>'
+                            + '</tr>';
+                        btn_id = 'btnEdit_' + item.mactdt + '_' + item.makhdt //item.mahp
+                        arrBtnId.push(btn_id)
+                    } else {
+                        seriesTh += '<tr id="' + count + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '">'
+                            + '<td style="text-align: center;">' + count + '</td>'
+                            + '<td>' + item.tenmh + '</td>'
+                            + '<td style="text-align: center;">' + item.sotc + '</td>'
+                            + '<td style="text-align: center;">' + total + '</td>'
+                            + '<td style="text-align: center;">' + item.giolt + '</td>'
+                            + '<td style="text-align: center;">' + item.gioth + '</td>'
+                            + '<td style="text-align: center;">' + gioFDA + '</td>'
+                            + '<td style="text-align: center;">' + gioFTT + '</td>'
+                            + '</tr>';
+                        btn_id = 'btnEdit_' + item.mactdt + '_' + count // item.mahp
+                    }
+
+                    // arrBtnId.push(btn_id)
+                    count++
+                }
+            }
+            bodyTable.innerHTML = seriesTh
+            let divRow = document.createElement('div') // Row incloud form last div
+            divRow.setAttribute('class', 'row')
+            /*
+             * Check Tinh Trang Luu Tru
+             */
+            if (checkStatus && roleUser == 'true') {
+                /**
+                *  Add subject inside Table
+                */
+
+                let divFormRow = document.createElement('div') // Div form group include subject
+                divFormRow.setAttribute('class', 'col-md-5')
+                let divGroupForm = document.createElement('div') // Div inside formgroup
+                divGroupForm.setAttribute('class', 'form-group')
+                // Todo select emelents
+                let selSubject = document.createElement('select')
+                let id_selSelec = 'selMctdt_' + idCollpas
+                arrSelectSub.push(id_selSelec)
+                selSubject.setAttribute('id', id_selSelec)
+                selSubject.setAttribute('class', 'select2_1 form-control custom-select')
+                selSubject.style.width = '100%'
+                selSubject.style.height = '36px'
+                // Variable optGroup for 8 semester
+
+                cboGroupSemes(selSubject, hpKeyList[idCollpas])
+                // console.log(hpKeyList)
+                divGroupForm.appendChild(selSubject)
+                divFormRow.appendChild(divGroupForm)
+
+                // The Second div include button add subject
+                let divSecondinRow = document.createElement('div')
+                divSecondinRow.setAttribute('class', 'col-md-2')
+                let btnAddSub = document.createElement('button')
+                btnAddSub.setAttribute('id', 'addManual_' + idCollpas) // idCollpas id_mactdt
+                btnAddSub.setAttribute('class', 'btn btn-info')
+                // Add Event for Button
+                btnAddSub.onclick = function eventAddSub(e) {
+                    let id_mactdt = e.target.id.split('_')[1]
+                    let idSelect = 'selMctdt_' + id_mactdt
+                    let valSelect = document.getElementById(idSelect).value
+                    let idMakhdt = valSelect.split('_')[0] // idmakhdt
+                    // console.log(valSelect)
+                    let ct_tbody = document.getElementById('ct_tbody' + id_mactdt)
+                    let checkBol = true
+                    //check if item exist is not append
+                    if (ct_tbody.getElementsByTagName('tr').length === 0) {
+                        checkBol = true
+                    }
+                    // console.log(valSelect)
+                    for (let item of ct_tbody.getElementsByTagName('tr')) {
+                        if (item.id === valSelect) {
+                            checkBol = false
+                            // console.log('Check dcmm sao van vao')
+                            break
+                        } else {
+                            checkBol = true
+                        }
+                    }
+                    if (checkBol) {
+                        // Count
+                        let count = ct_tbody.getElementsByTagName('tr').length + 1
+                        let tr = document.createElement('tr')
+                        /**
+                         * Create Object at mactdt current and follow mahp
+                         **/
+                        let listSubNew = {}
+                        for (let item of hpKeyList[id_mactdt]) {
+                            listSubNew[item.makhdt] = item
+                            // console.log(item)
+                        }
+                        //console.log(listSubNew)
+                        let gioFDA = listSubNew[idMakhdt].gioda === null ? 0 : listSubNew[idMakhdt].gioda
+                        let gioFTT = listSubNew[idMakhdt].giott === null ? 0 : listSubNew[idMakhdt].giott
+                        let total = parseInt(listSubNew[idMakhdt].gioth) + parseInt(listSubNew[idMakhdt].giolt) + parseInt(gioFDA) + parseInt(gioFTT)
+                        tr.setAttribute('id', idMakhdt + '_' + listSubNew[idMakhdt].sotc + '_' + listSubNew[idMakhdt].giolt + '_' + listSubNew[idMakhdt].gioth + '_0')
+                        tr.innerHTML = '<td style="text-align: center;">' + count + '</td>' +
+                            '<td>' + listSubNew[idMakhdt].tenmh + '</td>' +
+                            '<td style="text-align: center;">' + listSubNew[idMakhdt].sotc + '</td>' +
+                            '<td style="text-align: center;" id="total_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt +'">' + total + '</td>' +
+                            '<td ><input class="ipStyRow" id="giolt_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt + '" value="' + listSubNew[idMakhdt].giolt + '"readonly/></td>' +
+                            '<td ><input class="ipStyRow" id="gioth_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt + '" value="' + listSubNew[idMakhdt].gioth + '"readonly/></td>' +
+                            '<td ><input class="ipStyRow" id="gioda_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt + '" value="' + gioFDA + '"readonly/></td>' +
+                            '<td ><input class="ipStyRow" id="giott_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt + '" value="' + gioFTT + '"readonly/></td>' +
+                            '<td style="text-align: center;" class="p-0"><button class="btn btn-warning btn-sm" id="btnEdit_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt + '"> Sửa </button>&ensp;<button id="btn_' + listSubNew[idMakhdt].mactdt + '_' + idMakhdt + '_' + listSubNew[idMakhdt].matcIC + '" class="btn btn-danger btn-sm" >Xóa</button></td>'
+                        ct_tbody.appendChild(tr)
+                        // console.log(listSubNew[idMahp])
+                        let btn_id = 'btn_' + listSubNew[idMakhdt].mactdt + '_' + idMakhdt + '_' + listSubNew[idMakhdt].matcIC
+                        document.getElementById(btn_id).addEventListener('click', deleteSubject)
+                        // Edit Hour Columns
+                        let btnEditHourRow = 'btnEdit_' + listSubNew[idMakhdt].matcIC + '_' + idMakhdt
+                        document.getElementById(btnEditHourRow).addEventListener('click', EditHourHP)
+                        // Variable optGroup for 8 semester
+                        // cboGroupSemes(selSubject, yearStart, allSubject.filter(s => s.mahp !== idMahp))
+                        $('#' + idSelect).select2().val(null).trigger('change')
+                        $(".select2_1").select2({
+                            placeholder: "Chọn môn học để thêm nhanh",
+                            allowClear: true
+                        })
+                        checkBol = false
+                    } else {
+                        //tNotifi('Môn học đã được chọn. Vui lòng lựa chọn môn học khác.')
+                        toastr.error('@CommonRS.Resources.VI.mes_MonHocDaDuocChon', 'Lỗi!');
+                    }
+                }
+                btnAddSub.innerText = 'Thêm nhanh'
+                divSecondinRow.appendChild(btnAddSub)
+                // The third div include save and divide roles for techer
+                let divThirdinRow = document.createElement('div')
+                divThirdinRow.setAttribute('class', 'col-md-5')
+                divThirdinRow.setAttribute('style', 'text-align: right')
+                divThirdinRow.innerHTML = '<a href="' + '@Url.Action("ChinhSuaKeHoachGiangDay", "KeHoachGiangDay")/' + pr_branch + '?namhoc=' + pr_year + '&hocky=' + pr_semester + '&khoilop=' + title + '" class="btn btn-warning m-r-10">Chỉnh sửa kế hoạch</a><button class="btn btn-success" id="save_' + idCollpas + '">Lưu</button>'
+                // AppendChild in row
+                divRow.appendChild(divFormRow) // div First
+                divRow.appendChild(divSecondinRow) // div Second
+                divRow.appendChild(divThirdinRow)// div Third
+                // console.log(id_selSelec)
+            }
+
+            // Add colap inside div
+            tableContent.appendChild(headTable)
+            tableContent.appendChild(bodyTable)
+
+            divContent.appendChild(tableContent)
+            divContent.appendChild(divRow)
+            divCard.appendChild(divContent)
+            idChild.appendChild(divCard)
+
+            // AddEvent for Edit hour
+            for (let item of arrBtnId) {
+                document.getElementById(item).addEventListener("click", EditHourHP)
+                // console.log(item)
+            }
+
+            $(".select2_1").select2({
+                placeholder: "Chọn môn học để thêm nhanh",
+                allowClear: true
+            })
+            if (checkStatus && roleUser == 'true') {
+            // Delete A row in table
+            //for (let item of arrBtnId) {
+            //    document.getElementById(item).addEventListener('click', deleteSubject);
+            //}
+                let save = document.getElementById('save_' + idCollpas)
+                save.addEventListener('click', (e) => {
+                    let { id } = e.target
+                    let mactdt = id.split('_')[1]
+                    let arrSubject = []
+                    let id_tbody = 'ct_tbody' + mactdt
+                    let tbody = document.getElementById(id_tbody)
+                    // console.log(tbody)
+                    let formData = new FormData()
+                    for (let item of tbody.getElementsByTagName('tr')) {
+                        let { id } = item
+                        let makhdt = id.split('_')[0]
+                        let sotc = id.split('_')[1]
+                        let statusPCYe = id.split('_')[4] // check true false year
+                        let giolt
+                        let gioth
+                        let gioda
+                        let giott
+
+                        let obj = {}
+                        obj.mactdt = mactdt
+                        obj.makhdt = makhdt
+                        obj.hocky = pr_semester
+                        obj.year = pr_year
+                        if (statusPCYe === '1') {
+                           obj.status = 'old'
+                        } else {
+                            obj.status = 'new'
+                        }
+
+                        obj.sotc = sotc
+
+                        let count = 0
+                        for (let submeo of item.getElementsByTagName('td')) {
+                            switch (count) {
+                                case 4:
+                                    giolt = submeo.getElementsByTagName('input')[0].value
+                                    obj.giolt = giolt
+                                case 5:
+                                    gioth = submeo.getElementsByTagName('input')[0].value
+                                    obj.gioth = gioth
+                                case 6:
+                                    gioda = submeo.getElementsByTagName('input')[0].value
+                                    obj.gioda = gioda
+                                case 7:
+                                    giott = submeo.getElementsByTagName('input')[0].value
+                                    obj.giott = giott
+                            }
+                            count++
+                        }
+                        arrSubject.push(obj)
+                    }
+                    formData.append('json', arrSubject)
+                    console.log(arrSubject)
+                    // console.log(formData)
+                    $.ajax({
+                        url: "@Url.Action("SaveSubBranch", "API")",
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify(arrSubject),
+                        success: function (response) {
+                            if (response.status === 200) {
+                                //tNotifiSuccess('<p>' + response.message + '</p>')
+                                toastr.success('@CommonRS.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+                                let countMeo = 1
+                                for (let item of tbody.getElementsByTagName('tr')) {
+                                    item.getElementsByTagName('td')[8].innerText = ''
+                                    countMeo++
+                                }
+                            }
+                        },
+                        error: function (su) {
+                            //tNotifi('Không thể lưu')
+                            toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Lỗi!');
+                        }
+                    })
+                })
+            }
+            // Event per item
+            for (let item of arrSelectSub) {
+                $('#' + item).on('select2:select', function (e) {
+                    // console.log(e)
+                })
+            }
+        }
+        /*
+         * Only View not edit
+         * IC: chuong trinh thuc thi
+         *
+         */
+        function renderNodeIC(idCollpas, idChild, title, arrSubject) {
+            // console.log(allSubject)
+            // Design property MAHP is primary Key
+            let hpKeyList = {}
+            // allSubject.map(item => hpKeyList[item.mahp] = item)
+            // console.log(hpKeyList)
+            // let yearStart = allSubject[0].year.split('-')[0] // year minimum
+            // console.log(hanlderSemester(allSubject[0], yearStart))
+            let divCard = document.createElement('div') // Card include
+            divCard.setAttribute('class', 'card card-custom m-b-10')
+            /**
+             * Header Title
+             */
+            let divCardHeader = document.createElement('div') // Card header
+            divCardHeader.setAttribute('class', 'card-header p-t-0 p-b-0 p-l-0')
+            divCardHeader.setAttribute('id', 'headingOne')
+            let h5Header = document.createElement('h5') //  Header title in Card title
+            h5Header.setAttribute('class', 'mb-0')
+            let btnHeader = document.createElement('button')
+            btnHeader.setAttribute('class', 'btn btn-link collapsed p-l-10')
+            btnHeader.setAttribute('data-toggle', 'collapse')
+            btnHeader.setAttribute('data-target', '#collapse' + idCollpas)
+            btnHeader.setAttribute('aria-expanded', 'false')
+            btnHeader.setAttribute('type', 'button')
+            btnHeader.setAttribute('aria-controls', 'collapse' + idCollpas)
+            btnHeader.innerText = 'Chương trình đào tạo Khóa ' + title
+            divCardHeader.appendChild(h5Header)
+            divCardHeader.appendChild(btnHeader)
+            divCard.appendChild(divCardHeader)
+            idChild.appendChild(divCard)
+            /**
+             * Content collapseOne
+             */
+            let divContent = document.createElement('div') // Div collapseOne
+            divContent.setAttribute('id', 'collapse' + idCollpas)
+            divContent.setAttribute('class', 'collapse m-l-10 m-r-10 m-t-10')
+            divContent.setAttribute('aria-labelledby', 'headingOne')
+            divContent.setAttribute('data-parent', '#accordionExample')
+            let tableContent = document.createElement('table') // Table content
+            tableContent.setAttribute('class', 'table table-hover table-bordered  bg_table m-t-0')
+            let headTable = document.createElement('thead')
+            headTable.setAttribute('class', 'thead_ct')
+            headTable.innerHTML = '<tr style="text-align: center;">'
+                + '<th rowspan="2">STT</th>'
+                + '<th rowspan="2">Tên môn học</th>'
+                + '<th rowspan="2">Số TC</th>'
+                + '<th colspan="3">Số giờ</th>'
+                + '</tr>'
+                + '<tr>'
+                + '<td>TS</td>'
+                + '<td>LT</td>'
+                + '<td>TH/BT</td>'
+                + '</tr>'
+            let bodyTable = document.createElement('tbody')
+            bodyTable.setAttribute('id', 'ct_tbody' + idCollpas)
+            let count = 1
+            let seriesTh = ''
+            for (let item of arrSubject) {
+                let total = parseInt(item.giolt) + parseInt(item.gioth)
+                seriesTh += '<tr id="' + item.mahp + '">'
+                    + '<td style="text-align: center;">' + count + '</td>'
+                    + '<td>' + item.tenmh + '</td>'
+                    + '<td style="text-align: center;">' + item.sotc + '</td>'
+                    + '<td style="text-align: center;">' + total + '</td>'
+                    + '<td style="text-align: center;">' + item.giolt + '</td>'
+                    + '<td style="text-align: center;">' + item.gioth + '</td>'
+                    + '</tr>';
+                count++
+            }
+            bodyTable.innerHTML = seriesTh
+            /**
+             *  Add subject inside Table
+             */
+            let divRow = document.createElement('div') // Row incloud form last div
+            divRow.setAttribute('class', 'row')
+            let divFormRow = document.createElement('div') // Div form group include subject
+            divFormRow.setAttribute('class', 'col-md-5')
+            let divGroupForm = document.createElement('div') // Div inside formgroup
+            divGroupForm.setAttribute('class', 'form-group')
+            // Todo select emelents
+            //let selSubject = document.createElement('select')
+            //selSubject.setAttribute('id', 'selMctdt_' + idCollpas)
+            //selSubject.setAttribute('class', 'select2_1 form-control custom-select')
+            //selSubject.style.width = '100%'
+            //selSubject.style.height = '36px'
+            // Variable optGroup for 8 semester
+            // cboGroupSemes(selSubject, yearStart, allSubject)
+
+            // divGroupForm.appendChild(selSubject)
+            divFormRow.appendChild(divGroupForm)
+
+            // The Second div include button add subject
+            let divSecondinRow = document.createElement('div')
+            divSecondinRow.setAttribute('class', 'col-md-2')
+            let btnAddSub = document.createElement('button')
+            btnAddSub.setAttribute('id', 'addManual_' + idCollpas) // idCollpas id_mactdt
+            btnAddSub.setAttribute('class', 'btn btn-info')
+            // Add Event for Button
+            //btnAddSub.onclick = function eventAddSub(e) {
+            //    let id_mactdt = e.target.id.split('_')[1]
+            //    let idSelect = 'selMctdt_' + id_mactdt
+            //    let valSelect = document.getElementById(idSelect).value
+            //    let idMahp = valSelect.split('_')[0]
+            //    let ct_tbody = document.getElementById('ct_tbody' + id_mactdt)
+            //    let checkBol = true
+            //    //check if item exist is not append
+            //    if (ct_tbody.getElementsByTagName('tr').length === 0) {
+            //        checkBol = true
+            //    }
+            //    for (let item of ct_tbody.getElementsByTagName('tr')) {
+            //        if (item.id === idMahp) {
+            //            checkBol = false
+            //            break
+            //        } else {
+            //            checkBol = true
+            //        }
+            //    }
+            //    if (checkBol) {
+            //        // Count
+            //        let count = ct_tbody.getElementsByTagName('tr').length + 1
+            //        let tr = document.createElement('tr')
+            //        let total = parseInt(hpKeyList[idMahp].hth) + parseInt(hpKeyList[idMahp].hlt)
+            //        tr.setAttribute('id', idMahp)
+            //        tr.innerHTML = '<th id=' + idMahp + '>' + count + '</th>' +
+            //            '<td>' + hpKeyList[idMahp].tenmh + '</td>' +
+            //            '<td>' + hpKeyList[idMahp].sotc + '</td>' +
+            //            '<td>' + total + '</td>' +
+            //            '<td>' + hpKeyList[idMahp].hlt + '</td>' +
+            //            '<td>' + hpKeyList[idMahp].hth + '</td>' +
+            //            '<td><button id="btn_' + hpKeyList[idMahp].mactdt + '_' + idMahp + '" class="btn btn-danger" >Xóa</button></td>'
+            //        ct_tbody.appendChild(tr)
+            //        let btn_id = 'btn_' + hpKeyList[idMahp].mactdt + '_' + idMahp
+            //        document.getElementById(btn_id).addEventListener('click', deleteSubject)
+            //        // Variable optGroup for 8 semester
+            //        // cboGroupSemes(selSubject, yearStart, allSubject.filter(s => s.mahp !== idMahp))
+            //        checkBol = false
+            //    } else {
+            //        tNotifi('Môn học đã có sẵn vui lòng chọn môn khác...!')
+            //    }
+            //}
+            //btnAddSub.innerText = 'Thêm môn học'
+            // divSecondinRow.appendChild(btnAddSub)
+            // The third div include save and divide roles for techer
+            //let divThirdinRow = document.createElement('div')
+            //divThirdinRow.setAttribute('class', 'group_button')
+            //divThirdinRow.innerHTML = '<button class="btn btn-warning">Lưu</button>'
+            // AppendChild in row
+            divRow.appendChild(divFormRow) // div First
+            divRow.appendChild(divSecondinRow) // div Second
+            // divRow.appendChild(divThirdinRow)// div Third
+            // Add colap inside div
+            tableContent.appendChild(headTable)
+            tableContent.appendChild(bodyTable)
+            divContent.appendChild(tableContent)
+            divContent.appendChild(divRow)
+            divCard.appendChild(divContent)
+            idChild.appendChild(divCard)
+
+        }
+
+        /**
+         * Group by properties
+         */
+        Array.prototype.groupBy = function (prop) {
+            return this.reduce(function (groups, item) {
+                var val = item[prop];
+                groups[val] = groups[val] || [];
+                groups[val].push(item);
+                return groups;
+            }, {});
+        }
+        /**
+     *  Handler Select Screen display combobox
+     *  cSelect child Node
+     *  yearStart time begin
+     *  allsubject list
+     */
+        function cboGroupSemes(cSelect, allSubject) {
+            cSelect.innerText = ''
+            if (allSubject.length > 0) {
+                let optgroup1 = document.createElement('optgroup')
+                optgroup1.setAttribute('label', 'Học kỳ 1')
+                let optgroup2 = document.createElement('optgroup')
+                optgroup2.setAttribute('label', 'Học kỳ 2')
+                let optgroup3 = document.createElement('optgroup')
+                optgroup3.setAttribute('label', 'Học kỳ 3')
+                let optgroup4 = document.createElement('optgroup')
+                optgroup4.setAttribute('label', 'Học kỳ 4')
+                let optgroup5 = document.createElement('optgroup')
+                optgroup5.setAttribute('label', 'Học kỳ 5')
+                let optgroup6 = document.createElement('optgroup')
+                optgroup6.setAttribute('label', 'Học kỳ 6')
+                let optgroup7 = document.createElement('optgroup')
+                optgroup7.setAttribute('label', 'Học kỳ 7')
+                let optgroup8 = document.createElement('optgroup')
+                optgroup8.setAttribute('label', 'Học kỳ 8')
+                for (let item of allSubject) {
+                    if (item.hocky === '1') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup1.appendChild(option)
+                    }
+                    if (item.hocky === '2') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup2.appendChild(option)
+                    }
+                    if (item.hocky === '3') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup3.appendChild(option)
+                    }
+                    if (item.hocky === '4') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup4.appendChild(option)
+                    }
+                    if (item.hocky === '5') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup5.appendChild(option)
+                    }
+                    if (item.hocky === '6') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup6.appendChild(option)
+                    }
+                    if (item.hocky === '7') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup7.appendChild(option)
+                    }
+                    if (item.hocky === '8') {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item.makhdt + '_' + item.sotc + '_' + item.giolt + '_' + item.gioth + '_0') // mahp mctdt
+                        option.innerText = 'HK' + item.hocky + ' - ' + 'TC' + item.sotc + ' - ' + item.tenmh
+                        optgroup8.appendChild(option)
+                    }
+                }
+                // add group
+                let optionNull = document.createElement('option')
+                cSelect.appendChild(optionNull)
+                cSelect.appendChild(optgroup1)
+                cSelect.appendChild(optgroup2)
+                cSelect.appendChild(optgroup3)
+                cSelect.appendChild(optgroup4)
+                cSelect.appendChild(optgroup5)
+                cSelect.appendChild(optgroup6)
+                cSelect.appendChild(optgroup7)
+                cSelect.appendChild(optgroup8)
+            }
+        }
+        // Button Delete at Row in table
+        function deleteSubject(e) {
+            let { id } = e.target
+            let mactdt = id.split('_')[3]
+            let mamh = id.split('_')[2]
+            let id_tbody = 'ct_tbody' + mactdt
+            // console.log(id_tbody)
+            let tbody = document.getElementById(id_tbody)
+            for (let item of tbody.getElementsByTagName('tr')) {
+                let idMamh = item.id.split('_')[0]
+                if (idMamh === mamh) {
+                    tbody.removeChild(item)
+                    break
+                }
+            }
+            // get First Index of Table
+            // console.log(tbody.getElementsByTagName('tr')[0].getElementsByTagName('td')[0])
+            let countMeo = 1
+            for (let item of tbody.getElementsByTagName('tr')) {
+                item.getElementsByTagName('td')[0].innerText = countMeo
+                countMeo++
+            }
+        }
+        /*Date: 2/22/2019
+         *Function Edit Row Table
+         *Allow Edit GioLT GioTH GioDa GioTT
+         *
+         */
+        function EditHourHP(e) {
+            let { id } = e.target
+            // console.log(id)
+            // Change Color And Text
+            changeColorTextButton(id)
+        }
+
+        function changeColorTextButton(id) {
+            let buttonEdit = document.getElementById(id)
+            let textBut = buttonEdit.innerText
+            if (textBut === 'Sửa') {
+                buttonEdit.innerText = "Lưu"
+                buttonEdit.setAttribute("class", "btn btn-success btn-sm")
+                styAllowEditHour(id, true)
+            } else {
+                buttonEdit.innerText = "Sửa"
+                buttonEdit.setAttribute("class", "btn btn-warning btn-sm")
+                styAllowEditHour(id, false)
+            }
+
+        }
+        // allow Edit live on view row Table
+        function styAllowEditHour(id, check) {
+            let mactdt = id.split('_')[1]
+            let mahp = id.split('_')[2]
+            let giolt = 'giolt_' + mactdt + '_' + mahp
+            let gioth = 'gioth_' + mactdt + '_' + mahp
+            let gioda = 'gioda_' + mactdt + '_' + mahp
+            let giott = 'giott_' + mactdt + '_' + mahp
+            let total = 'total_' + mactdt + '_' + mahp
+
+            let btnTotal = document.getElementById(total)
+            let btnGioLt = document.getElementById(giolt)
+            let btnGioTh = document.getElementById(gioth)
+            let btnGioDa = document.getElementById(gioda)
+            let btnGioTt = document.getElementById(giott)
+
+            if (check) {
+                btnGioLt.readOnly = false
+                btnGioTh.readOnly = false
+                btnGioDa.readOnly = false
+                btnGioTt.readOnly = false
+
+                // Simulator Point mouse cursor
+                btnGioLt.style.cursor='auto'
+                btnGioTh.style.cursor = 'auto'
+                btnGioDa.style.cursor = 'auto'
+                btnGioTt.style.cursor = 'auto'
+
+                btnGioLt.style.background = '#ffe9c6'
+                btnGioTh.style.background = '#ffe9c6'
+                btnGioDa.style.background = '#ffe9c6'
+                btnGioTt.style.background = '#ffe9c6'
+                // Check security only input number
+                btnGioLt.addEventListener("keyup", (e) => {
+                    let { value } = e.target
+                    value = value.replace(/[^0-9]/gi, '')
+                    btnGioLt.value = parseInt(value) ? parseInt(value) : 0
+                    btnGioLt.setAttribute('value', parseInt(value) ? parseInt(value) : 0)
+                })
+
+                btnGioTh.addEventListener("keyup", (e) => {
+                    let { value } = e.target
+                    value = value.replace(/[^0-9]/gi, '')
+                    btnGioTh.value = parseInt(value) ? parseInt(value) : 0
+                    btnGioTh.setAttribute('value', parseInt(value) ? parseInt(value) : 0)
+                })
+
+                btnGioDa.addEventListener("keyup", (e) => {
+                    let { value } = e.target
+                    value = value.replace(/[^0-9]/gi, '')
+                    btnGioDa.value = parseInt(value) ? parseInt(value) : 0
+                    btnGioDa.setAttribute('value',parseInt(value) ? parseInt(value) : 0)
+                })
+
+                btnGioTt.addEventListener("keyup", (e) => {
+                    let { value } = e.target
+                    value = value.replace(/[^0-9]/gi, '')
+                    btnGioTt.value = parseInt(value) ? parseInt(value) : 0
+                    btnGioTt.setAttribute('value', parseInt(value) ? parseInt(value) : 0)
+                })
+            } else {
+                btnGioLt.readOnly = true
+                btnGioTh.readOnly = true
+                btnGioDa.readOnly = true
+                btnGioTt.readOnly = true
+
+                // add Style color
+
+                btnGioLt.style.background = 'transparent'
+                btnGioTh.style.background = 'transparent'
+                btnGioDa.style.background = 'transparent'
+                btnGioTt.style.background = 'transparent'
+
+                let sumTotal = parseInt(btnGioLt.value) + parseInt(btnGioTh.value) + parseInt(btnGioDa.value) + parseInt(btnGioTt.value)
+                btnTotal.innerText = sumTotal
+            }
+
+        }
+        // animation notification wanring
+        //function tNotifi(message) {
+        //    var x = document.getElementById("snackbar");
+        //    x.className = "show";
+        //    x.innerText = message
+        //    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        //}
+        //function tNotifiSuccess(message) {
+        //    var x = document.getElementById("snackbar");
+        //    x.className = "showSuccess";
+        //    x.innerHTML = message
+        //    setTimeout(function () { x.className = x.className.replace("showSuccess", ""); }, 3000);
+        //}
+        //function loadingSelection(message) {
+        //    var x = document.getElementById("snackbar");
+        //    x.className = "showSuccess";
+        //    x.innerHTML = message
+        //}
+    });
+</script>

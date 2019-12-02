@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Capstone.Models.t_CTDaotao>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TenCT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Muctieu)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HinhthucDT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phienban)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoaiCT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Trinhdo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SoQD)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NgayQD)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ThoigianDT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Doituong)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QuytrinhDT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CosoVC)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Thangdiem)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Khoiluongkienthuc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BanScan)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ghichu)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nguoiduyet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ngayduyet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tinhtrang)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Trangthai)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Xetduyet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.sc_HeNganh.Mota)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.sc_Khoilop.TenKhoi)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.t_CTDaotao2.TenCT)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TenCT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Muctieu)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HinhthucDT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Phienban)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoaiCT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Trinhdo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SoQD)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NgayQD)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ThoigianDT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Doituong)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuytrinhDT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CosoVC)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Thangdiem)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Khoiluongkienthuc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BanScan)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ghichu)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nguoiduyet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ngayduyet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tinhtrang)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Trangthai)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Xetduyet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.sc_HeNganh.Mota)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.sc_Khoilop.TenKhoi)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.t_CTDaotao2.TenCT)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.MaCT }) |
+            @Html.ActionLink("Details", "Details", new { id=item.MaCT }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.MaCT })
+        </td>
+    </tr>
+}
+
+</table>

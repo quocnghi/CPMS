@@ -1,0 +1,184 @@
+﻿@using Capstone.Models;
+@using Microsoft.AspNet.Identity;
+@model Capstone.Models.IndexViewModel
+@{
+    ViewBag.Title = "Xem kế hoạch giảng dạy";
+    fit_misDBEntities db = new fit_misDBEntities();
+    var emailUser = "";
+    string userName = "";
+    string userPhone = "";
+    string idMeo = "";
+    List<AspNetRole> userRoles = new List<AspNetRole>();
+    if (Request.IsAuthenticated)
+    {
+        idMeo = User.Identity.GetUserId();
+        emailUser = db.AspNetUsers.FirstOrDefault(s => s.Id == idMeo).Email;
+        userName = db.AspNetUsers.FirstOrDefault(s => s.Id == idMeo).UserName;
+        userPhone = db.AspNetUsers.FirstOrDefault(s => s.Id == idMeo).PhoneNumber;
+    }
+}
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Thông tin tài khoản</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Thông tin tài khoản</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-6 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Thông tin tài khoản</h4>
+                    </div>
+                    <div class="col-md-6" style="text-align: right;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-horizontal">
+                    <div class="card-body p-0">
+                        <div class="form-group row required-field">
+                            <label for="fname" class="col-sm-3 text-right control-label col-form-label">Tên hiển thị</label>
+                            <div class="col-sm-9">
+                                <input id="userName" type="text" class="form-control" value="@userName" placeholder="Tên hiển thị">
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fname" class="col-sm-3 text-right control-label col-form-label">Số điện thoại</label>
+                            <div class="col-sm-9">
+                                <input id="userPhone" type="number" class="form-control" value="@userPhone" placeholder="Nhập số điện thoại">
+                                <div class="invalid-feedback">
+                                    Số điện thoại chỉ được là ký tự số
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fname" class="col-sm-3 text-right control-label col-form-label">Địa chỉ email</label>
+                            <div class="col-sm-9">
+                                <input id="userEmail" type="text" class="form-control" value="@emailUser" placeholder="Địa chỉ email" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="lname" class="col-sm-3 text-right control-label col-form-label">Vai trò</label>
+                            <div class="col-sm-9">
+                                <select id="userRoles" class="js-example-placeholder-multiplea js-states form-control" multiple="multiple"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="lname" class="col-sm-3 text-right control-label col-form-label">Tài khoản liên kết</label>
+                            <div class="col-sm-9">
+                                <a href="@Url.Action("ManageLogins", "Manage")" class="btn btn-info">Quản lý</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row m-t-20">
+            <div class="col-md-12" style="text-align: right;">
+                @if (Model.HasPassword)
+                {
+                    <a href='@Url.Action("ChangePassword", "Manage")' class="btn btn-warning">Đổi mật khẩu</a>
+                }
+                else
+                {
+                    <a href='@Url.Action("SetPassword", "Manage")' class="btn btn-warning">Tạo mật khẩu</a>
+                }
+                <button id='btnLuuThongTin' href='javascript:void(0)' class="btn btn-success">Lưu thông tin</button>
+            </div>
+        </div>
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+        {
+            @Html.AntiForgeryToken()
+        }
+    </div>
+    <div id="loaderEmail" style="display: none;"></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.js-example-placeholder-multiplea').select2();
+        $('.js-example-placeholder-multiplea').prop("disabled", true);
+
+        $.getJSON("@Url.Action("LayUserRoles", "API")", data => {
+            if (data.length > 0) {
+                for (let item of data) {
+                    var newOption = new Option(item, item, true, true);
+                    $('#userRoles').append(newOption).trigger('change');
+                }
+            }
+        });
+    });
+
+    document.getElementById('btnLuuThongTin').addEventListener('click', function () {
+        let flag = kiemTraThongTin()
+        if (flag) {
+            let userName = document.getElementById('userName').value
+            let userPhoneNumber = document.getElementById('userPhone').value
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                url: "@Url.Action("LuuThongTin", "Manage")",
+                type: "post",
+                data: {
+                    __RequestVerificationToken: token,
+                    username: userName,
+                    userphone: userPhoneNumber
+                },
+                traditional: true
+            }).done(function (response) {
+                if (response == "success") {
+                    toastr.success('@CommonRS.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+                } else {
+                    toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Lỗi!');
+                }
+            });
+        } else {
+
+        }
+    })
+
+    function kiemTraThongTin() {
+        let check
+        let usName = document.getElementById('userName')
+        let usPhone = document.getElementById('userPhone')
+        if (usName.value != "" && !isNaN(usPhone.value)) {
+            check = true;
+        } else {
+            toastr.error("@CommonRS.Resources.VI.mes_KhongDuocDeTrong", "Lỗi!")
+            check = false;
+        }
+        if (usName.value == "") {
+            usName.classList.add('is-invalid')
+        } else {
+            usName.classList.remove('is-invalid')
+        }
+        // isNaN: Dùng để kiểm tra dữ liệu nhập vào có phải là ký tự hay không, nếu là ký tự thì return True, số thi return False
+        if (isNaN(usPhone.value)) {
+            usPhone.classList.add('is-invalid')
+        } else {
+            usPhone.classList.remove('is-invalid')
+        }
+        return check;
+    }
+</script>

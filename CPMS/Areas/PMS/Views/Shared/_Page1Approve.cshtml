@@ -1,0 +1,117 @@
+﻿<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title m-b-0">1. Thông tin chung</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Loại kiến thức:</label>
+                    <input type="text" class="form-control" id="" value="@Model.sc_Khoikienthuc.Mota" placeholder="Loại kiến thức" value="" disabled>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Hình thức:</label>
+                    <input type="text" class="form-control" id="" value="@Model.Hinhthuc" placeholder="Hình thức" value="" disabled>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Học kỳ:</label>
+                    <input type="text" class="form-control" id="" value="@Model.Hocky" placeholder="Học kỳ" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Số tín chỉ:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" value="@Model.SoTC" placeholder="0" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Tín chỉ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group m-b-16">
+                    <label>Giờ lý thuyết:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" value="@Model.GioLT" placeholder="0" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Giờ thực hành:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" placeholder="0" value="@Model.GioTH" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Giờ đồ án:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" placeholder="0" value="@Model.GioDa" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <label>Giờ thực tế:</label>
+                    <div style="width: 100%; height:36px; display: inline-flex;">
+                        <input type="text" class="form-control" placeholder="0" value="@Model.GioTT" aria-describedby="basic-addon2" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2">Giờ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title m-b-0">2. Mục tiêu học phần</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="col-md-12">
+            <div class="form-group row required-field">
+                <label>Mục tiêu học phần:</label>
+                <textarea class="form-control" id="idMucTieuHP" rows="5" placeholder="Nhập mục tiêu học phần" readonly>@Model.MuctieuHP</textarea>
+                <div class="invalid-feedback">
+                    Không được để trống
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title m-b-0">3. Kết quả học tập mong đợi</h5>
+</div>
+<div class="card m-b-0" id="table-content" style="overflow-x: auto;">
+    <table class="table table-hover table-bordered bg-table-mhgd-p1-t1 m-t-0 m-b-5">
+        <thead class="thead_ct">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">Phân loại</th>
+                <th rowspan="2">Tên kết quả học tập mong đợi</th>
+                <th rowspan="2">Chuẩn đầu ra CTĐT</th>
+                <th rowspan="2">Mô tả</th>
+            </tr>
+        </thead>
+        <tbody id='table-body-p1-t1'></tbody>
+    </table>
+</div>

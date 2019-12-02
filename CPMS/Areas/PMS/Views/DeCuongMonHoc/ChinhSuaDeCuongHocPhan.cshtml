@@ -1,0 +1,4610 @@
+﻿@model Capstone.Models.tp_KHDaotao
+
+@{
+    ViewBag.Title = "Chỉnh sửa đề cương học phần";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Chỉnh sửa đề cương học phần</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="@Url.Action("MonHocGiangDay", "DeCuongMonHoc")"> Môn học giảng dạy</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa đề cương học phần</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title">Thông tin đề cương</h4>
+                        <h5 class="card-subtitle">Học phần: @Model.TenHP</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul class="progress-indicator m-b-20">
+            <li class="active" id="step1">
+                <a href="javascript:void(0)">
+                    <span class="bubble"></span>
+                </a>
+                <h5 class="m-0">Mục đích và kết quả mong đợi</h5>
+                <i class="fa fa-check-circle m-t-5" style="display: none;"></i>
+            </li>
+            <li id="step2">
+                <a href="javascript:void(0)">
+                    <span class="bubble"></span>
+                </a>
+                <h5 class="m-0">Phương pháp đánh giá</h5>
+                <i class="fa fa-check-circle m-t-5" style="display: none;"></i>
+            </li>
+            <li id="step3">
+                <a href="javascript:void(0)">
+                    <span class="bubble"></span>
+                </a>
+                <h5 class="m-0">Tiêu chí đánh giá</h5>
+                <i class="fa fa-check-circle m-t-5" style="display: none;"></i>
+            </li>
+            <li id="step4">
+                <a href="javascript:void(0)">
+                    <span class="bubble"></span>
+                </a>
+                <h5 class="m-0">Nội dung triển khai</h5>
+                <i class="fa fa-check-circle m-t-5" style="display: none;"></i>
+            </li>
+            <li id="step5">
+                <a href="javascript:void(0)">
+                    <span class="bubble"></span>
+                </a>
+                <h5 class="m-0">Tài liệu tham khảo</h5>
+                <i class="fa fa-check-circle m-t-5" style="display: none;"></i>
+            </li>
+        </ul>
+        <div id="step1-content">
+            @Html.Partial("_Page1")
+        </div>
+        <div class="card" id="step2-content" style="display: none;">
+            @Html.Partial("_Page2")
+        </div>
+        <div class="card" id="step3-content" style="display: none;">
+            @*<div class="card-body p-0">
+                    <div class="d-md-flex align-items-center">
+                        trang 3
+                    </div>
+                </div>*@
+            @Html.Partial("_Page3")
+        </div>
+        <div class="card" id="step4-content" style="display: none;">
+            @Html.Partial("_Page4")
+        </div>
+        <div class="card" id="step5-content" style="display: none;">
+            @Html.Partial("_Page5")
+        </div>
+        <div class="card" id="step6-content" style="display: none;">
+            Trang Preview
+        </div>
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-warning m-r-10" href="javascript:void(0)" onclick="prev()" id="btnPrev" style="visibility: hidden;">Quay lại</a>
+                    <a class="btn btn-success" href="javascript:void(0)" onclick="next()" id="btnNext">Tiếp theo</a>
+                    <a class="btn btn-success" href="javascript:void(0)" id="btnNopDeCuong" style="display: none;" data-toggle="modal" data-target="#modalNopDeCuong">Nộp đề cương</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalNopDeCuong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        Xác nhận nộp đề cương học phần <b>@Model.TenHP</b>?
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button class="btn btn-success" href="javascript:void(0)" id="btnXacNhanNopDeCuong">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="backgroundLoader" style="display: none;">
+    <div id="loader"></div>
+</div>
+@*------------------------------------ Javascript nộp đề cương ------------------------------------*@
+<script type="text/javascript">
+    document.getElementById('btnXacNhanNopDeCuong').addEventListener('click', function () {
+        // Khi xác nhận nộp thì ẩn hết nút Quay lại và Nộp đề cương
+        document.getElementById('btnPrev').style.display = "none"
+        document.getElementById('btnNopDeCuong').style.display = "none"
+        // Đóng Modal xác nhận nộp đề cương
+        $('#modalNopDeCuong').modal('toggle')
+        // Sau khi phê duyệt thì redirect sang trang khác
+        // Xuất hiện thông báo, thông báo tắt thì tự động chuyển trang
+
+        var data_form = { makhdt: @Model.MaKHDT}
+        $.ajax({
+            url: "@Url.Action("NopDeCuongMonHoc", "API")",
+            type: "post",
+            data: JSON.stringify(data_form),
+            contentType: 'application/json; charset=utf-8'
+
+        }).done(function (response) {
+            if (response == "done") {
+                let messDaNopDeCuongTC = '@CommonRS.Resources.VI.mes_DaNopDCThanhCong'
+                messDaNopDeCuongTC = messDaNopDeCuongTC.replace('{tenhp}', '@Model.TenHP')
+                toastr.success(messDaNopDeCuongTC, 'Thành công!');
+                setTimeout(() => {
+                    window.location.href = '@Url.Action("MonHocGiangDay", "DeCuongMonHoc")';
+                }, 1500)
+            }
+        })
+    })
+</script>
+@* Javascript xử lý Progress Step Bar *@
+<script type="text/javascript">
+    let step = 'step1';
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
+    const step5 = document.getElementById('step5');
+
+    const s1content = document.getElementById('step1-content');
+    const s2content = document.getElementById('step2-content');
+    const s3content = document.getElementById('step3-content');
+    const s4content = document.getElementById('step4-content');
+    const s5content = document.getElementById('step5-content');
+    const s6content = document.getElementById('step6-content');
+    const btnNext = document.getElementById('btnNext');
+
+    function next() {
+        if (step === 'step1') {
+            document.getElementById("backgroundLoader").style.display = "block"
+            let isValid = kiemTraThongTin(8)
+            if (isValid) {
+                //Lưu vào CSDL
+                document.getElementById("loader").style.display = "block";
+                //Lưu data và đến trang tiếp theo
+                //let listSent = []
+                //for (let i = 0; i < listRow.length; i++) {
+                //    listSent.moTa = listRow.moTa
+                //    listSent.phanLoai = listRow.phanLoai
+                //    listSent.tenKQHT = listRow.listSent
+                //    listSent.cdrCTDT = JSON.stringify(listRow.cdrCTDT)
+                //}
+                //$("#idBtnTiepTheo").disabled = true
+                //toastr.options.preventDuplicates = true;
+                let mucTieuHP = $("#idMucTieuHP").val()
+                let maKHDTJS = '@Model.MaKHDT'
+                form_data = { 'listRow': JSON.stringify(listKQHTMD), 'MucTieuHP': mucTieuHP, 'maKHDT': maKHDTJS };
+                $.ajax({
+                    url: "@Url.Action("LuuDanhSachCDRHP", "API")",
+                    type: "post",
+                    data: form_data,
+                    traditional: true
+                }).done(function (response) {
+                    if (response == "done") {
+                        step = 'step2';
+                        step1.classList.remove("active");
+                        step1.classList.add("completed");
+                        step2.classList.add("active");
+                        document.getElementById('btnPrev').style.visibility = "visible"
+                        s1content.style.display = 'none'
+                        s2content.style.display = 'block'
+                        s3content.style.display = 'none'
+                        s4content.style.display = 'none'
+                        s5content.style.display = 'none'
+                        step1.childNodes[5].style.display = 'block'
+                        btnNext.style.display = 'none'
+                        //$("#idBtnTiepTheo").disabled = false
+                        toastr.success('@CommonRS.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+                        //Remove localStore
+                        localStorage.setItem('objRootPage1-' + maKHDTJS, '{}')
+                        setupPage2()
+
+                        document.getElementById("backgroundLoader").style.display = "none"
+                    } else {
+                        toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Lỗi!');
+                        //$("#idBtnTiepTheo").disabled = false
+                        document.getElementById("backgroundLoader").style.display = "none"
+                    }
+                });
+            } else {
+                document.getElementById("backgroundLoader").style.display = "none";
+            }
+        } else if (step === 'step2') {
+            document.getElementById("backgroundLoader").style.display = "block"
+            for (let item of listContent) {
+                document.getElementById('collapse-' + item).classList.remove('show')
+            }
+            //Check sum all trongso is Hundred
+            let sumTrongso = 0
+
+            for (let i = 0; i < listRowTPKQHTMDHP.length; i++) {
+                sumTrongso += parseInt(listRowTPKQHTMDHP[i].trongso)
+            }
+
+            let flag = kiemTraThongTinNoiDung()
+            let isCongCuDanhGiaNotNull = (listRowCCDG.length == 0) ? false : true; 
+           
+            if (sumTrongso == 100 && flag && isCongCuDanhGiaNotNull) {
+                listRowKQHTMDHP.forEach((danhgiaHP, index) => {
+                    let mota = danhgiaHP.mota
+                    for (let i = 0; i < listRowTPKQHTMDHP.length; i++) {
+                        let isInclude = listRowTPKQHTMDHP[i].thanhphan.includes(mota)
+                        if (isInclude) {
+                            danhgiaHP.thanhphan = listRowTPKQHTMDHP[i].ten
+                            break;
+                        }
+                    }
+                })
+
+                let lstSendRowCCDG = []
+                for (let i in listRowCCDG) {
+                    let objSend = { maCELO: listRowCCDG[i].cdr.id, congCuDanhGia: listRowCCDG[i].ccDG, thoiDiemDanhGia: listRowCCDG[i].tdDG }
+                    lstSendRowCCDG.push(objSend)
+                }
+                //console.log("lstSendRowCCDG", lstSendRowCCDG)
+
+                let maKHDTJS = '@Model.MaKHDT'
+
+                form_data = { listDanhgiaHP: listRowKQHTMDHP, makhdt: maKHDTJS, listRowCCDG: lstSendRowCCDG, listNoiDung: listNoiDung };
+                console.log("form_data", form_data)
+
+                $.ajax({
+                    url: "@Url.Action("LuuDanhgiaHP", "API")",
+                    type: "post",
+                    data: JSON.stringify(form_data),
+                    contentType: 'application/json; charset=utf-8'
+                }).done(function (response) {
+                    //console.log(response)
+                    if (response == "done") {
+                        RenderPageOption(@Model.MaKHDT)
+                        @*$.getJSON('@Url.Action("LayIDNoiDung", "API")' + '?makhdt=' + maKHDTJS, data => {
+                            for (let item of data) {
+                                for (let nd of listNoiDung) {
+                                    if (nd.noiDungNgan == item.tenHT) {
+                                        nd.id = item.id
+                                    }
+                                }
+                            }
+                        })*@
+
+                        $("#idBtnTiepTheo").disabled = false
+                        toastr.success('@CommonRS.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+
+                        step = 'step3';
+                        step2.classList.remove("active");
+                        step2.classList.add("completed");
+                        step3.classList.add("active");
+                        s1content.style.display = 'none'
+                        s2content.style.display = 'none'
+                        s3content.style.display = 'block'
+                        s4content.style.display = 'none'
+                        s5content.style.display = 'none'
+                        step2.childNodes[5].style.display = 'block'
+
+                        //Remove localStore
+                        localStorage.setItem('objRootPage2-' + maKHDTJS, '{}')
+
+                        document.getElementById("backgroundLoader").style.display = "none"
+
+
+                    } else {
+                        toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Lỗi!');
+                        //$("#idBtnTiepTheo").disabled = false
+                        document.getElementById("backgroundLoader").style.display = "none"
+                    }
+                });
+            } else {
+                if (!flag) {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                    document.getElementById("backgroundLoader").style.display = "none"
+                }
+
+                if (sumTrongso != 100) {
+                    toastr.error('@CommonRS.Resources.VI.mes_TongPhaiBang100', 'Lỗi!');
+                    document.getElementById("backgroundLoader").style.display = "none"
+                }
+                if (!isCongCuDanhGiaNotNull) {
+                    toastr.error('@CommonRS.Resources.VI.mes_CCDGTrong', 'Lỗi!');
+                    document.getElementById("backgroundLoader").style.display = "none"
+                }
+
+            }
+            
+        } else if (step === 'step3') {
+            document.getElementById("backgroundLoader").style.display = "block"
+            let maKHDTP3 = '@Model.MaKHDT'
+            // Gọi đến hàm SubmitSaveSv trong Page 3 để gửi dữ liệu về server.
+            // Nếu thành công thì đến trang 4. Nếu thất bại thì báo lỗi và ở lại trang 3.
+            if (kiemTraThongTin(11)) {
+                submitSaveSv(maKHDTP3)
+                setupPage4()
+            } else {
+                toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                document.getElementById("backgroundLoader").style.display = "none"
+
+            }
+        } else if (step === 'step4') {
+            document.getElementById("backgroundLoader").style.display = "block"
+            submitPage4()
+
+        } else if (step === 'step5') {
+            document.getElementById("backgroundLoader").style.display = "block"
+            let isValid = kiemTraThongTin(9)
+            if (isValid) {
+                let lPH = $("#formLPH").val()
+                var form_data = { dsTaiLieuHP: taiLieuMoi, thangDiem: $("#formThangdiem").val(), pPGD: $("#formGiangday").val(), pPHT: $("#formHoctap").val(), nVSV: $("#formNhiemvu").val(), nNGD: $("#formNNGD").val(), moTa: $("#formMota").val(), lPH, pTPVGD: $("#formPTPVGD").val(), pTT: $("#formPTT").val(), nHDCBS: $("#formNHDCBS").val(), cSDCLT: $("#formCSDCLT").val(), nDCS: $("#formNDCS").val() }
+                if (form_data.dsTaiLieuHP.length != 0 && form_data.thangDiem != "" && form_data.pPGD != "" && form_data.pPHT != "" && form_data.nVSV != "") {
+                    //console.log(form_data.danhsachmonhoc)
+                    $.ajax({
+                        url: "@Url.Action("LuuDeCuongHocPhanDanhGia", "API")",
+                        type: "post",
+                        data: form_data
+                    }).done(function (response) {
+                        if (response == "done") {
+                            toastr.success('@CommonRS.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+                            document.getElementById("backgroundLoader").style.display = "none"
+                            lcStorageMeo.setItem("objRootPage5-" + @Model.MaKHDT, '{}')
+
+                            step = 'step5';
+                            step5.classList.remove("active");
+                            step5.classList.add("completed");
+                            //step1.classList.add("active");
+                            document.getElementById('btnNext').style.display = "none"
+                            document.getElementById('btnNopDeCuong').style.display = "block"
+                            step5.childNodes[5].style.display = 'block'
+                            s1content.style.display = 'none'
+                            s2content.style.display = 'none'
+                            s3content.style.display = 'none'
+                            s4content.style.display = 'none'
+                        } else {
+                            toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Thất bại!');
+                            document.getElementById("backgroundLoader").style.display = "none"
+                        }
+                    });
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongDuocDeTrong", "Lỗi!")
+                    document.getElementById("backgroundLoader").style.display = "none"
+
+                };
+            } else {
+                document.getElementById("backgroundLoader").style.display = "none"
+
+            }
+
+        }
+    }
+    function prev() {
+        //if (step === 'complete') {
+        //    step = 'step5';
+        //    step5.classList.add("active");
+        //    document.getElementById('btnNext').style.display = "block"
+        //    document.getElementById('btnNopDeCuong').style.display = "none"
+        //    s1content.style.display = 'none'
+        //    s2content.style.display = 'none'
+        //    s3content.style.display = 'none'
+        //    s4content.style.display = 'none'
+        //    s5content.style.display = 'block'
+        //    s6content.style.display = 'none'
+        if (step === 'step5') {
+            step = 'step4';
+            step5.classList.remove("active");
+            step4.classList.add("active");
+            s1content.style.display = 'none'
+            s2content.style.display = 'none'
+            s3content.style.display = 'none'
+            s4content.style.display = 'block'
+            s5content.style.display = 'none'
+            document.getElementById('btnNext').style.display = "block"
+            document.getElementById('btnNopDeCuong').style.display = "none"
+        } else if (step === 'step4') {
+            step = 'step3';
+            step4.classList.remove("active");
+            step3.classList.add("active");
+            s1content.style.display = 'none'
+            s2content.style.display = 'none'
+            s3content.style.display = 'block'
+            s4content.style.display = 'none'
+            s5content.style.display = 'none'
+            RenderPageOption(@Model.MaKHDT)
+        } else if (step === 'step3') {
+            activateObj = {}
+            step = 'step2';
+            step3.classList.remove("active");
+            step2.classList.add("active");
+            s1content.style.display = 'none'
+            s2content.style.display = 'block'
+            s3content.style.display = 'none'
+            s4content.style.display = 'none'
+            s5content.style.display = 'none'
+            //$('#idSel_main').empty()
+        } else if (step === 'step2') {
+            for (let item of listContent) {
+                document.getElementById('collapse-' + item).classList.remove('show')
+            }
+            step = 'step1';
+            step2.classList.remove("active");
+            step1.classList.add("active");
+            document.getElementById('btnPrev').style.visibility = "hidden"
+            s1content.style.display = 'block'
+            s2content.style.display = 'none'
+            s3content.style.display = 'none'
+            s4content.style.display = 'none'
+            s5content.style.display = 'none'
+        }
+    }
+</script>
+@*------------------------------------ Javascript chung ------------------------------------*@
+<script type="text/javascript">
+    //Kiểm tra giá trị khác rỗng
+    function checkValue(dataInput) {
+        if (dataInput != "") {
+            return true
+        } else {
+            return false
+        }
+    }
+    //Kiểm tra dữ liệu trùng trong mảng
+    function checkValueIsExist(arrMeo) {
+        for (let item of arrMeo) {
+            // console.log(item)
+            if (item.mota.trim() === moTaTPDG.value.trim()) {
+                return false
+            }
+        }
+        return true
+    }
+    //Kiểm tra định dạng đường dẫn
+    function checkUrl(url) {
+        var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        if (pattern.test(url)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    //Làm sạch dữ liệu trong modal popup 1
+    function xoaDuLieu(numberOfType) {
+        //Table 1 - Trang 1
+        switch (numberOfType) {
+            case 1: {
+                document.getElementById('motaCDR').value = ""
+                document.getElementById('kqht').value = ""
+                $('#selectCDR').val('').change()
+                $('#selectPhanloai').val('').change()
+                document.getElementById('kqht').classList.remove('is-invalid')
+                document.getElementById('motaCDR').classList.remove('is-invalid')
+                document.getElementById('selectCDR').classList.remove('is-invalid')
+                document.getElementById('selectPhanloai').classList.remove('is-invalid')
+                break;
+            }
+            case 2: {
+                document.getElementById('moTaTPDG').value = ""
+                document.getElementById('trongSo').value = ""
+                $('#chonNhieu1P2T1').val('').change()
+                document.getElementById('trongSo').classList.remove('is-invalid')
+                document.getElementById('moTaTPDG').classList.remove('is-invalid')
+                document.getElementById('chonNhieu1P2T1').classList.remove('is-invalid')
+                break;
+            }
+            case 3: {
+                document.getElementById('trongsoP2T2').value = 0
+                $('#c-qdts').val('').change()
+                $('#chonNhieu3P2T2').val('').change()
+                document.getElementById('trongsoP2T2').classList.remove('is-invalid')
+                document.getElementById('chonNhieu3P2T2').classList.remove('is-invalid')
+                document.getElementById('c-qdts').classList.remove('is-invalid')
+                break;
+            }
+            case 5: {
+                radioSelected = ""
+                document.getElementById('tenTaiLieu').value = ""
+                document.getElementById('tenTacGia').value = ""
+                document.getElementById('tenNhaXuatBan').value = ""
+                document.getElementById('namXuatBan').value = ""
+                document.getElementById('loaiTaiLieu1').checked = false
+                document.getElementById('loaiTaiLieu2').checked = false
+                document.getElementById('tenNhaXuatBan').classList.remove('is-invalid')
+                document.getElementById('namXuatBan').classList.remove('is-invalid')
+                document.getElementById('tenTacGia').classList.remove('is-invalid')
+                document.getElementById('tenTaiLieu').classList.remove('is-invalid')
+                document.getElementById('invalidRadio').style.display = "none"
+                break;
+            }
+            case 6: {
+                radioSelected = ""
+                document.getElementById('duongDan').value = ""
+                document.getElementById('loaiTaiLieu1').checked = false
+                document.getElementById('loaiTaiLieu2').checked = false
+                document.getElementById('duongDan').classList.remove('is-invalid')
+                document.getElementById('invalidRadio').style.display = "none"
+                break;
+            }
+            case 7: {
+                $("#chonMotP2T3").val(null).trigger("change");
+                document.getElementById('ccDanhGia').value = ""
+                document.getElementById('tdDanhGia').value = ""
+                document.getElementById('ccDanhGia').classList.remove('is-invalid')
+                document.getElementById('tdDanhGia').classList.remove('is-invalid')
+                document.getElementById('chonMotP2T3').classList.remove('is-invalid')
+                break;
+            }
+        }
+    }
+    //Validate các trường thông tin trong modal
+    function kiemTraThongTin(typeModal) {
+        switch (typeModal) {
+            //Table 1 - Trang 1 - Modal thêm
+            case 1: {
+                var select1 = $("#selectCDR").val()
+                var select2 = $("#selectPhanloai").val()
+                var txtOne = document.getElementById('kqht').value
+                var txtDes = document.getElementById('motaCDR').value
+
+                let isNameExist = false;
+                for (var index in listKQHTMD) {
+                    if (listKQHTMD[index].tenKQHT == txtOne) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+
+                if (!isNameExist && checkValue(select1) && checkValue(select2) && checkValue(txtOne) && checkValue(txtDes) && txtOne.length <= 5 && txtDes.length <= 500) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+
+                if (!checkValue(select1)) {
+                    document.getElementById('selectCDR').classList.add('is-invalid')
+                } else {
+                    document.getElementById('selectCDR').classList.remove('is-invalid')
+                }
+                if (!checkValue(select2)) {
+                    document.getElementById('selectPhanloai').classList.add('is-invalid')
+                } else {
+                    document.getElementById('selectPhanloai').classList.remove('is-invalid')
+                }
+                if (!checkValue(txtOne) || txtOne.length > 5 || isNameExist) {
+                    document.getElementById('kqht').classList.add('is-invalid')
+                } else {
+                    document.getElementById('kqht').classList.remove('is-invalid')
+                }
+                if (!checkValue(txtDes || txtDes.length > 500)) {
+                    document.getElementById('motaCDR').classList.add('is-invalid')
+                } else {
+                    document.getElementById('motaCDR').classList.remove('is-invalid')
+                }
+                break
+            }
+            //Table 1 - Trang 1 - Modal chỉnh sửa thông tin
+            case 2: {
+                var select1 = $("#selectCDREdit").val()
+                var select2 = $("#selectPhanLoaiEdit").val()
+                var txtOne = document.getElementById('kqhtEdit').value
+                var txtDes = document.getElementById('motaEdit').value
+                if (checkValue(select1) && checkValue(select2) && checkValue(txtOne) && checkValue(txtDes)) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+                if (!checkValue(select1)) {
+                    document.getElementById('selectCDREdit').classList.add('is-invalid')
+                } else {
+                    document.getElementById('selectCDREdit').classList.remove('is-invalid')
+                }
+                if (!checkValue(select2)) {
+                    document.getElementById('selectPhanLoaiEdit').classList.add('is-invalid')
+                } else {
+                    document.getElementById('selectPhanLoaiEdit').classList.remove('is-invalid')
+                }
+                if (!checkValue(txtOne) || txtOne.length > 5) {
+                    document.getElementById('kqhtEdit').classList.add('is-invalid')
+                } else {
+                    document.getElementById('kqhtEdit').classList.remove('is-invalid')
+                }
+                if (!checkValue(txtDes) || txtDes.length > 500) {
+                    document.getElementById('motaEdit').classList.add('is-invalid')
+                } else {
+                    document.getElementById('motaEdit').classList.remove('is-invalid')
+                }
+                break
+            }
+            //Table 1 - Trang 2
+            case 3: {
+                var select1 = $("#chonNhieu1P2T1").val()
+                let moTaTPDG = document.getElementById('moTaTPDG')
+                if (checkValueIsExist(listRowKQHTMDHP) && checkValue(select1) && checkValue(select2) && checkValue(document.getElementById('trongSo').value) && checkValue(document.getElementById('moTaTPDG').value)) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+                if (!checkValue(document.getElementById('trongSo').value)) {
+                    document.getElementById('trongSo').classList.add('is-invalid')
+                } else {
+                    document.getElementById('trongSo').classList.remove('is-invalid')
+                }
+                if (!checkValue(document.getElementById('moTaTPDG').value) || !checkValueIsExist(listRowKQHTMDHP)) {
+                    document.getElementById('moTaTPDG').classList.add('is-invalid')
+                } else {
+                    document.getElementById('moTaTPDG').classList.remove('is-invalid')
+                }
+                if (!checkValue(select1)) {
+                    document.getElementById('chonNhieu1P2T1').classList.add('is-invalid')
+                } else {
+                    document.getElementById('chonNhieu1P2T1').classList.remove('is-invalid')
+                }
+
+                //if () {
+                //    document.getElementById('moTaTPDG').classList.add('is-invalid')
+                //} else {
+                //    document.getElementById('moTaTPDG').classList.remove('is-invalid')
+                //}
+                break;
+            }
+            //Table 1 - Trang 2
+            case 4: {
+                var select1 = $("#c-qdts").val()
+                var select2 = $("#chonNhieu3P2T2").val()
+                //if (checkValue(select1) && checkValue(select2) && checkValue(document.getElementById('trongsoP2T2').value)) {
+                //    return true
+                //} else {
+                //    toastr.error("Hãy nhập đầy đủ các trường thông tin", "Lỗi")
+                //}
+                if (checkValue(select1) && checkValue(document.getElementById('trongsoP2T2').value) && document.getElementById('trongsoP2T2').value <= 100) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+                if (!checkValue(document.getElementById('trongsoP2T2').value) || document.getElementById('trongsoP2T2').value > 100) {
+                    document.getElementById('trongsoP2T2').classList.add('is-invalid')
+                } else {
+                    document.getElementById('trongsoP2T2').classList.remove('is-invalid')
+                }
+                if (!checkValue(select1)) {
+                    document.getElementById('c-qdts').classList.add('is-invalid')
+                } else {
+                    document.getElementById('c-qdts').classList.remove('is-invalid')
+                }
+
+                //if (!checkValue(select2)) {
+                //    document.getElementById('chonNhieu3P2T2').classList.add('is-invalid')
+                //} else {
+                //    document.getElementById('chonNhieu3P2T2').classList.remove('is-invalid')
+                //}
+                break;
+            }
+            //Table 1 - Trang 5 - Loại thông tin
+            case 5: {
+                let tenTaiLieu = document.getElementById('tenTaiLieu').value
+                let tenTacGia = document.getElementById('tenTacGia').value
+                let tenNhaXuatBan = document.getElementById('tenNhaXuatBan').value
+                let namXuatBan = document.getElementById('namXuatBan').value
+
+
+                if (checkValue(radioSelected) && checkValue(document.getElementById('tenTaiLieu').value) && checkValue(document.getElementById('tenTacGia').value && tenTaiLieu.length <= 200 && tenTacGia.length <= 200 && tenNhaXuatBan.length <= 200 && namXuatBan.length <= 200)
+                    && checkValue(document.getElementById('tenNhaXuatBan').value) && checkValue(document.getElementById('namXuatBan').value)) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+                if (!checkValue(radioSelected)) {
+                    document.getElementById('invalidRadio').style.display = "block"
+                } else {
+                    document.getElementById('invalidRadio').style.display = "none"
+                }
+                if (!checkValue(document.getElementById('tenTaiLieu').value) || tenTaiLieu.length > 200) {
+                    document.getElementById('tenTaiLieu').classList.add('is-invalid')
+                } else {
+                    document.getElementById('tenTaiLieu').classList.remove('is-invalid')
+                }
+                if (!checkValue(document.getElementById('tenTacGia').value) || tenTacGia.length > 200) {
+                    document.getElementById('tenTacGia').classList.add('is-invalid')
+                } else {
+                    document.getElementById('tenTacGia').classList.remove('is-invalid')
+                }
+                if (!checkValue(document.getElementById('tenNhaXuatBan').value) || tenNhaXuatBan.length > 200) {
+                    document.getElementById('tenNhaXuatBan').classList.add('is-invalid')
+                } else {
+                    document.getElementById('tenNhaXuatBan').classList.remove('is-invalid')
+                }
+                if (!checkValue(document.getElementById('namXuatBan').value) || namXuatBan.length > 200) {
+                    document.getElementById('namXuatBan').classList.add('is-invalid')
+                } else {
+                    document.getElementById('namXuatBan').classList.remove('is-invalid')
+                }
+                break
+                break;
+            }
+            //Table 1 - Trang 5 - Loại đường dẫn
+            case 6: {
+                let duongDan = document.getElementById("duongDan").value
+
+                if (checkValue(radioSelected) && checkValue(document.getElementById('duongDan').value) && duongDan.length <= 200) {
+                    if (checkUrl(document.getElementById('duongDan').value)) {
+                        return true
+                    } else {
+                        toastr.error("@CommonRS.Resources.VI.mes_DuongDanKhongDung", "Lỗi")
+                    }
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+                if (!checkValue(radioSelected)) {
+                    document.getElementById('tenTaiLieu').classList.add('is-invalid')
+                } else {
+                    document.getElementById('tenTaiLieu').classList.remove('is-invalid')
+                }
+                if (!checkValue(radioSelected)) {
+                    document.getElementById('invalidRadio').style.display = "block"
+                } else {
+                    document.getElementById('invalidRadio').style.display = "none"
+                }
+                if (!checkValue(document.getElementById('duongDan').value) || duongDan.length > 200) {
+                    document.getElementById('duongDan').classList.add('is-invalid')
+                } else {
+                    document.getElementById('duongDan').classList.remove('is-invalid')
+                }
+                break
+                break;
+            }
+            //Table 2 - Trang 2
+            case 7: {
+                var select1 = $("#chonNhieu1P2T1").val()
+                let moTaTPDG = document.getElementById('moTaTPDG')
+                if (checkValue(select1) && checkValue(select2) && checkValue(document.getElementById('trongSo').value) && checkValue(document.getElementById('moTaTPDG').value)) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_DuongDanKhongDung", "Lỗi")
+                }
+                if (!checkValue(document.getElementById('trongSo').value)) {
+                    document.getElementById('trongSo').classList.add('is-invalid')
+                } else {
+                    document.getElementById('trongSo').classList.remove('is-invalid')
+                }
+                if (!checkValue(document.getElementById('moTaTPDG').value) || !checkValueIsExist(listRowKQHTMDHP)) {
+                    document.getElementById('moTaTPDG').classList.add('is-invalid')
+                } else {
+                    document.getElementById('moTaTPDG').classList.remove('is-invalid')
+                }
+                if (!checkValue(select1)) {
+                    document.getElementById('chonNhieu1P2T1').classList.add('is-invalid')
+                } else {
+                    document.getElementById('chonNhieu1P2T1').classList.remove('is-invalid')
+                }
+                break;
+            }
+            //Validate page 1
+            case 8: {
+                let idMucTieuHP = $("#idMucTieuHP").val()
+                if (!checkValue(idMucTieuHP)) {
+                    document.getElementById('idMucTieuHP').classList.add('is-invalid')
+                    toastr.error("@CommonRS.Resources.VI.mes_MucTieuTrong", "Lỗi!")
+                    return false
+                } else {
+                    document.getElementById('idMucTieuHP').classList.remove('is-invalid')
+                    return true
+                }
+            }
+            //Validate page 5
+            case 9: {
+                let formGiangday = $("#formGiangday").val()
+                let formThangdiem = $("#formThangdiem").val()
+                let formHoctap = $("#formHoctap").val()
+                let formNhiemvu = $("#formNhiemvu").val()
+                let formNNGD = $("#formNNGD").val()
+                let formMota = $("#formMota").val()
+                let formLPH = $("#formLPH").val()
+                let formPTPVGD = $("#formPTPVGD").val()
+                let formPTT = $("#formPTT").val()
+                let formNHDCBS = $("#formNHDCBS").val()
+                let formCSDCLT = $("#formCSDCLT").val()
+                let formNDCS = $("#formNDCS").val()
+
+                let duongDan = document.getElementById("duongDan").value
+
+                if (!checkValue(formGiangday)) {
+                    document.getElementById('formGiangday').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formGiangday').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formThangdiem)) {
+                    document.getElementById('formThangdiem').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formThangdiem').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formHoctap)) {
+                    document.getElementById('formHoctap').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formHoctap').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formNhiemvu)) {
+                    document.getElementById('formNhiemvu').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formNhiemvu').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formNNGD)) {
+                    document.getElementById('formNNGD').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formNNGD').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formMota)) {
+                    document.getElementById('formMota').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formMota').classList.remove('is-invalid')
+                }
+
+                if (formLPH.length <= 0) {
+                    document.getElementById('formLPH').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formLPH').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formPTPVGD)) {
+                    document.getElementById('formPTPVGD').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formPTPVGD').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formPTT)) {
+                    document.getElementById('formPTT').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formPTT').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formNHDCBS)) {
+                    document.getElementById('formNHDCBS').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formNHDCBS').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formCSDCLT)) {
+                    document.getElementById('formCSDCLT').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formCSDCLT').classList.remove('is-invalid')
+                }
+
+                if (!checkValue(formNDCS)) {
+                    document.getElementById('formNDCS').classList.add('is-invalid')
+                } else {
+                    document.getElementById('formNDCS').classList.remove('is-invalid')
+                }
+
+                if (checkValue(formGiangday) && checkValue(formThangdiem) && checkValue(formHoctap) && checkValue(formNhiemvu) && checkValue(formNNGD) && checkValue(formMota) && formLPH.length > 0 && checkValue(formPTPVGD) && checkValue(formPTT) && checkValue(formNHDCBS) && checkValue(formCSDCLT) && checkValue(formNDCS)) {
+                    return true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                    return false
+                }
+            }
+            //Table 1 - Trang 2
+            case 10: {
+                let check = false;
+                let select1 = $("#chonMotP2T3").val()
+                let ccDanhGia = document.getElementById('ccDanhGia')
+                let tdDanhGia = document.getElementById('tdDanhGia')
+                if (checkValue(select1) && checkValue(ccDanhGia.value) && checkValue(tdDanhGia.value)) {
+                    check = true
+                } else {
+                    toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                }
+                if (!checkValue(ccDanhGia.value)) {
+                    document.getElementById('ccDanhGia').classList.add('is-invalid')
+                } else {
+                    document.getElementById('ccDanhGia').classList.remove('is-invalid')
+                }
+                if (!checkValue(tdDanhGia.value)) {
+                    document.getElementById('tdDanhGia').classList.add('is-invalid')
+                } else {
+                    document.getElementById('tdDanhGia').classList.remove('is-invalid')
+                }
+                if (!checkValue(select1)) {
+                    document.getElementById('chonMotP2T3').classList.add('is-invalid')
+                } else {
+                    document.getElementById('chonMotP2T3').classList.remove('is-invalid')
+                }
+                return check
+            }
+            // Page 3
+            case 11: {
+                let check = true
+                for (let key in activateObj) {
+                    let item = activateObj[key].purpose
+
+                    let idProgress = 'titleProgre_' + key
+                    let idValidatePro = 'vlProgress_' + key
+                    let TitlePro = document.getElementById(idProgress)
+                    let validaPro = document.getElementById(idValidatePro)
+                    let sumProgress = (TitlePro !== null) && TitlePro.innerText.split('%')[0]
+
+                    //console.log(sumProgress)
+                    if (validaPro !== null) {
+                        if (sumProgress != 100) {
+                            validaPro.style.display = 'block'
+                            check = false
+                        } else {
+                            validaPro.style.display = 'none'
+                        }
+                    }
+                    //console.log(check)
+                    for (let keyPur in item) {
+                        let subPur = item[keyPur]
+
+                        let idPur = 'txaPurpose_' + key + '_' + keyPur
+                        let idPer = 'txtPer_' + key + '_' + keyPur
+                        let elePur = document.getElementById(idPur)
+                        let elePer = document.getElementById(idPer)
+                        if (subPur.name == null || subPur.name == "" || subPur.name.trim().length === 0) {
+                            elePur.classList.add('is-invalid')
+                            check = false
+                        } else {
+                            elePur.classList.remove('is-invalid')
+                        }
+
+                        if (subPur.percent == null || subPur.percent == "") {
+                            elePer.classList.add('is-invalid')
+                            check = false
+                        } else {
+                            elePer.classList.remove('is-invalid')
+                        }
+                        for (let keyLevel in subPur.level) {
+                            let itemLevel = subPur.level[keyLevel]
+
+                            let idLevel = 'vd_' + key + '_' + keyPur + '_' + keyLevel
+                            let eleLevel = document.getElementById(idLevel)
+                            let txtLevel = 'txtLevel_' + key + '_' + keyPur + '_' + keyLevel
+                            let txtWei = 'txtWei_' + key + '_' + keyPur + '_' + keyLevel
+                            let txaDe = 'txaDes_' + key + '_' + keyPur + '_' + keyLevel
+
+                            let vatxtLevel = $("#"+txtLevel).val()
+                            let vatxtWei = $("#" + txtWei).val()
+                            let vatxaDe = $("#" + txaDe).val()
+
+                            let totalPro = Object.keys(itemLevel).length
+                    
+                            if (totalPro < 3 || vatxtLevel == "" || vatxaDe == "") {
+                                eleLevel.style.display = 'block'
+                                check = false
+                            } else {
+                                eleLevel.style.display = 'none'
+                            }
+                        }
+                    }
+                }
+                return check
+            }
+        }
+    }
+    //Lưu vị trí dòng muốn xóa ở trong bảng và hiện popup xác nhận xóa
+    var positionRow
+    function storeDeleteDong(ind) {
+        positionRow = parseInt(ind)
+    }
+    //Lưu dòng sẽ xóa trong table 1 - page 2
+    var viTriDongMuonXoa
+    function storeDeleteDongPage2Table1(positionRow) {
+        viTriDongMuonXoa = positionRow
+
+    }
+    //Lưu dòng sẽ xóa trong table 3 - page 2
+    var viTriDongMuonXoaP2T3
+    function storeDeleteDongPage2Table3(positionRow) {
+        viTriDongMuonXoaP2T3 = positionRow
+    }
+    //Xóa 1 dòng trong table
+    function deleteAfterConfirm(numberTable) {
+        switch (numberTable) {
+            case 1: {
+                //Tìm đến vị trí cần xóa và xóa
+                listKQHTMD.splice(positionRow, 1)
+                toastr.success('@CommonRS.Resources.VI.mes_XoaKQHT', 'Thành công')
+
+                //Update localStore
+                saveKQHTTableLCStore()
+
+                //Load lại table
+                renderTable(1)
+                break;
+            }
+            // Phần nội dung trong trang 2
+            case 2: {
+                document.getElementById('card-id-' + numContentDelete).remove()
+                count--
+                let parentE = document.getElementById('testAccordition').childNodes
+                renderNameContent(parentE)
+                for (let item of listContent) {
+                    if (item == numContentDelete) {
+                        let pos = listContent.indexOf(item)
+                        listContent.splice(pos, 1)
+                        break
+                    }
+                }
+                for (let index in listNoiDung) {
+                    if (listNoiDung[index].idNoiDung == numContentDelete) {
+                        listNoiDung.splice(index, 1)
+                        toastr.success("@CommonRS.Resources.VI.mes_XoaND", "Thành công!")
+                        break
+                    }
+                }
+                break
+            }
+            // Xóa dòng trong bảng 3 - Trang 2
+            case 3: {
+                //Tìm đến vị trí cần xóa và xóa
+                //console.log("viTriDongMuonXoaP2T3",viTriDongMuonXoaP2T3)
+                listRowCCDG.splice(viTriDongMuonXoa, 1)
+                toastr.success('@CommonRS.Resources.VI.mes_XoaCCDG', 'Thành công')
+
+                updateLocalStorePage2()
+                //Load lại table
+                renderTableP2T3()
+                break;
+            }
+            case 5: {
+                //Tìm đến vị trí cần xóa và xóa
+                taiLieuMoi.splice(positionRow, 1)
+                toastr.success('@CommonRS.Resources.VI.mes_XoaTaiLieu', 'Thành công')
+
+                updateLocalStorePage5()
+                //Load lại table
+                renderTable(5)
+                break;
+            }
+        }
+    }
+    //Load toàn bộ dữ liệu vào bảng
+    function renderTable(numTable) {
+        switch (numTable) {
+            //Table 1 - Trang 1
+            case 1: {
+                let bodyTable = document.getElementById("table-body-p1-t1")
+                bodyTable.innerHTML = ""
+                for (let index in listKQHTMD) {
+                    //Tạo dòng
+                    let row = document.createElement("tr")
+                    row.setAttribute("id", "rowNum" + index)
+                    //Từng cột
+                    //STT
+                    let col1 = document.createElement("td")
+                    col1.innerText = parseInt(index) + 1
+                    //Phân loại
+                    let col2 = document.createElement("td")
+                    let pL = listKQHTMD[index].phanLoai
+                    //let plText = pL.split('-')
+                    col2.innerHTML = pL;
+                    //Tên kết quả học tập mong đợi
+                    let col3 = document.createElement("td")
+                    col3.innerText = listKQHTMD[index].tenKQHT;
+                    //Chuẩn đầu ra CTĐT
+                    let col4 = document.createElement("td")
+                    let select = document.createElement("select")
+                    select.setAttribute("class", "js-example-placeholder-multiple js-states form-control")
+                    select.disabled = true
+                    select.setAttribute("multiple", "multiple")
+                    select.setAttribute("style", "width: 100%")
+                    select.setAttribute("id", "select" + index)
+                    // console.log(listKQHTMD)
+                    for (let i in listKQHTMD[index].cdrCTDT) {
+                        let option = new Option(listKQHTMD[index].cdrCTDT[i].text, listKQHTMD[index].cdrCTDT[i].id, false, true)
+                        select.appendChild(option)
+                    }
+                    col4.appendChild(select)
+                    //Mô tả
+                    let col5 = document.createElement("td")
+                    col5.innerHTML = listKQHTMD[index].moTa
+
+                    //Tùy chọn
+                    let col6 = document.createElement("td")
+                    let btnEdit = document.createElement('a')
+                    btnEdit.setAttribute('class', 'btn btn-warning btn-sm m-r-10')
+                    btnEdit.setAttribute('href', 'javascript:void(0)')
+                    btnEdit.setAttribute('onclick', 'editDong(this)')
+                    btnEdit.setAttribute('data-toggle', 'modal')
+                    btnEdit.setAttribute('data-target', '#modalEditP1')
+                    btnEdit.setAttribute('id', 'editRow' + index)
+                    btnEdit.innerHTML = 'Chỉnh sửa'
+                    let btnDelete = document.createElement('a')
+                    btnDelete.setAttribute('class', 'btn btn-danger btn-sm m-r-10')
+                    btnDelete.setAttribute('href', 'javascript:void(0)')
+                    btnDelete.setAttribute('onclick', 'storeDeleteDong(' + index + ')')
+                    btnDelete.setAttribute('data-toggle', 'modal')
+                    btnDelete.setAttribute('data-target', '#xacNhanXoaTableMot')
+                    btnDelete.innerHTML = 'Xóa'
+                    col6.appendChild(btnEdit)
+                    col6.appendChild(btnDelete)
+
+                    row.appendChild(col1)
+                    row.appendChild(col2)
+                    row.appendChild(col3)
+                    row.appendChild(col4)
+                    row.appendChild(col5)
+                    row.appendChild(col6)
+
+                    $("#rowNum" + index).ready(function () {
+                        $("#select" + index).select2()
+                    })
+
+                    bodyTable.appendChild(row)
+                }
+            }
+            //Table 1 - Trang 5
+            case 5: {
+                let bodyTable = document.getElementById("table-body-p5-t1")
+                bodyTable.innerHTML = ""
+                for (let index in taiLieuMoi) {
+                    //Tạo dòng
+                    let row = document.createElement("tr")
+                    row.setAttribute("id", "rowNum" + index)
+                    //Từng cột
+                    //STT
+                    let col1 = document.createElement("td")
+                    col1.innerText = parseInt(index) + 1
+                    //Phân loại
+                    let col2 = document.createElement("td")
+                    if (taiLieuMoi[index].LoaiTL == "2") {
+                        col2.innerHTML = "Tài liệu tham khảo"
+                    } else if (taiLieuMoi[index].LoaiTL == "1") {
+                        col2.innerHTML = "Giáo trình"
+                    } else if (taiLieuMoi[index].LoaiTL == "3") {
+                        col2.innerHTML = "Giáo trình chính"
+                    } else {
+                        col2.innerHTML = "Tài liệu học tập"
+                    }
+                    //Tên giáo trình / tài liệu
+                    let col3 = document.createElement("td")
+                    if (taiLieuMoi[index].Kieunhap == 1) {
+                        col3.innerText = taiLieuMoi[index].TenTL + ' - Tác giả: ' + taiLieuMoi[index].Tacgia + ' - Thời gian xuất bản: ' + taiLieuMoi[index].NamXB;
+                    } else {
+                        let aT = document.createElement("a")
+                        aT.setAttribute("href", "https://" + taiLieuMoi[index].TenTL)
+                        aT.setAttribute("target", "_blank")
+                        aT.innerHTML = taiLieuMoi[index].TenTL
+                        col3.appendChild(aT)
+                    }
+                    //Tùy chọn
+                    let col4 = document.createElement("td")
+                    let btnEdit = document.createElement('a')
+                    btnEdit.setAttribute('class', 'btn btn-warning btn-sm m-r-10')
+                    btnEdit.setAttribute('href', 'javascript:void(0)')
+                    btnEdit.setAttribute('onclick', 'storeRowDelete(' + index + ')')
+                    btnEdit.setAttribute('data-toggle', 'modal')
+                    btnEdit.setAttribute('data-target', '#themModal')
+                    //btnEdit.setAttribute('id', 'editRowPage5' + index)
+                    btnEdit.innerHTML = 'Chỉnh sửa'
+                    let btnDelete = document.createElement('a')
+                    btnDelete.setAttribute('class', 'btn btn-danger btn-sm m-r-10')
+                    btnDelete.setAttribute('href', 'javascript:void(0)')
+                    btnDelete.setAttribute('onclick', 'storeDeleteDong(' + index + ')')
+                    btnDelete.setAttribute('data-toggle', 'modal')
+                    btnDelete.setAttribute('data-target', '#xacNhanXoaTableNam')
+                    btnDelete.innerHTML = 'Xóa'
+                    col4.appendChild(btnEdit)
+                    col4.appendChild(btnDelete)
+
+                    row.appendChild(col1)
+                    row.appendChild(col2)
+                    row.appendChild(col3)
+                    row.appendChild(col4)
+
+                    bodyTable.appendChild(row)
+                }
+            }
+        }
+    }
+    //Render table header
+    //function renderTableHeader(numTable) {
+    //    switch (numTable) {
+    //        case 1: {
+    //            //Header of Table
+    //            let tableHeader = document.getElementById("table-head-p1-t1");
+    //            tableHeader.innerHTML = '<tr>'
+    //                + '<th rowspan="2">STT</th>'
+    //                + '<th rowspan="2">Phân loại</th>'
+    //                + '<th rowspan="2">Tên kết quả học tập mong đợi</th>'
+    //                + '<th rowspan="2">Chuẩn đầu ra CTĐT</th>'
+    //                + '<th rowspan="2">Mô tả</th>'
+    //                + '<th rowspan="2">Tùy chọn</th>'
+    //                + '</tr>'
+    //            break;
+    //        }
+    //        case 2: {
+    //            break;
+    //        }
+    //    }
+
+    //}
+    ////Xóa table header khi trong bảng không còn dữ liệu
+    //function deleteTableHeader(numTable) {
+    //    switch (numTable) {
+    //        case 1: {
+    //            let tableHeader = document.getElementById("table-head-p1-t1");
+    //            tableHeader.innerHTML = "";
+    //            break;
+    //        }
+    //    }
+    //}
+</script>
+@*------------------------------------ Javascript Trang 1 ------------------------------------*@
+@*numTable = 1*@
+<script type="text/javascript">
+    //Toàn bộ Dữ liệu trong bảng
+    var listKQHTMD = []
+    //Load dữ liệu vào các trường select2 trong modal
+    $.getJSON('@Url.Action("GetCDRHP", "api")' + '?maKHDT=' + @Model.MaKHDT, data => {
+        data.forEach(item => {
+            var newOption = new Option(item.text, item.id, false, false);
+            $('#selectCDREdit').append(newOption).trigger('change');
+        })
+        $('#selectCDREdit').select2({
+            placeholder: "Chọn chuẩn đầu ra chương trình đào tạo",
+            allowClear: true,
+            dropdownParent: $("#modalEditP1")
+        })
+    })
+    //Thêm kết quả học tập mong đợi trong modal Page 1
+    document.getElementById('btnThem').addEventListener('click', e => {
+        var flag = kiemTraThongTin(1)
+        if (flag) {
+            var tenKQHT = document.getElementById('kqht').value
+            var listCDRCTDT = $('#selectCDR').select2('data')
+            var cdrCTDT = []
+            for (let item in listCDRCTDT) {
+                var newItem = {
+                    id: listCDRCTDT[item].id,
+                    text: listCDRCTDT[item].text
+                }
+                cdrCTDT.push(newItem)
+            }
+
+            //var phanLoai = $('#selectPhanloai').select2('data')[0].id + '-' + $('#selectPhanloai').select2('data')[0].text
+            var phanLoai = $('#selectPhanloai').select2('data')[0].text
+            var mota = document.getElementById('motaCDR').value
+
+            var newRowData = {
+                macelo: 0,
+                tenKQHT: tenKQHT,
+                cdrCTDT: cdrCTDT,
+                phanLoai: phanLoai,
+                moTa: mota
+            }
+            listKQHTMD.push(newRowData)
+            toastr.success('@CommonRS.Resources.VI.mes_ThemKQHT', 'Thành công')
+
+            //Update localStore
+            saveKQHTTableLCStore()
+
+            //if (listKQHTMD.length > 0) {
+            //    renderTableHeader(1)
+            //}
+            renderTable(1)
+            xoaDuLieu(1)
+        }
+    })
+    //Lưu kết quả học tập mong đợi trong modal Page 1
+    document.getElementById('btnLuuChinhSua').addEventListener('click', e => {
+        var flag = kiemTraThongTin(2)
+        if (flag) {
+            //Lấy giá trị từ textbox tên kết quả học tập
+            var tenKQHT = document.getElementById('kqhtEdit').value
+            //Lấy giá trị từ select2 combobox chuẩn đầu ra
+            var listCDRCTDT = $('#selectCDREdit').select2('data')
+            var cdrCTDT = []
+            for (let item in listCDRCTDT) {
+                var newItem = {
+                    id: listCDRCTDT[item].id,
+                    text: listCDRCTDT[item].text
+                }
+                cdrCTDT.push(newItem)
+            }
+            //Lấy giá trị từ select2 combobox phân loại
+            var phanLoai = $('#selectPhanLoaiEdit').select2('data')[0].text
+
+
+            //var phanLoai = $('#selectPhanLoaiEdit').select2('data')[0].id + '-' + $('#selectPhanLoaiEdit').select2('data')[0].text
+            //Lấy giá trị từ textarea mô tả
+            var mota = document.getElementById('motaEdit').value
+            //Thêm dòng vào mảng
+            var newRowData = {
+                macelo: listKQHTMD[rowNumberForEdit].macelo,
+                tenKQHT: tenKQHT,
+                cdrCTDT: cdrCTDT,
+                phanLoai: phanLoai,
+                moTa: mota
+            }
+            //Tìm đến vị trí trong mảng và thay giá trị
+            listKQHTMD[rowNumberForEdit] = newRowData
+            rowNumberForEdit = -1
+            toastr.success('@CommonRS.Resources.VI.mes_SuaKQHT', 'Thành công')
+
+            //Update localStore
+            saveKQHTTableLCStore()
+
+            //Render lại bảng
+            renderTable(1)
+            $('#modalEditP1').modal('toggle');
+        }
+    })
+    //Vị trí của dòng đang được chỉnh sửa (nếu có)
+    var rowNumberForEdit = -1
+    //Sửa giá trị 1 dòng trong table
+    function editDong(input) {
+        //Get row number
+        var rowNumber = parseInt(input.id[input.id.length - 1]);
+        rowNumberForEdit = rowNumber
+        var data
+        data = listKQHTMD[rowNumberForEdit]
+        //Đưa dữ liệu vào textbox tên kết quả học tập
+        document.getElementById('kqhtEdit').value = data.tenKQHT
+        $.getJSON('@Url.Action("getCDRwKHDT", "API")' + '?mactdt=' +@Model.MaCTDT, dataSu => {
+            //Đưa dữ liệu vào select2 combobox chọn chuẩn đầu ra (chọn nhiều)
+            document.getElementById('selectCDREdit').innerHTML = ''
+            dataSu.forEach(item => {
+                let newOption = new Option(item.MaHT, item.MaELO, false, false)
+                $('#selectCDREdit').append(newOption).trigger('change')
+                // console.log(item)
+            })
+            var cdrList = []
+            data.cdrCTDT.forEach(item => {
+                cdrList.push(item.id)
+            })
+            $('#selectCDREdit').val(cdrList);
+            $('#selectCDREdit').trigger('change');
+        })
+        //Đưa dữ liệu vào select2 combobox chọn phân loại (chọn 1)
+        $('#selectPhanLoaiEdit').select2()
+        $('#selectPhanLoaiEdit').val(data.phanLoai)
+        // console.log(parseInt(data.phanLoai))
+        $('#selectPhanLoaiEdit').trigger('change');
+
+        //Đưa dữ liệu vào textarea
+        document.getElementById('motaEdit').value = data.moTa;
+    }
+    $('#selectCDR').val(null).trigger('change')
+
+    $(document).ready(function () {
+        //Id User current
+         let idUser = document.getElementById('userIdMeo').value
+         //load chuẩn đầu ra CTDT
+          $.getJSON('@Url.Action("GetCDRCTDT", "API")'+'?mactdt='+@Model.MaCTDT, data => {
+                for (let item of data) {
+                    let id = item.MaELO
+                    let name = item.MaHT
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(name, id, false, false);
+                    // Append it to the select
+                    $('#selectCDR').append(newOption).trigger('change')
+                }
+           })
+
+        var maKHDT = @Model.MaKHDT;
+
+        //Check objRootPage1 is exist in localstore
+            let objRootPage1ToCheck = JSON.parse(lcStorageMeo.getItem('objRootPage1-' + maKHDT))
+
+        //If not exist
+        if (objRootPage1ToCheck == null || lcStorageMeo.getItem('objRootPage1-' + maKHDT) == '{}') {
+            lcStorageMeo.setItem('objRootPage1-' + maKHDT, '{}')
+
+            //If not exist get data from database
+            $.getJSON('@Url.Action("GetCDRHP", "API")' + '?maKHDT=' +@Model.MaKHDT, data => {
+                listKQHTMD = data
+                if (listKQHTMD.length > 0) {
+                    renderTable(1)
+                }
+            })
+
+        } else {
+            //If exist get data from localStore
+            $("#idMucTieuHP").val(objRootPage1ToCheck["idMucTieuHP"])
+            $("#kqht").val(objRootPage1ToCheck["kqht"])
+            $("#motaCDR").val(objRootPage1ToCheck["motaCDR"])
+            $("#selectPhanloai").val(objRootPage1ToCheck["selectPhanloai"]).trigger('change')
+            listKQHTMD = objRootPage1ToCheck["listKQHTMD"]
+            renderTable(1)
+
+            //Waiting data select2 loaded
+            setTimeout(function () {
+                $("#selectCDR").val(objRootPage1ToCheck["selectCDR"]).trigger('change')
+            },200)
+        }
+
+
+        document.getElementById('showPopup').addEventListener('click', e => {
+
+            /**
+             * API get ID CMU
+             */
+
+            //$('#selectPhanloai').val(null).trigger('change')
+            //$('#selectCDR').val(null).trigger('change')
+            @* $.getJSON('/api/getCDRwKHDT?mactdt=' + @Model.MaCTDT, function (data) {
+                data.forEach(item => {
+                    let newOption = new Option(item.MaHT, item.MaELO, false, false)
+                    $('#selectCDR').append(newOption).trigger('change')
+                    console.log(item)
+                })
+            }) *@
+            setTimeout(() => {
+                $('#selectCDR').select2({
+                    placeholder: "Chọn chuẩn đầu ra chương trình đào tạo",
+                    allowClear: true,
+                    dropdownParent: $("#modalThemP1")
+                })
+                $(".select2-phanloai").select2({
+                    placeholder: "Chọn phân loại",
+                    dropdownParent: $("#modalThemP1")
+                })
+
+            }, 200);
+        })
+
+        $("#selectCDR").on("select2:select", function (e) {
+            let va = $(e.target).val()
+            let objRootPage1 = JSON.parse(lcStorageMeo.getItem('objRootPage1-'+ maKHDT))
+            objRootPage1["selectCDR"] = va
+
+            lcStorageMeo.setItem('objRootPage1-' + maKHDT, JSON.stringify(objRootPage1))
+        })
+
+        $("#selectCDR").on("select2:unselect", function (e) {
+            let va = $(e.target).val()
+            let objRootPage1 = JSON.parse(lcStorageMeo.getItem('objRootPage1-' + maKHDT))
+            objRootPage1["selectCDR"] = va
+
+            lcStorageMeo.setItem('objRootPage1-' + maKHDT, JSON.stringify(objRootPage1))
+        })
+
+        $("#selectPhanloai").on("select2:select", function (e) {
+            let va = $(e.target).val()
+            let objRootPage1 = JSON.parse(lcStorageMeo.getItem('objRootPage1-' + maKHDT))
+            objRootPage1["selectPhanloai"] = va
+
+            lcStorageMeo.setItem('objRootPage1-' + maKHDT, JSON.stringify(objRootPage1))
+
+        })
+
+        //Set KeyPress to store Field in localStore
+        document.getElementById("step1-content").addEventListener("keyup", function ()
+        {
+            //console.log(lcStorageMeo)
+            let txtMucTieuHP = $("#idMucTieuHP").val()
+            let txtKQHTMD = $("#kqht").val()
+            let cbxCDRCTDT = $("#selectCDR").val()
+            let cbxPhanLoai = $("#selectPhanloai").val()
+            let txtMota = $("#motaCDR").val()
+
+            //Get obj page 1 from local store
+            let objRootPage1 = JSON.parse(lcStorageMeo.getItem('objRootPage1-' + maKHDT))
+
+            objRootPage1["idMucTieuHP"] = txtMucTieuHP;
+            objRootPage1["kqht"] = txtKQHTMD;
+            objRootPage1["selectCDR"] = cbxCDRCTDT;
+            objRootPage1["selectPhanloai"] = cbxPhanLoai;
+            objRootPage1["motaCDR"] = txtMota;
+            objRootPage1["listKQHTMD"] = listKQHTMD;
+
+            lcStorageMeo.setItem('objRootPage1-' + maKHDT, JSON.stringify(objRootPage1))
+        })
+    })
+
+    //Update table KQHT on localstore
+    function saveKQHTTableLCStore() {
+        let objRootPage1 = JSON.parse(lcStorageMeo.getItem('objRootPage1-' + maKHDT))
+        objRootPage1["listKQHTMD"] = listKQHTMD
+        lcStorageMeo.setItem("objRootPage1-" + maKHDT, JSON.stringify(objRootPage1))
+    }
+</script>
+@*------------------------------------ Javascript Trang 2 ------------------------------------*@
+<script type="text/javascript">
+    //Tìm body table
+    var bodyTableP2T1 = document.getElementById("tableDanhGiaKQHT-Body")
+    //Tìm body table
+    var bodyTableP2T2 = document.getElementById("tableP2T2-Body")
+    //Tìm body table
+    var bodyTableP2T3 = document.getElementById("tableCCDG-Body")
+
+    let trongsoP2T2 = document.getElementById('trongsoP2T2')
+    //Toàn bộ Dữ liệu trong bảng 1 - Page 2
+    var listRowKQHTMDHP = []
+    //Toàn bộ Dữ liệu trong bảng 3 - Page 2
+    var listRowCCDG = []
+
+    let nameOld = '' // name old
+
+    //Toàn bộ Dữ liệu trong bảng 2 - Page 2
+    var listRowTPKQHTMDHP = [
+        {
+            ten: "Chuyên cần",
+            trongso: "0",
+            thanhphan: []
+        },
+        {
+            ten: "Giữa kỳ",
+            trongso: "0",
+            thanhphan: []
+        },
+        {
+            ten: "Cuối kỳ",
+            trongso: "0",
+            thanhphan: []
+        }
+    ]
+
+    var maKHDT = @Model.MaKHDT;
+
+    //Vị trí của dòng đang được chỉnh sửa (nếu có)
+    var rowNumberForEdit
+
+    document.getElementById('btnThemP2T1').addEventListener('click', e => {
+        var flag = kiemTraThongTin(3)
+        if (flag) {
+            var listKQHTMD = $('#chonNhieu1P2T1').select2('data')
+            var cdrKQHTMD = []
+            for (let item in listKQHTMD) {
+                var newItem = {
+                    id: listKQHTMD[item].id,
+                    text: listKQHTMD[item].text
+                }
+                cdrKQHTMD.push(newItem)
+            }
+
+
+            var mota = document.getElementById('moTaTPDG').value
+            var trongso = document.getElementById('trongSo').value
+
+            var newRowData = {
+                madg: 0,
+                kqhtmongdoi: cdrKQHTMD,
+                mota: mota,
+                trongso: trongso,
+                trangthai: false
+            }
+            xoaDuLieu(2)
+            listRowKQHTMDHP.push(newRowData)
+            updateLocalStorePage2()
+            console.log(listRowKQHTMDHP)
+            toastr.success('@CommonRS.Resources.VI.mes_ThemTPDG', 'Thành công')
+            clearItemP2T1()
+            renderTableP2T1()
+            //$('#mP2T1').modal('hide')
+        }
+    })
+    function clearItemP2T1() {
+        let chonNhieu1P2T1 = 'chonNhieu1P2T1'
+        let moTaTPDG = document.getElementById('moTaTPDG')
+        let trongSo = document.getElementById('trongSo')
+
+        $('#' + chonNhieu1P2T1).val(null).trigger('change')
+        moTaTPDG.innerText = ''
+        trongSo.value = 0
+    }
+
+    document.getElementById('btnLuuP2T1').addEventListener('click', e => {
+        var flag = kiemTraThongTin(7)
+
+        // check seem item
+        for (let index in listRowKQHTMDHP) {
+            if (parseInt(index) !== rowNumberForEdit) {
+                if (listRowKQHTMDHP[index].mota.trim() === moTaTPDG.value.trim()) {
+                    document.getElementById('moTaTPDG').classList.add('is-invalid')
+                    flag = false
+                } else {
+                    document.getElementById('moTaTPDG').classList.remove('is-invalid')
+                }
+            }
+        }
+
+        //for (let item of listRowKQHTMDHP) {
+        //    // console.log(item)
+        //    if (item.mota.trim() === moTaTPDG.value.trim()) {
+        //        document.getElementById('moTaTPDG').classList.add('is-invalid')
+        //    } else {
+        //        document.getElementById('moTaTPDG').classList.remove('is-invalid')
+        //    }
+        //}
+        if (flag) {
+            var listKQHTMD = $('#chonNhieu1P2T1').select2('data')
+            var cdrKQHTMD = []
+            for (let item in listKQHTMD) {
+                var newItem = {
+                    id: listKQHTMD[item].id,
+                    text: listKQHTMD[item].text
+                }
+                cdrKQHTMD.push(newItem)
+            }
+
+            var mota = document.getElementById('moTaTPDG').value
+            var trongso = document.getElementById('trongSo').value
+
+            var newRowData = {
+                madg: listRowKQHTMDHP[rowNumberForEdit].madg,
+                kqhtmongdoi: cdrKQHTMD,
+                mota: mota,
+                trongso: trongso,
+                trangthai: false
+            }
+            listRowKQHTMDHP[rowNumberForEdit] = newRowData
+            updateLocalStorePage2()
+            // listRowTPKQHTMDHP
+            // console.log(listRowKQHTMDHP[rowNumberForEdit] = newRowData)
+
+            renameTableItem(rowNumberForEdit, nameOld) // to do action
+            // console.log(rowNumberForEdit)
+            // render sum percent
+
+            renderSumPerRow()
+
+            //Xóa dòng đang sửa
+            rowNumberForEdit = -1
+            toastr.success('@CommonRS.Resources.VI.mes_SuaTPDG', 'Thành công')
+            $('#mP2T1').modal('toggle');
+
+            renderTableP2T1()
+
+            renderTableP2T2()
+        }
+    })
+
+    document.getElementById('btnLuuP2T2').addEventListener('click', e => {
+        var flag = kiemTraThongTin(4)
+
+        if (flag) {
+            var typeN = $('#c-qdts').val()
+            var listKQHTMD = $('#chonNhieu3P2T2').select2('data')
+
+            var tpdg = []
+            for (let item in listKQHTMD) {
+                //let newItem = {
+                //    text: listKQHTMD[item].text
+                //}
+                tpdg.push(listKQHTMD[item].text)
+            }
+
+            console.log("tpdg", tpdg)
+            // console.log(tpdg)
+            clearFollowRowTB2(typeN)
+            if (tpdg.length > 0) {
+                for (let item of tpdg) {
+                    listRowKQHTMDHP.map(sub => {
+                        if (sub.mota === item) {
+                            sub.trangthai = true
+                            return sub
+                        }
+                    })
+                }
+                console.log(listRowKQHTMDHP)
+                var trongso = document.getElementById('trongsoP2T2').value
+
+                listRowTPKQHTMDHP[typeN].thanhphan = tpdg
+                listRowTPKQHTMDHP[typeN].trongso = trongso
+
+                console.log("listRowTPKQHTMDHP", listRowTPKQHTMDHP)
+            } else {
+                clearFollowRowTB2(typeN)
+
+            }
+            updateLocalStorePage2()
+            toastr.success('@CommonRS.Resources.VI.mes_SuaTPDG', 'Thành công')
+            xoaDuLieu(3)
+            //$('#mP2T2').modal('toggle');
+            renderTableP2T2()
+        }
+    })
+
+    document.getElementById('btnLuuP2T3').addEventListener('click', e => {
+        var flag = kiemTraThongTin(10)
+        if (flag) {
+            let ccDG = document.getElementById('ccDanhGia').value
+            let tdDG = document.getElementById('tdDanhGia').value
+            let selectKQHTMD = $('#chonMotP2T3').select2('data')
+            var newItem = {
+                id: selectKQHTMD[0].id,
+                text: selectKQHTMD[0].text
+            }
+            var newRowData = {
+                madg: listRowCCDG[rowNumberForEdit].madg,
+                cdr: newItem,
+                ccDG: ccDG,
+                tdDG: tdDG
+            }
+            listRowCCDG[rowNumberForEdit] = newRowData
+            console.log("listRowCCDG", listRowCCDG)
+            updateLocalStorePage2()
+            xoaDuLieu(7)
+            toastr.success('@CommonRS.Resources.VI.mes_SuaCCDG', 'Thành công')
+            $('#mP2T3').modal('toggle');
+            renderTableP2T3()
+        }
+    })
+
+    document.getElementById('btnThemP2T3').addEventListener('click', e => {
+        var flag = kiemTraThongTin(10)
+        if (flag) {
+            var ketQuaHTMD = $('#chonMotP2T3').select2('data')
+            var newItem = {
+                id: ketQuaHTMD[0].id,
+                text: ketQuaHTMD[0].text
+            }
+
+            var ccDG = document.getElementById('ccDanhGia').value
+            var tdDG = document.getElementById('tdDanhGia').value
+
+            var newRowData = {
+                madg: 0,
+                cdr: newItem,
+                ccDG: ccDG,
+                tdDG: tdDG
+            }
+            xoaDuLieu(7)
+            listRowCCDG.push(newRowData)
+            updateLocalStorePage2()
+            toastr.success('@CommonRS.Resources.VI.mes_ThemCCDG', 'Thành công')
+            //$('#mP2T3').modal('toggle')
+            renderTableP2T3()
+        }
+    })
+
+    function clearFollowRowTB2(Index) {
+        for (let item of listRowTPKQHTMDHP[Index].thanhphan) {
+            listRowKQHTMDHP.map(sub => {
+                if (sub.mota === item) {
+                    sub.trangthai = false
+                    return sub
+                }
+            })
+        }
+        listRowTPKQHTMDHP[Index].thanhphan = []
+        listRowTPKQHTMDHP[Index].trongso = 0
+        // console.log(listRowTPKQHTMDHP)
+    }
+
+    // Event Select Total
+    $('#chonNhieu3P2T2').on('select2:select', function (e) {
+        let total = 0
+        let arrChoose = $('#chonNhieu3P2T2').val()
+        let formatJson = {}
+
+        if (arrChoose.length === 0) {
+            trongsoP2T2.value = 0
+        }
+
+        for (let item of listRowKQHTMDHP) {
+            formatJson[item.mota] = item
+        }
+
+        for (let item of arrChoose) {
+            total += parseInt(formatJson[item].trongso)
+        }
+
+        trongsoP2T2.value = total
+    })
+
+    // Event Total when user clear option
+    $('#chonNhieu3P2T2').on('select2:unselect', function (e) {
+        let total = 0
+        let arrChoose = $('#chonNhieu3P2T2').val()
+        let formatJson = {}
+
+        if (arrChoose.length === 0) {
+            trongsoP2T2.value = 0
+        }
+
+        for (let item of listRowKQHTMDHP) {
+            formatJson[item.mota] = item
+        }
+
+        for (let item of arrChoose) {
+            total += parseInt(formatJson[item].trongso)
+        }
+
+        trongsoP2T2.value = total
+    })
+
+    //Load toàn bộ dữ liệu vào bảng 1 - Page 2
+    function renderTableP2T1() {
+        bodyTableP2T1.innerHTML = ""
+        for (let index in listRowKQHTMDHP) {
+            //Tạo dòng
+            let row = document.createElement("tr")
+            row.setAttribute("id", "rowNum" + index)
+            //Từng cột
+            //STT
+            let col1 = document.createElement("td")
+            col1.innerText = parseInt(index) + 1
+            //Chuẩn đầu ra học phần
+            let col2 = document.createElement("td")
+            let selectCDRHP = document.createElement("select")
+            selectCDRHP.setAttribute("class", "js-example-placeholder-multiple js-states form-control")
+            selectCDRHP.disabled = true
+            selectCDRHP.setAttribute("multiple", "multiple")
+            selectCDRHP.setAttribute("style", "width: 100%")
+            selectCDRHP.setAttribute("id", "selectCDRHP" + index)
+
+            for (let i in listRowKQHTMDHP[index].kqhtmongdoi) {
+                let option = new Option(listRowKQHTMDHP[index].kqhtmongdoi[i].text, listRowKQHTMDHP[index].kqhtmongdoi[i].id, false, true)
+                selectCDRHP.appendChild(option)
+            }
+            col2.appendChild(selectCDRHP)
+            //Mô tả
+            let col4 = document.createElement("td")
+            col4.innerText = listRowKQHTMDHP[index].mota;
+            //Trọng số
+            let col5 = document.createElement("td")
+            col5.value = listRowKQHTMDHP[index].trongso
+            col5.innerHTML = listRowKQHTMDHP[index].trongso + '%'
+
+            //Tùy chọn
+            let col6 = document.createElement("td")
+            let btnEdit = document.createElement('a')
+            btnEdit.setAttribute('class', 'btn btn-warning btn-sm m-r-10')
+            btnEdit.setAttribute('href', 'javascript:void(0)')
+            btnEdit.setAttribute('onclick', 'editDongP2T1(' + index + ')')
+            btnEdit.setAttribute('data-toggle', 'modal')
+            btnEdit.setAttribute('data-target', '#mP2T1')
+            //btnEdit.setAttribute('id', 'editRowDongPage2Table1' + index)
+            btnEdit.innerHTML = 'Chỉnh sửa'
+            let btnDelete = document.createElement('a')
+            btnDelete.setAttribute('class', 'btn btn-danger btn-sm m-r-10')
+            btnDelete.setAttribute('href', 'javascript:void(0)')
+            btnDelete.setAttribute('data-toggle', 'modal')
+            btnDelete.setAttribute('data-target', '#xacNhanXoaTableHai')
+            btnDelete.setAttribute('onclick', 'storeDeleteDongPage2Table1(' + index + ')')
+            btnDelete.innerHTML = 'Xóa'
+            col6.appendChild(btnEdit)
+            col6.appendChild(btnDelete)
+
+            row.appendChild(col1)
+            row.appendChild(col2)
+            row.appendChild(col5)
+            row.appendChild(col4)
+            row.appendChild(col6)
+
+            $("#rowNum" + index).ready(function () {
+                $("#selectTieuChi" + index).select2()
+                $("#selectCDRHP" + index).select2()
+            })
+
+            bodyTableP2T1.appendChild(row)
+        }
+    }
+
+    //renderTableP2T2()
+    //Load toàn bộ dữ liệu vào bảng 2 - Page 2
+    function renderTableP2T2() {
+        bodyTableP2T2.innerHTML = ""
+        for (let index = 0; index < listRowTPKQHTMDHP.length; index++) {
+
+            //Tạo dòng
+            let row = document.createElement("tr")
+            row.setAttribute("id", "rowNumP2T2" + index)
+            //Từng cột
+            //STT
+            let col1 = document.createElement("td")
+            col1.innerText = parseInt(index) + 1
+            //Thành phần đánh giá
+            let col2 = document.createElement("td")
+            col2.innerHTML = listRowTPKQHTMDHP[index].ten
+            //Trọng số
+            let col3 = document.createElement("td")
+            col3.innerHTML = listRowTPKQHTMDHP[index].trongso + '%'
+            //Thành phần đánh giá (chọn nhiều)
+            let col4 = document.createElement("td")
+            let selectTP = document.createElement("select")
+            selectTP.setAttribute("class", "js-example-placeholder-multiple js-states form-control")
+            selectTP.disabled = true
+            selectTP.setAttribute("multiple", "multiple")
+            selectTP.setAttribute("style", "width: 100%")
+            selectTP.setAttribute("id", "chonNhieu3P2T2" + index)
+
+            if (listRowTPKQHTMDHP[index].thanhphan.length > 0) {
+                for (let i in listRowTPKQHTMDHP[index].thanhphan) {
+                    let opt = new Option(listRowTPKQHTMDHP[index].thanhphan[i], listRowTPKQHTMDHP[index].thanhphan[i], false, true)
+                    selectTP.appendChild(opt)
+                }
+            }
+            col4.appendChild(selectTP)
+
+            row.appendChild(col1)
+            row.appendChild(col2)
+            row.appendChild(col3)
+            row.appendChild(col4)
+
+            $("#rowNumP2T2" + index).ready(function () {
+                $("#chonNhieu3P2T2" + index).select2()
+            })
+
+            bodyTableP2T2.appendChild(row)
+        }
+    }
+
+    //Load toàn bộ dữ liệu vào bảng 3 - Page 2
+    function renderTableP2T3() {
+        bodyTableP2T3.innerHTML = ""
+        for (let index = 0; index < listRowCCDG.length; index++) {
+            //Tạo dòng
+            let row = document.createElement("tr")
+            row.setAttribute("id", "rowNumP2T3" + index)
+            //Từng cột
+            //STT
+            let col1 = document.createElement("td")
+            col1.innerText = parseInt(index) + 1
+            //Thành phần đánh giá
+            let col2 = document.createElement("td")
+            //Chuẩn đầu ra học phần
+            let selectCDRHP = document.createElement("select")
+            selectCDRHP.setAttribute("class", "js-example-placeholder-multiple js-states form-control")
+            selectCDRHP.disabled = true
+            selectCDRHP.setAttribute("multiple", "multiple")
+            selectCDRHP.setAttribute("style", "width: 100%")
+            selectCDRHP.setAttribute("id", "selectCCDG" + index)
+
+            let option = new Option(listRowCCDG[index].cdr.text, listRowCCDG[index].cdr.id, false, true)
+            selectCDRHP.appendChild(option)
+
+            col2.appendChild(selectCDRHP)
+
+            let col3 = document.createElement("td")
+            col3.innerText = listRowCCDG[index].ccDG
+            col3.style.width = "40%"
+            col3.style.textAlign = "left"
+
+            let col4 = document.createElement("td")
+            col4.innerText = listRowCCDG[index].tdDG
+            col4.style.width = "40%"
+
+            let col5 = document.createElement("td")
+            let btnEdit = document.createElement('a')
+            btnEdit.setAttribute('class', 'btn btn-warning btn-sm m-r-10')
+            btnEdit.setAttribute('href', 'javascript:void(0)')
+            btnEdit.setAttribute('onclick', 'editDongP2T3(' + index + ')')
+            btnEdit.setAttribute('data-toggle', 'modal')
+            btnEdit.setAttribute('data-target', '#mP2T3')
+            //btnEdit.setAttribute('id', 'editRowDongPage2Table1' + index)
+            btnEdit.innerHTML = 'Chỉnh sửa'
+            let btnDelete = document.createElement('a')
+            btnDelete.setAttribute('class', 'btn btn-danger btn-sm m-r-10')
+            btnDelete.setAttribute('href', 'javascript:void(0)')
+            btnDelete.setAttribute('data-toggle', 'modal')
+            btnDelete.setAttribute('data-target', '#xacNhanXoaTableBa')
+            btnDelete.setAttribute('onclick', 'storeDeleteDongPage2Table1(' + index + ')')
+            btnDelete.innerHTML = 'Xóa'
+            col5.appendChild(btnEdit)
+            col5.appendChild(btnDelete)
+
+            row.appendChild(col1)
+            row.appendChild(col2)
+            row.appendChild(col3)
+            row.appendChild(col4)
+            row.appendChild(col5)
+
+            $("#rowNumP2T3" + index).ready(function () {
+                $("#selectCCDG" + index).select2()
+            })
+
+            bodyTableP2T3.appendChild(row)
+        }
+    }
+
+    //Xác nhận xóa
+    function deleteAfterConfirmB() {
+        let nodeRM = listRowKQHTMDHP[viTriDongMuonXoa]
+        //Xóa dòng trong bảng
+        listRowKQHTMDHP.splice(viTriDongMuonXoa, 1)
+        toastr.success('@CommonRS.Resources.VI.mes_XoaKQHT', 'Thành công')
+        listRowTPKQHTMDHP.map(item => {
+            let index = item.thanhphan.indexOf(nodeRM.mota)
+            if (index === -1) {
+                return item
+            } else {
+                item.trongso = parseInt(item.trongso) - parseInt(nodeRM.trongso)
+                item.thanhphan.splice(index, 1)
+                return item
+            }
+        })
+        updateLocalStorePage2()
+        //Load lại table
+        renderTableP2T1()
+        //console.log(nodeRM)
+        //console.log(listRowTPKQHTMDHP)
+        renderTableP2T2()
+    }
+
+    // rename table
+    function renameTableItem(position, nameOld) {
+        let nodeRM = listRowKQHTMDHP[position]
+        console.log(nodeRM)
+        console.log(nameOld)
+        listRowTPKQHTMDHP.map(item => {
+            let index = item.thanhphan.indexOf(nameOld)
+            if (index === -1) {
+                return item
+            } else {
+                item.thanhphan[index] = nodeRM.mota
+                return item
+            }
+        })
+    }
+
+    // Total render percent at row position
+    /**
+     * index       Position row
+     **/
+    function renderSumPerRow() {
+        // Total Rating percent %
+        let objNewModal = {}
+        // let totalPercent
+        // create modal with mota property
+        for (let item of listRowKQHTMDHP) {
+            objNewModal[item.mota] = item
+        }
+        console.log(objNewModal)
+
+        listRowTPKQHTMDHP.map(item => {
+            let sum = 0
+            for (let sub of item.thanhphan) {
+                sum += parseInt(objNewModal[sub].trongso)
+            }
+            item.trongso = sum
+            return item
+        })
+        console.log(listRowTPKQHTMDHP)
+    }
+
+    //Sửa giá trị 1 dòng trong table 2
+    function editDongP2T1(input) {
+        //Đổi tiêu đề modal
+        document.getElementById('hP2T1').innerHTML = "Chỉnh sửa thành phần đánh giá"
+        document.getElementById('btnLuuP2T1').style.display = "block"
+        document.getElementById('btnThemP2T1').style.display = "none"
+        //Get row number
+        let rowNumber = parseInt(input);
+        //Lấy index của dòng hiện tại đang sửa
+        rowNumberForEdit = rowNumber
+        //var mo = document.getElementById('modalEdit');
+        var data = listRowKQHTMDHP[rowNumber]
+        //nam Old
+        nameOld = data.mota
+        //Đưa dữ liệu vào textbox mô tả
+        document.getElementById('moTaTPDG').value = data.mota
+        //Đưa dữ liệu vào select2 combobox chọn kết quả học tập mong đợi (chọn nhiều)
+        $('#chonNhieu1P2T1').select2()
+        var kqhtmdList = []
+        for (let item in data.kqhtmongdoi) {
+            kqhtmdList.push(data.kqhtmongdoi[item].id)
+        }
+        $('#chonNhieu1P2T1').val(kqhtmdList).trigger('change');
+        //Đưa dữ liệu vào textbox mô tả
+        document.getElementById('trongSo').value = data.trongso
+    }
+
+    //Sửa giá trị 1 dòng trong table 3
+    function editDongP2T3(input) {
+        document.getElementById('chonMotP2T3').innerHTML = '<option></option>'
+        for (let item of listCDRHP) {
+            var newOption = new Option(item.MaHT, item.MaCELO, false, false);
+            $('#chonMotP2T3').append(newOption).trigger('change');
+        }
+
+        setTimeout(() => {
+            $("#chonMotP2T3").select2({
+                placeholder: "Chọn kết quả học tập mong đợi",
+                allowClear: true,
+                dropdownParent: $("#mP2T3")
+            })
+
+            //Đưa dữ liệu vào select2 combobox chọn kết quả học tập mong đợi
+            $('#chonMotP2T3').val(data.cdr.id).trigger('change');
+        }, 100)
+        xoaDuLieu(7)
+        //Đổi tiêu đề modal
+        document.getElementById('hP2T3').innerHTML = "Chỉnh sửa công cụ và thời điểm đánh giá"
+        document.getElementById('btnLuuP2T3').style.display = "block"
+        document.getElementById('btnThemP2T3').style.display = "none"
+        //Get row number
+        let rowNumber = parseInt(input);
+        //Lấy index của dòng hiện tại đang sửa
+        rowNumberForEdit = rowNumber
+        var data = listRowCCDG[rowNumber]
+        //Đưa dữ liệu vào textarea Công cụ đánh giá
+        document.getElementById('ccDanhGia').value = data.ccDG
+        //Đưa dữ liệu vào textarea Thời điểm đánh giá
+        document.getElementById('tdDanhGia').value = data.tdDG
+        
+        
+
+
+    }
+
+    //Header of Table
+    var tableHeader = document.getElementById("tableDanhGiaKQHT-Head");
+
+    //Render table header
+    function renderTableHeaderP2T1() {
+        tableHeader.innerHTML = '<tr>'
+            + '<th rowspan="2">STT</th>'
+            + '<th rowspan="2">Chuẩn đầu ra học phần</th>'
+            + '<th rowspan="2">Tiêu chí đánh giá</th>'
+            + '<th rowspan="2">Mô tả thành phần đánh giá</th>'
+            + '<th rowspan="2">Trọng số</th>'
+            + '<th rowspan="2">Tùy chọn</th>'
+            + '</tr>'
+    }
+    //Delete tabler header
+    function deleteTableHeaderP2T1() {
+        tableHeader.innerHTML = "";
+    }
+
+    $('#c-qdts').on('select2:select', (e) => {
+        let id = e.params.data.id
+        ////Đưa dữ liệu vào select2 combobox chọn kết quả học tập mong đợi (chọn nhiều)
+        var kqhtmdList = []
+        for (let item in listRowTPKQHTMDHP[id].thanhphan) {
+            kqhtmdList.push(listRowTPKQHTMDHP[id].thanhphan[item])
+        }
+        // console.log(kqhtmdList)
+        checkOldScreen(kqhtmdList)
+        // appendChild to Select
+        for (let item of kqhtmdList) {
+            let newOption = new Option(item, item, true, true)
+            $('#chonNhieu3P2T2').append(newOption).trigger('change')
+        }
+
+        // $('#chonNhieu3P2T2').val(kqhtmdList).trigger('change');
+
+        // $('#chonNhieu3P2T2').select2('data', null)
+        let tSo = document.getElementById('trongsoP2T2')
+        tSo.value = listRowTPKQHTMDHP[id].trongso
+        tSo.innerHTML = listRowTPKQHTMDHP[id].trongso + '%'
+    })
+    // Check item is old
+    function checkOldScreen(arr) {
+        // console.log(arr)
+        let chonNhieu3P2T2 = document.getElementById('chonNhieu3P2T2')
+
+        let arrNew = []
+        for (let index = 0; index < 3; index++) {
+            for (let item in listRowTPKQHTMDHP[index].thanhphan) {
+                arrNew.push(listRowTPKQHTMDHP[index].thanhphan[item])
+            }
+        }
+        // console.log(arrNew)
+        // set all item screen true
+        for (let item of arrNew) {
+            listRowKQHTMDHP.map(sub => {
+                if (sub.mota === item) {
+                    sub.trangthai = true
+                    return sub
+                }
+            })
+        }
+        // Append
+        appendChildOption()
+    }
+    // params node parent
+    function appendChildOption() {
+        $('#chonNhieu3P2T2').empty()
+
+        for (let item in listRowKQHTMDHP) {
+            if (listRowKQHTMDHP[item].trangthai === false) {
+                if ($('#chonNhieu3P2T2').find("option[value='" + listRowKQHTMDHP[item].mota + "']").length) {
+                    //$('#chonNhieu3P2T2').val(listRowKQHTMDHP[item].mota).trigger('change');
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(listRowKQHTMDHP[item].mota, listRowKQHTMDHP[item].mota, false, false);
+                    // Append it to the select
+                    $('#chonNhieu3P2T2').append(newOption).trigger('change');
+                }
+            }
+        }
+    }
+
+
+    document.getElementById("step2-content").addEventListener("keyup", updateLocalStorePage2)
+
+    function updateLocalStorePage2 () {
+        let objRootPage2 = JSON.parse(lcStorageMeo.getItem('objRootPage2-' + maKHDT))
+
+        let chonNhieu1P2T1 = $("#chonNhieu1P2T1").val()
+        let moTaTPDG = $("#moTaTPDG").val()
+        let trongSo = $("#trongSo").val()
+
+        objRootPage2["chonNhieu1P2T1"] = chonNhieu1P2T1
+        objRootPage2["moTaTPDG"] = moTaTPDG
+        objRootPage2["trongSo"] = trongSo
+        objRootPage2["listRowTPKQHTMDHP"] = listRowTPKQHTMDHP
+        objRootPage2["listRowKQHTMDHP"] = listRowKQHTMDHP
+        objRootPage2["listRowCCDG"] = listRowCCDG
+        lcStorageMeo.setItem('objRootPage2-' + maKHDT, JSON.stringify(objRootPage2))
+
+    }
+
+    let listCDR
+
+    var listCDRHP = [];
+
+    function setupPage2() {
+        //clear all odd option
+        $('#chonNhieu1P2T1').empty()
+        listCDRHP = []
+
+        $.getJSON("@Url.Action("LayTatCaCDRHP", "API")" + "?makhdt=@Model.MaKHDT", function (data) {
+            let lstmacelo = []
+            listCDR = data
+            data.forEach((item, index) => {
+                lstmacelo.push(item.MaCELO)
+                var newOption = new Option(item.MaHT, item.MaCELO, false, false);
+                $('#chonNhieu1P2T1').append(newOption).trigger('change');
+                listCDRHP.push(item)
+            })
+
+            $.getJSON("@Url.Action("LayNoiDungHP", "API")" + "?makhdt=@Model.MaKHDT", function (data) {
+                if (listNoiDung.length == 0) {
+                    listNoiDung = data
+                    for (let noidung of listNoiDung) {
+                        addAccorditionFromList(noidung)
+                    }
+                }
+            });
+
+            let objRootPage2 = JSON.parse(lcStorageMeo.getItem('objRootPage2-' + maKHDT))
+        //if localstore not exist
+            if (objRootPage2 == null || lcStorageMeo.getItem('objRootPage2-' + maKHDT) == '{}') {
+                lcStorageMeo.setItem('objRootPage2-' + maKHDT, '{}')
+
+                $.getJSON("@Url.Action("LayDanhgiaHP","API")" + "?makhdt=@Model.MaKHDT", function (data) {
+                    //Reset list row thanh phan
+                    listRowTPKQHTMDHP.map((item, index) => {
+                        item.thanhphan = []
+                        item.trongso = "0"
+                    })
+
+                    for (let i = 0; i < data.length; i++) {
+                        switch (data[i].thanhphan) {
+                            case "Chuyên cần":
+                                listRowTPKQHTMDHP.map((item, index) => {
+                                    if (item.ten == "Chuyên cần") {
+                                        item.thanhphan.push(data[i].mota)
+                                        let itrongso = parseInt(item.trongso) + parseInt(data[i].trongso)
+                                        item.trongso = itrongso + ""
+                                    }
+                                })
+                                data[i].thanhphan = ""
+                                break
+                            case "Giữa kỳ":
+                                listRowTPKQHTMDHP.map((item, index) => {
+                                    if (item.ten == "Giữa kỳ") {
+                                        item.thanhphan.push(data[i].mota)
+                                        let itrongso = parseInt(item.trongso) + parseInt(data[i].trongso)
+                                        item.trongso = itrongso + ""
+                                    }
+                                })
+                                data[i].thanhphan = ""
+                                break
+                            case "Cuối kỳ":
+                                listRowTPKQHTMDHP.map((item, index) => {
+                                    if (item.ten == "Cuối kỳ") {
+                                        item.thanhphan.push(data[i].mota)
+                                        let itrongso = parseInt(item.trongso) + parseInt(data[i].trongso)
+                                        item.trongso = itrongso + ""
+                                    }
+                                })
+                                data[i].thanhphan = ""
+                                break
+                        }
+
+                    }
+
+                    //console.log("noStore listRowTPKQHTMDHP", listRowTPKQHTMDHP)
+                    listRowKQHTMDHP = data
+                    //console.log("noStore listRowKQHTMDHP",listRowKQHTMDHP)
+                    renderTableP2T1()
+                    renderTableP2T2()
+                })
+
+                $.getJSON("@Url.Action("LayCDRCongCuDanhGia", "API")" + "?makhdt=@Model.MaKHDT", function (response) {
+                    if (response.status == 200) {
+                        listRowCCDG = response.listRowCCDG;
+                        renderTableP2T3();
+                    } else {
+                        //error
+                    }
+                })
+
+
+        } else {
+
+                listRowTPKQHTMDHP = objRootPage2['listRowTPKQHTMDHP']
+                listRowKQHTMDHP = objRootPage2['listRowKQHTMDHP']
+                listRowCCDG = objRootPage2['listRowCCDG']
+                console.log("listRowCCDG", listRowCCDG)
+                $("#chonNhieu1P2T1").val(objRootPage2["chonNhieu1P2T1"]).trigger('change')
+                $("#moTaTPDG").val(objRootPage2["moTaTPDG"])
+                $("#trongSo").val(objRootPage2["trongSo"])
+
+                //check are any CDRHP is deleted
+                let listDeletedkqhtmd = []
+                listRowKQHTMDHP.map((item, index) => {
+                    //console.log("lstmacelo", lstmacelo)
+                    item.kqhtmongdoi = item.kqhtmongdoi.filter(x => lstmacelo.includes(parseInt(x.id)))
+                    if (item.kqhtmongdoi.length == 0) {
+                        listDeletedkqhtmd.push(item.mota)
+                        delete listRowKQHTMDHP[index]
+                    }
+                })
+                listRowKQHTMDHP = listRowKQHTMDHP.filter(x => x.kqhtmongdoi.length != 0)
+
+                //delete all mota of danhgiaHP deleted in list thanh phan
+                listRowTPKQHTMDHP.map((item, index) => {
+                    item.thanhphan = item.thanhphan.filter(x => !listDeletedkqhtmd.includes(x))
+                    let trongso = 0
+                    for (let i = 0; i < listRowKQHTMDHP.length; i++) {
+                        if (item.thanhphan.includes(listRowKQHTMDHP[i].mota)) {
+                            trongso += parseInt(listRowKQHTMDHP[i].trongso)
+                        }
+                    }
+                    item.trongso = trongso
+                })
+                //console.log("listDeletedkqhtmd", listDeletedkqhtmd)
+
+                //console.log("Store listRowTPKQHTMDHP", listRowTPKQHTMDHP)
+                //console.log("Store listRowKQHTMDHP", listRowKQHTMDHP)
+
+                renderTableP2T1()
+                renderTableP2T2()
+                renderTableP2T3()
+
+
+
+            }
+
+        })
+
+        btnNext.style.display = 'block';
+
+    }
+
+
+    function checkIsBiggerThanHundred(dom) {
+        let val = dom.value.replace(/[^0-9]/g, '')
+        if (val > 100) {
+            dom.value = 100
+        } else {
+            dom.value = val
+        }
+    }
+
+</script>
+@*------------------------------------ Javascript Trang 3 ------------------------------------*@
+<script type="text/javascript">
+    //================================= Code By JudasFate ============================================//
+    let lcStorageMeo = localStorage // Local Storage
+
+    let objMainRoot = {} // objet all
+    let arrSession = [] // Arr include Key of Item Session
+    let objItemSession = {} // Object
+    let checkArrSes = []
+    let arrWeek = []
+    let arrNoidung = []
+    let arrRating = []
+    let arrNoidungDataString = ""
+    let arrRatingDataString = ""
+    let objCfWeek = {}
+    let countWeek = 0
+
+
+
+    let btnAddBuoiHoc = document.getElementById('btnAddBuoiHoc')
+    let bodyCard = document.getElementById('bodyCard')
+    let countIDSolid = 0
+
+    //Add tuan
+    document.getElementById('btnAddRow').addEventListener('click', e => {
+        let rowTest = document.getElementById('rowTest')
+
+        mAppWeekFSession(rowTest, countWeek)
+
+
+        arrWeek[countWeek]=[]// append count week array
+         console.log(arrWeek)
+        $("#rowTest").ready(function () {
+            $(".js-example-placeholder-multiple").select2({
+                placeholder: "Thêm buổi vào tuần",
+                allowClear: true
+            })
+        })
+        countWeek++
+
+        //Update localstore
+        objMainRoot['arrWeek'] = arrWeek
+        objMainRoot['countWeek'] = countWeek
+        lcStorageMeo.setItem('objRootPage4-' + '@Model.MaKHDT', JSON.stringify(objMainRoot))
+
+    })
+
+    function setupPage4() {
+        $.getJSON("@Url.Action("LayDanhgiaHP", "API")" + "?makhdt=@Model.MaKHDT", function (data) {
+            arrRating = data;
+            $.getJSON("@Url.Action("LayNoiDungHP", "API")" + "?makhdt=@Model.MaKHDT", function (data1) {
+                arrNoidung = data1;
+                //console.log("arrRating", arrRating)
+                //console.log("arrNoidung", arrNoidung)
+                arrRatingDataString = arrRating.map(x => { return '<option value="' + x.madg + '">' + x.mota + '</option>' }).join(" ")
+                arrNoidungDataString = arrNoidung.map(x => { return '<option value="' + x.id + '">' + x.noiDungNgan + '</option>' }).join(" ")
+
+                let localStore = lcStorageMeo.getItem('objRootPage4-' + '@Model.MaKHDT')
+                //If localstore not exist
+                if (localStore == null || localStore == '{}') {
+                    loadDatabaseToViewPage4();
+                } else {
+                //If localstore exist
+                    loadLocalStoreToViewPage4()
+                }
+            })
+        })
+
+    }
+    /**
+     * Append Week for seesion
+     * index    : key
+     * pos      : position
+     **/
+    function mAppWeekFSession(mainParent, pos) {
+        let newForm = document.createElement('div')
+        newForm.setAttribute('class', 'form-group')
+        let newLbl = document.createElement('label')
+        newLbl.innerHTML = "Tuần " + parseInt(pos + 1) + ':'
+        // Add Form
+        newForm.appendChild(newLbl)
+
+        // Add select option
+        reSessWeek(newForm, pos)
+
+        mainParent.appendChild(newForm)
+
+        $('#selSeWeek_' + pos).on('select2:selecting', function (e) {
+            //Checking not allow to select when it have in arrWeek
+            //console.log("event nek",e)
+            let errMes = "";
+            let currentVal = e.params.args.data.id;
+            let isValid = true
+            for (let index in arrWeek) {
+                if (arrWeek[index].includes(currentVal)) {
+                    let tuan = parseInt(index) + 1
+                    let buoi = currentVal
+                    errMes += "Buổi " + buoi + " hiện đã có trong tuần " + tuan
+                    isValid = false
+                    break;
+                }
+            }
+            if (!isValid) {
+                toastr.error(errMes, "Lỗi!")
+                e.preventDefault()
+            }
+        })
+
+        $('#selSeWeek_' + pos).on('select2:select', function (e) {
+            // Do something
+            let value = $('#selSeWeek_' + pos).val()
+            arrWeek[pos] = value
+            //for (let item of value) {
+            //    item -= 1
+            //    checkArrSes[item] = true
+            //}
+            //arrWeek[pos]=value
+            //console.log(arrWeek)
+            //chooSelOpSes(pos, checkArrSes)
+            // Todo interview
+            console.log("arrWeek", arrWeek)
+            let sessionIndex = e.params.data.id - 1;
+            objMainRoot[arrSession[sessionIndex]]["Tuan"] = pos + 1;
+            objMainRoot["arrWeek"] = arrWeek
+            lcStorageMeo.setItem('objRootPage4-' + '@Model.MaKHDT', JSON.stringify(objMainRoot))
+
+            //checkArrSes[pos] = true
+        })
+
+        $('#selSeWeek_' + pos).on('select2:unselect', function (e) {
+            // Do something
+            let value = $('#selSeWeek_' + pos).val()
+            arrWeek[pos] = value
+            //for (let item of value) {
+            //    item -= 1
+            //    checkArrSes[item] = true
+            //}
+            //arrWeek[pos]=value
+            //console.log(arrWeek)
+            //chooSelOpSes(pos, checkArrSes)
+            // Todo interview
+
+            let sessionIndex = e.params.data.id - 1;
+            objMainRoot[arrSession[sessionIndex]]['Tuan'] = "";
+            objMainRoot["arrWeek"] = arrWeek
+            lcStorageMeo.setItem('objRootPage4-' + '@Model.MaKHDT', JSON.stringify(objMainRoot))
+
+
+            //checkArrSes[pos] = false
+        })
+    }
+
+    /**
+     * Render Session on Week
+     * follow quantity session
+     * only Session false is screen field
+     * parent   : Node parent
+     * pos  :   Index
+     * arrSes       : Array session all
+     **/
+    function reSessWeek(parent, pos) {
+        let newSelect = document.createElement('select')
+        newSelect.setAttribute('class', 'js-example-placeholder-multiple js-states form-control')
+        newSelect.setAttribute('multiple', 'multiple')
+        newSelect.setAttribute('id', 'selSeWeek_' + pos)
+        newSelect.setAttribute('style', 'height: 36px; width: 100%')
+
+        let newInValid = document.createElement('div')
+        newInValid.className = "invalid-feedback"
+        newInValid.innerText = "Không được để trống"
+        //console.log("arrSes", checkArrSes)
+
+        arrSession.forEach((item, index) => {
+            index += 1
+            let newOption = new Option('Buổi ' + index, index, false, false)
+            // $('#' + id).append(newOption).trigger('change')
+            newSelect.appendChild(newOption)
+        })
+        parent.appendChild(newSelect)
+        parent.appendChild(newInValid)
+
+    }
+
+    /**
+     * Event Select 2
+     * pos:       Position
+     **/
+    function chooSelOpSes(pos, arrSes) {
+        console.log(arrSes)
+        for (let item in arrWeek) {
+            let id = parseInt(item  + 1)
+            if (id !== pos) {
+                let idSelSe = 'selSeWeek_' + id
+                // reSessWeek(null, arrSes, id, false) // rename
+                SelChangeOption(idSelSe, arrSes)
+            }
+        }
+    }
+    /**
+     *  Change option Select default
+     **/
+
+    function SelChangeOption(id, arrSes) {
+        $('#' + id).empty()
+
+        arrSes.forEach((item, index) => {
+            if (item === false) {
+                index += 1
+                let newOption = new Option('Buổi ' + index, index, false, false)
+                $('#' + id).append(newOption).trigger('change')
+            }
+        })
+    }
+    /**
+     * Confirm add buoi vao tuan
+     *
+     **/
+    function confirAddSche(e) {
+        //for (let id in arrWeek) {
+        //    // createa Week Schedule
+        //    arrWeek[id]=[]
+        //    let idSelSe = 'selSeWeek_' + id
+
+        //    let value = $('#' + idSelSe).val()
+        //    objCfWeek['Session' + id].push(value)
+
+        //}
+        //$('#Modal4').modal('hide')
+        //console.log(objCfWeek)
+    }
+
+    function DeleteRow() {
+        var list = document.getElementById("rowTest");
+        let idRowDelete = parseInt(list.lastChild.childNodes[1].id.split("_")[1])
+        list.removeChild(list.lastChild);
+        if (countWeek != 0) {
+            countWeek--;
+        }
+
+        // To do action
+        console.log("deleted", arrWeek);
+
+        //Update localstore
+        for (let index in arrSession) {
+            let tuanNum = idRowDelete + 1
+            if (tuanNum == objMainRoot[arrSession[index]]["Tuan"]) {
+                objMainRoot[arrSession[index]]["Tuan"] = ""
+            }
+        }
+
+        //delete mang trong arrWeek
+        arrWeek.pop()
+        console.log("arrWeek", arrWeek)
+
+        objMainRoot["countWeek"] = countWeek
+        objMainRoot["arrWeek"] = arrWeek
+        lcStorageMeo.setItem('objRootPage4-' + '@Model.MaKHDT', JSON.stringify(objMainRoot))
+
+
+    }
+
+    $(document).ready(function () {
+        $("#c-nth-tl").select2({
+            placeholder: "Chọn người thực hiện",
+            allowClear: true
+        })
+        $(".select2-c-nth-nl").select2({
+            placeholder: "Chọn người thực hiện",
+            allowClear: true
+        })
+        $(".select2-phanloai").select2({
+            placeholder: "Chọn phân loại",
+            allowClear: true
+        })
+        //document.getElementById('mySelect').addEventListener('click', function () {
+        //    setTimeout(() => {
+        //        $("#chonNhieu1").select2({
+        //            placeholder: "Chọn thành phần đánh giá",
+        //            dropdownParent: $("#Modal2"),
+        //        })
+        //    }, 200)
+        //})
+
+        //document.getElementById('mySelect3').addEventListener('click', function () {
+        //    setTimeout(() => {
+        //        $("#chonNhieu2").select2({
+        //            placeholder: "Chọn thành phần đánh giá",
+        //            dropdownParent: $("#Modal3"),
+        //        })
+        //    }, 200)
+        //})
+
+        document.getElementById('miSelect4').addEventListener('click', function () {
+
+            setTimeout(() => {
+                $("#chonNhieu4").select2({
+                    placeholder: "Thêm buổi vào tuần",
+                    dropdownParent: $("#Modal4"),
+                })
+            }, 200)
+        })
+    })
+    //$(function () {
+    //    $("#datepicker").datepicker({
+    //        autoclose: true,
+    //        todayHighlight: true
+    //    }).datepicker('update', new Date());
+    //});
+    // var index = 1;
+
+    //Tìm body table
+    var bodyTable = document.getElementById("ct-body-mhgd-gv")
+
+    //document.getElementById('addRow').addEventListener("click", function () {
+    //    RenderTableWithoutStatus(index);
+    //    index += 1;
+    //});
+
+    function RenderTableWithoutStatus(index) {
+        //tạo dòng
+        let row = document.createElement("tr")
+        row.setAttribute("id", "rowNum" + index)
+        //Từng cột
+        //STT
+        let col1 = document.createElement("td")
+        col1.innerText = index
+        //Phân loại
+        let col2 = document.createElement("td")
+        col2.innerHTML = 'CELO' + index;
+        //Mã hiển thị
+        let col3 = document.createElement("td")
+        col3.innerText = 'Mã hiển thị CELO' + index;
+        //Mô tả
+        let col4 = document.createElement("td")
+        let inputDescription = document.createElement('input')
+        inputDescription.setAttribute('type', 'text')
+        inputDescription.setAttribute('class', 'form-control')
+        inputDescription.setAttribute('placeholder', 'Mô tả')
+        inputDescription.setAttribute('style', 'border: none;')
+        col4.appendChild(inputDescription)
+        //Chuẩn đầu ra CTĐT
+        let col5 = document.createElement("td")
+        col5.innerHTML = 'Kiến thức ' + index;
+        //Tùy chọn
+        let col6 = document.createElement("td")
+        let btnEdit = document.createElement('a')
+        btnEdit.setAttribute('class', 'btn btn-info btn-sm m-r-10')
+        btnEdit.setAttribute('href', 'javascript:void(0)')
+        btnEdit.setAttribute('id', 'deleteRow' + index)
+        btnEdit.innerHTML = 'Chỉnh sửa'
+        let btnDelete = document.createElement('a')
+        btnDelete.setAttribute('class', 'btn btn-info btn-sm m-r-10')
+        btnDelete.setAttribute('href', 'javascript:void(0)')
+        btnDelete.setAttribute('id', 'deleteRow' + index)
+        btnDelete.setAttribute('onclick', 'deleteDong(this)')
+        btnDelete.innerHTML = 'Xóa'
+        col6.appendChild(btnEdit)
+        col6.appendChild(btnDelete)
+
+        row.appendChild(col1)
+        row.appendChild(col2)
+        row.appendChild(col3)
+        row.appendChild(col4)
+        row.appendChild(col5)
+        row.appendChild(col6)
+
+        bodyTable.appendChild(row)
+    }
+
+    function deleteDong(input) {
+        //Get row id
+        var rowId = parseInt(input.id[input.id.length - 1]);
+        var tableRows = bodyTable.getElementsByTagName('tr');
+        console.log(tableRows)
+        bodyTable.removeChild(tableRows[rowId - 1])
+        //reloadIndex(rowId - 1)
+        console.log(tableRows)
+        index--;
+    }
+
+    //function reloadIndex(indexIn) {
+    //    var listRow = bodyTable.getElementsByTagName('tr');
+    //    var rowPosition = document.getElementById
+    //}
+
+    $(document).ready(function () {
+        //Id User current
+        let idUser = document.getElementById('userIdMeo').value
+
+        //Header of Table
+        var tableHeader = document.getElementById("tableHead");
+
+        //Render table header
+        function renderTableHeader() {
+            tableHeader.innerHTML = '<tr>'
+                + '<th rowspan="2">STT</th>'
+                + '<th rowspan="2">Khóa</th>'
+                + '<th rowspan="2">Tên học phần</th>'
+                + '<th rowspan="2">Ngày hết hạn</th>'
+                + '<th rowspan="2">Đề cương học phần</th>'
+                + '<th rowspan="2">Trạng thái</th>'
+                + '</tr>'
+        }
+
+        //Render table header for second table without column status
+        function renderTableHeaderWithoutStatus() {
+            tableHeader.innerHTML = '<tr>'
+                + '<th rowspan="2">STT</th>'
+                + '<th rowspan="2">Khóa</th>'
+                + '<th rowspan="2">Tên học phần</th>'
+                + '<th rowspan="2">Đề cương học phần</th>'
+                + '</tr>'
+        }
+
+        //Delete table header
+        function deleteTable() {
+            bodyTable.innerHTML = "";
+            tableHeader.innerHTML = "";
+            //document.getElementById("idBtnLuu").style.display = "none";
+        }
+
+        @*$("#idBtnLuu").on("click", function () {
+            if (listAddGiaoVien.length != 0) {
+                //console.log(listAddGiaoVien)
+                document.getElementById("loader").style.display = "block";
+                let form_data = { listAddGiaoVien: JSON.stringify(listAddGiaoVien) }
+                $.ajax({
+                    url: "@Url.Action("LuuDanhSachGiaoVienPhanCong", "API")",
+                    type: "post",
+                    data: form_data,
+                    traditional: true
+                }).done(function (response) {
+                    if (response == "done") {
+                        //tNotifi("Đã lưu thành công")
+                        toastr.success('Đã lưu thành công', 'Thành công!');
+                        document.getElementById("idBtnLuu").style.display = "none";
+                        document.getElementById("idBtnTiepTheo").style.display = "block";
+                        daLuu = true
+                    } else {
+                        toastr.success('Không thể lưu', 'Lỗi!');
+                    }
+                    })
+                document.getElementById("loader").style.display = "none"
+            } else {
+                toastr.warning('Không có gì thay đổi để lưu', 'Lưu ý!');
+            }
+
+        })
+
+
+        $("#idBtnTiepTheo").on("click", function () {
+            if (daLuu) {
+                pr_semester = $("#xkhdt_semester").val().split('_')[1]
+                pr_branch = $("#xkhdt_branch").val()
+                pr_year = $("#xkhdt_year").val();
+
+                var form = document.createElement("form")
+                form.setAttribute("action", "/GiangVien/XemTruocPhanCongGiangVien")
+                form.setAttribute("method", "POST")
+
+                var input1 = document.createElement("input")
+                input1.setAttribute("name", "MaNganh")
+                input1.setAttribute("value", pr_branch)
+
+                var input2 = document.createElement("input")
+                input2.setAttribute("name", "NamHoc")
+                input2.setAttribute("value", pr_year)
+
+                var input3 = document.createElement("input")
+                input3.setAttribute("name", "HocKy")
+                input3.setAttribute("value", pr_semester)
+
+                form.appendChild(input1)
+                form.appendChild(input2)
+                form.appendChild(input3)
+
+                document.body.appendChild(form);
+
+                form.submit()
+
+            } else {
+                toastr.error('Cần lưu trước khi chuyển trang', 'Lỗi!');
+            }
+        })*@
+    })
+
+    btnAddBuoiHoc.addEventListener('click', e => appendSession(e, arrSession, bodyCard))
+
+    //loadLocalStoreToView();
+
+    function loadDatabaseToViewPage4() {
+        $.getJSON("@Url.Action("LayTacVuHP", "API")" + "?maKHDT=" + @Model.MaKHDT, function (result) {
+            console.log(result)
+            if (result.status == 200) {
+               countIDSolid = parseInt(result.countIDSolid)
+               arrWeek = result.arrWeek
+               countWeek = result.countWeek
+               var lsModelChiTietHP = result.lsModelChiTietHP;
+
+               for (let i in lsModelChiTietHP) {
+                   countIDSolid += getRandomInt(10000000)
+                   objMainRoot[countIDSolid] = lsModelChiTietHP[i]
+                   countIDSolid++;
+                }
+
+                objMainRoot["countIDSolid"] = countIDSolid
+                objMainRoot["arrWeek"] = arrWeek
+                objMainRoot["countWeek"] = countWeek
+                // console.log(lcStObRoot)
+                // Check Null localstorage
+                arrSession = []
+                checkArrSes = []
+
+                //resetview Session
+                document.getElementById("bodyCard").innerHTML = "";
+                // save data to local storage Object
+                lcStorageMeo.setItem('objRootPage4-' + '@Model.MaKHDT', JSON.stringify(objMainRoot))
+
+                // Get Key of Object
+
+                for (let index in objMainRoot) {
+                    if (index == "countIDSolid" || index == "arrWeek" || index == "countWeek") {
+
+                    } else {
+                        // Todo pass render item
+                        arrSession.push(parseInt(index))
+                        // Add Check Session for week
+                        checkArrSes.push(false)
+
+                        Session(bodyCard, index, arrSession.length, true)
+
+                        let typeInside = 'I'
+                        let typeOutside = 'O'
+                        deleteAllItemTable("tbody", typeInside, index)
+
+
+                        // Render Modal Inside
+                        for (let subIt of objMainRoot[index][typeInside]) {
+                            let nth = 'c_nth_tl'
+                            let txtmgio = 'txtmgio'
+                            let noidung = 'noidungChonNhieu'
+                            let rating = 'chonNhieu'
+                            let txaDescription = 'txaDes'
+                            let idTable = 'tbody'
+
+                            appItemToTable(noidung, idTable, nth, txtmgio, rating, txaDescription, index, typeInside, subIt, true)
+                        }
+
+
+                        //Delete All Item to ReAdd
+
+                        deleteAllItemTable("tbody", typeOutside, index)
+                        // Render Modal Outside
+                        for (let subIt of objMainRoot[index][typeOutside]) {
+                            let nth = 'c_nth_tl'
+                            let txtmgio = 'txtmgio'
+                            let noidung = 'noidungChonNhieu'
+                            let rating = 'chonNhieu'
+                            let txaDescription = 'txaDes'
+                            let idTable = 'tbody'
+
+                            appItemToTable(noidung, idTable, nth, txtmgio, rating, txaDescription, index, typeOutside, subIt, true)
+                        }
+
+                    }
+                }
+
+                refreshWeekView()
+                
+
+
+            } else {
+                toastr.error(result.message, "Lỗi")
+            }
+        })
+    }
+
+
+    function loadLocalStoreToViewPage4() {
+        // parse Json from Local Storage
+        let lcStObRoot = JSON.parse(lcStorageMeo.getItem('objRootPage4-'+'@Model.MaKHDT'))
+        // console.log(lcStObRoot)
+        // Check Null localstorage
+        if (lcStObRoot) {
+            arrSession = []
+            checkArrSes = []
+            countIDSolid = (lcStObRoot["countIDSolid"] == undefined || lcStObRoot["countIDSolid"] == null) ? 0 : lcStObRoot["countIDSolid"];
+            arrWeek = (lcStObRoot["arrWeek"] == undefined || lcStObRoot["arrWeek"] == null) ? [] : lcStObRoot["arrWeek"];
+            countWeek = (lcStObRoot["countWeek"] == undefined || lcStObRoot["countWeek"] == null) ? 0 : lcStObRoot["countWeek"];
+            console.log("countIDSolid nek", countIDSolid)
+            //resetview Session
+            document.getElementById("bodyCard").innerHTML = "";
+            // save data from local storage to Object
+            objMainRoot = { ...lcStObRoot }
+            // Get Key of Object
+            for (let index in objMainRoot) {
+                console.log("index", index)
+                if (index == "countIDSolid" || index == "arrWeek" || index == "countWeek") {
+
+                } else {
+                    // Todo pass render item
+                    arrSession.push(parseInt(index))
+                    // Add Check Session for week
+                    checkArrSes.push(false)
+
+
+
+                    Session(bodyCard, index, arrSession.length, true)
+
+                    let typeInside = 'I'
+                    let typeOutside = 'O'
+
+                    deleteAllItemTable("tbody", typeInside, index)
+
+                    // Render Modal Inside
+                    for (let subIt of objMainRoot[index][typeInside]) {
+                        let nth = 'c_nth_tl'
+                        let txtmgio = 'txtmgio'
+                        let noidung = 'noidungChonNhieu'
+                        let rating = 'chonNhieu'
+                        let txaDescription = 'txaDes'
+                        let idTable = 'tbody'
+
+
+                        appItemToTable(noidung, idTable, nth, txtmgio, rating, txaDescription, index, typeInside, subIt, true)
+                    }
+
+                    //Delete All Item to ReAdd
+                    deleteAllItemTable("tbody", typeOutside, index)
+
+                    // Render Modal Outside
+                    for (let subIt of objMainRoot[index][typeOutside]) {
+                        let nth = 'c_nth_tl'
+                        let txtmgio = 'txtmgio'
+                        let noidung = 'noidungChonNhieu'
+                        let rating = 'chonNhieu'
+                        let txaDescription = 'txaDes'
+                        let idTable = 'tbody'
+
+
+                        appItemToTable(noidung, idTable, nth, txtmgio, rating, txaDescription, index, typeOutside, subIt, true)
+                    }
+
+                // Render Value of Item Filed in session
+
+                //let idTxtNgayhoc = 'txt_ngayhoc' + index
+                //let idTxtPhonghoc = 'txt_phonghoc' + index
+                //let idTxtGiobd = 'txt_giobatdau' + index
+                //let idTxtGiokt = 'txt_gioketthuc' + index
+
+                //document.getElementById(idTxtNgayhoc).value = objMainRoot[index][idTxtNgayhoc]
+                //document.getElementById(idTxtPhonghoc).value = objMainRoot[index][idTxtPhonghoc]
+                //document.getElementById(idTxtGiobd).value = objMainRoot[index][idTxtGiobd]
+                //document.getElementById(idTxtGiokt).value = objMainRoot[index][idTxtGiokt]
+                }
+
+            }
+            console.log("arrSession", arrSession)
+            console.log("checkArrSes", checkArrSes)
+            refreshWeekView()
+        }
+    }
+
+    function refreshWeekView() {
+        let rowTest = document.getElementById('rowTest')
+
+        for (let i = 0; i < countWeek; i++) {
+            mAppWeekFSession(rowTest, i)
+        }
+
+        $("#rowTest").ready(function () {
+            $(".js-example-placeholder-multiple").select2({
+                placeholder: "Thêm buổi vào tuần",
+                allowClear: true
+            })
+            for (let index in arrWeek) {
+                if (arrWeek[index].length > 0) {
+                    $("#selSeWeek_" + index).val(arrWeek[index])
+                    $("#selSeWeek_" + index).trigger('change')
+                }
+            }
+        })
+
+
+    }
+
+
+    function deleteAllItemTable(idTable, type, idItem) {
+        let idBodyTable = idTable + type + idItem
+        document.getElementById(idBodyTable).innerHTML = "";
+    }
+
+    function translateIdToNameNguoiThucHien(idngThucHien) {
+        switch (idngThucHien) {
+            case 'SV':
+                return "Sinh viên"
+                break
+            case 'NSV':
+                return "Nhóm sinh viên"
+                break
+            default:
+                return "Giáo viên"
+                break
+        }
+    }
+
+    // console.log(objMainRoot)
+    // appendSession inside View
+    function appendSession(e, arrS, mainParent) {
+        // let countS = arrS.length + 1
+        // push position
+        // let id = 'IOB-' + countIDSolid
+        countIDSolid += getRandomInt(10000000)
+        arrS.push(countIDSolid)
+        console.log("arrS", arrS)
+
+        // Check session for week
+        checkArrSes.push(false)
+
+        objMainRoot[countIDSolid] = {} // save property Main
+        //console.log(arrS)
+        //for (let item in arrS) {
+        // ti append Array cho no ve ra
+        //}
+        Session(mainParent, countIDSolid, arrS.length, false)
+        countIDSolid++
+        objMainRoot["countIDSolid"] = countIDSolid
+         //console.log("arrS",arrS)
+
+        //add new option to select
+        for (let indexWeek in arrWeek) {
+            let select = $("#selSeWeek_" + indexWeek)[0]
+            let newChildVal = parseInt(select.lastChild.value)+1;
+            let newOption = new Option('Buổi ' + newChildVal, "" + newChildVal, false, false)
+            select.appendChild(newOption)
+
+            $("#selSeWeek_" + indexWeek).trigger('change');
+        }
+
+
+
+
+    }
+    /**
+     * Node Session
+     * Parent: Node Main for append
+     * Index: key
+     * pos: Location
+     * umrella :    True False
+     * True: Render
+     * False: create Element
+     */
+    function Session(parent, index, pos, umrella) {
+        let cardMain = document.createElement('div')
+        cardMain.setAttribute('class', 'card card-custom m-b-10')
+        cardMain.setAttribute('id', 'cardMain' + index)
+
+        let idModalDelete = 'ModalDele'
+        //Header
+        AHSession(cardMain, index, idModalDelete, pos)
+        // Dialog Close
+        ModalConfirmRM(cardMain, index, idModalDelete, 'Thông báo xác nhận', 'Bạn có muốn xóa buổi học?')
+        //Body collase
+        ABSession(cardMain, index, umrella)
+        // console.log(cardMain)
+        parent.appendChild(cardMain)
+
+        //// set ID
+        //let idTxtNgayhoc = 'txt_ngayhoc' + index
+        //let idTxtPhonghoc = 'txt_phonghoc' + index
+        //let idTxtGiobd = 'txt_giobatdau' + index
+        //let idTxtGiokt = 'txt_gioketthuc' + index
+        //// Event Save LocalStorage
+        //mEvOChangeSLocal(idTxtNgayhoc, index)
+        //mEvOChangeSLocal(idTxtPhonghoc, index)
+        //mEvOChangeSLocal(idTxtGiobd, index)
+        //mEvOChangeSLocal(idTxtGiokt, index)
+    }
+    /**create Session follow Index
+     * Argument
+     * Parent: Node Main for append
+     * Index: Key
+     * pos: Position
+    **/
+    function AHSession(parent, index, idModalDelete, pos) {
+        let cardHeader = document.createElement('div')
+        cardHeader.setAttribute('class', 'card-header p-0')
+        cardHeader.setAttribute('id', 'heading' + index)
+        // cardHeader.setAttribute('data-parent', '#accordionExample' + index)
+        let h5Mb = document.createElement('h5')
+        h5Mb.setAttribute('class', 'mb-0')
+
+        let btnCollap = document.createElement('button')
+        btnCollap.setAttribute('class', 'btn btn-link p-l-10 collapsed')
+        btnCollap.setAttribute('data-toggle', 'collapse')
+        btnCollap.setAttribute('data-target', '#collapse' + index)
+        btnCollap.setAttribute('aria-expanded', false)
+        btnCollap.setAttribute('aria-controls', 'collapse' + index)
+        btnCollap.setAttribute('id', 'btnSH' + index)
+        btnCollap.innerText = 'Buổi ' + pos
+
+        let btnClose = document.createElement('a')
+        btnClose.setAttribute('class', 'btn btnDelSession')
+        // btnClose.setAttribute('onClick', 'RmSession(' + index + ')')
+        btnClose.setAttribute('href', 'javascript:void(0)')
+        btnClose.setAttribute('data-toggle', 'modal')
+        btnClose.setAttribute('data-target', '#' + idModalDelete + index)
+        btnClose.innerText= 'X'
+
+        h5Mb.appendChild(btnCollap)
+        h5Mb.appendChild(btnClose)
+        cardHeader.appendChild(h5Mb)
+        parent.appendChild(cardHeader)
+
+    }
+    /**create Session follow Index body
+    * Argument
+    * Parent: Node Main for append
+    * Index: Key
+    * umrella :    True False
+    * True: Render
+    * False: create Element
+    **/
+    function ABSession(parent, index, umrella) {
+        ////Key ID
+        //let idTxtNgayhoc = 'txt_ngayhoc' + index
+        //let idTxtPhonghoc = 'txt_phonghoc' + index
+        //let idTxtGiobd = 'txt_giobatdau' + index
+        //let idTxtGiokt = 'txt_gioketthuc' + index
+        ////Declare  Object null
+        //if (!umrella) {
+        //    objMainRoot[index][idTxtNgayhoc] = 0
+        //    objMainRoot[index][idTxtPhonghoc] = 0
+        //    objMainRoot[index][idTxtGiobd] = 0
+        //    objMainRoot[index][idTxtGiokt] = 0
+        //}
+        let cardBody = document.createElement('div')
+        cardBody.setAttribute('class', 'm-l-10 m-r-10 m-t-10 collapse')
+        cardBody.setAttribute('id', 'collapse' + index)
+        cardBody.setAttribute('aria-labelledby', 'heading' + index)
+        cardBody.setAttribute('data-parent', '#bodyCard')
+        /**
+         * Create
+         **/
+        //First Row
+        // Second Row
+        let divFirst = document.createElement('div')
+        divFirst.setAttribute('class','col-md-12 p-0')
+        let divFirstCard = document.createElement('div') // row1
+        divFirstCard.setAttribute('class','card m-b-10')
+        let divFirstRow = document.createElement('div')
+        divFirstRow.setAttribute('class', 'row')
+
+        let divFirstSecond = document.createElement('div')
+        divFirstSecond.setAttribute('class', 'col-md-12 p-0')
+        let divFirstSecondCard = document.createElement('div')
+        divFirstSecondCard.setAttribute('class', 'card m-b-10')
+        let divFirstSecondBoundary = document.createElement('div')
+        divFirstSecondBoundary.setAttribute('class', 'col-md-12')
+
+        // Second Row
+        let divSecond = document.createElement('div')
+        divSecond.setAttribute('class', 'card-body p-l-0 p-t-0 p-b-10')
+        divSecond.innerHTML = '<h5 class="card-title fw-7 m-b-0">1. Hoạt động trong lớp</h5>'
+
+        //Third Row with href
+        let idModal = 'Modal'
+        let typeModalInside = "I" // Hoat dong trong lop
+        let typeModalOutside = "O" // Hoat dong ngoai lop
+
+        // Link tag Trong lop
+        let aCard = document.createElement('div')
+        aCard.setAttribute('class', 'card m-b-20')
+        let aThird = document.createElement('a')
+        aThird.setAttribute('id', 'mySelect' + typeModalInside + index)
+        aThird.setAttribute('href', 'javascript:void(0)')
+        aThird.setAttribute('data-toggle', 'modal')
+        aThird.setAttribute('data-target', '#' + idModal + typeModalInside + index)
+        //aThird.setAttribute('onClick', 'AnimationEffectSelect(' + index + ',' + typeModal + ')')
+        aThird.addEventListener('click', () => { AnimationEffectSelect(idModal, index, typeModalInside,'',1) })
+        aThird.innerText = 'Thêm hoạt động'
+        // Create Array Table With main model
+        if (!umrella) {
+            objMainRoot[index][typeModalInside] = []
+        }
+
+        /**
+         * Hoat Dong ngoai lop
+         **/
+        // Title Ngoai lop
+        let divTitleOutside = document.createElement('div')
+        divTitleOutside.setAttribute('class', 'card-body p-l-0 p-t-0 p-b-10')
+        divTitleOutside.innerHTML = '<h5 class="card-title fw-7 m-b-0">2. Hoạt động ngoài lớp </h5>'
+
+        // Hoat Dong Ngoai lop link
+        let aLinkOutSide = document.createElement('a')
+        aLinkOutSide.setAttribute('id', 'mySelect' + typeModalOutside + index)
+        aLinkOutSide.setAttribute('href', 'javascript:void(0)')
+        aLinkOutSide.setAttribute('data-toggle', 'modal')
+        aLinkOutSide.setAttribute('data-target', '#' + idModal + typeModalOutside + index)
+        //aThird.setAttribute('onClick', 'AnimationEffectSelect(' + index + ',' + typeModal + ')')
+        aLinkOutSide.addEventListener('click', () => { AnimationEffectSelect(idModal, index, typeModalOutside, '', 1) })
+        aLinkOutSide.innerText = 'Thêm hoạt động'
+        // Create Array Table With main model
+        if (!umrella) {
+            objMainRoot[index][typeModalOutside] = []
+        }
+
+        /**
+          * Add
+          */
+
+        divFirstSecondCard.appendChild(divFirstSecondBoundary)
+        divFirstSecond.appendChild(divFirstSecondCard)
+
+
+
+        divFirst.appendChild(divFirstSecond)
+
+        cardBody.appendChild(divFirst)// Row First
+        cardBody.appendChild(divSecond)//Row Second
+        // Table HoatDongTrongLop
+        TableMyClass(cardBody, index, typeModalInside)
+        aCard.appendChild(aThird)
+        cardBody.appendChild(aCard)
+
+        // Table Hoat dong ngoai lop
+        cardBody.appendChild(divTitleOutside)
+        TableMyClass(cardBody, index, typeModalOutside)
+        cardBody.appendChild(aLinkOutSide)
+        /**
+         * numCategory 1 Save
+         * numCategory 2 Edit
+         */
+        let titleInside = 'Thêm hoạt động trong lớp'
+        let idKey = ''
+        ModalDialog(cardBody, idModal, index, typeModalInside, titleInside, idKey, 1)
+        // Hoat Dong ngoai lop
+        let titleOutside = 'Thêm hoạt động ngoài lớp'
+        ModalDialog(cardBody, idModal, index, typeModalOutside, titleOutside, idKey, 1)
+        // Mainroot
+        parent.appendChild(cardBody)
+        // Event Save local storage
+    }
+    /**
+     *  index
+     *  typeModal
+     *  idKey: Key primary item
+     *  category: 1 them 2 edit
+     */
+    function AnimationEffectSelect(idModal,index, typeModal, idKey,numCategory) {
+        // console.log(typeModal)
+        let edit = ''
+        let idTxtGio= ''
+        switch (numCategory) {
+            case 1:
+                setTimeout(() => {
+                    $("#" + edit + "c_nth_tl" + typeModal + index).select2({
+                        placeholder: "Chọn người thực hiện",
+                        allowClear: true,
+                        dropdownParent: $("#" + idModal + typeModal + index),
+                    })
+                    $("#" + edit + "chonNhieu" + typeModal + index).select2({
+                        placeholder: "Chọn thành phần đánh giá",
+                        dropdownParent: $("#" + idModal + typeModal + index),
+                    })
+                    $("#" + edit + "noidungChonNhieu" + typeModal + index).select2({
+                        placeholder: "Chọn nôi dung học phần",
+                        dropdownParent: $("#" + idModal + typeModal + index),
+                    })
+                }, 200)
+
+                idTxtGio = edit + 'txtmgio' + typeModal + index
+                break
+            case 2:
+                edit = 'edit_'
+                setTimeout(() => {
+                    $("#" + edit + "c_nth_tl_" + idKey+'_'+ typeModal + index).select2({
+                        placeholder: "Chọn người thực hiện",
+                        allowClear: true,
+                        dropdownParent: $("#" + idModal + typeModal + index)
+                    })
+                    $("#" + edit + "chonNhieu_" + idKey+'_' + typeModal + index).select2({
+                        placeholder: "Chọn thành phần đánh giá",
+                        dropdownParent: $("#" + idModal + typeModal + index)
+                    })
+                    $("#" + edit + "noidungChonNhieu_" + idKey + '_' + typeModal + index).select2({
+                        placeholder: "Chọn thành phần đánh giá",
+                        dropdownParent: $("#" + idModal + typeModal + index)
+                    })
+                }, 200)
+
+                idTxtGio = edit + 'txtmgio_' + idKey+ '_' + typeModal + index
+                break
+            default:
+                setTimeout(() => {
+                    $("#" + edit + "c_nth_tl" + typeModal + index).select2({
+                        placeholder: "Chọn người thực hiện",
+                        allowClear: true
+                    })
+                    $("#" + edit + "chonNhieu" + typeModal + index).select2({
+                        placeholder: "Chọn thành phần đánh giá",
+                        dropdownParent: $("#" + idModal + typeModal + index),
+                    })
+                    $("#" + edit + "noidungChonNhieu" + typeModal + index).select2({
+                        placeholder: "Chọn nôi dung học phần",
+                        dropdownParent: $("#" + idModal + typeModal + index),
+                    })
+                }, 200)
+
+                idTxtGio = edit + 'txtmgio' + typeModal + index
+                break
+        }
+        OnlyInputNumber(idTxtGio)
+    }
+
+    //Remove Session
+    function RmSession(index) {
+        let idC = 'cardMain' + index
+
+        // Find Position
+        let posiIndex = arrSession.indexOf(index)
+        // Remove Position At Array
+        arrSession.splice(posiIndex, 1)
+        // Remove item on view
+        let node = document.getElementById(idC)
+        bodyCard.removeChild(node)
+        // Remove option in select2
+        for (let indexWeek in arrWeek) {
+            //delete last option
+            let select = $("#selSeWeek_" + indexWeek)[0]
+            let lastChildVal = select.lastChild.value;
+            select.removeChild(select.lastChild)
+            $("#selSeWeek_" + indexWeek).trigger('change');
+
+            //delete in arrWeek
+            let deletedBuoi = posiIndex + 1;
+            if (arrWeek[indexWeek].includes(lastChildVal)) {
+                arrWeek[indexWeek] = arrWeek[indexWeek].filter(x => x != lastChildVal)
+            }
+        }
+
+        //Remove object
+        delete objMainRoot[index]
+        //Render
+        renderNameSequense(arrSession)
+        objMainRoot["arrWeek"] = arrWeek
+        lcStorageMeo.setItem('objRootPage4-'+'@Model.MaKHDT', JSON.stringify(objMainRoot))
+
+        toastr.success("@CommonRS.Resources.VI.mes_XoaBuoi", "Thành công!")
+    }
+    function renderNameSequense(arrSession) {
+        // bodyCard.innerHTML = ''
+        // console.log(arrSession)
+        arrSession.forEach((item, index) => {
+            let btnSH = 'btnSH' + item
+            let queue = index + 1 // Sequense Session
+
+            let changeHS = document.getElementById(btnSH)
+            changeHS.innerText = 'Buổi ' + queue
+
+        })
+    }
+
+    // Render Modal inside
+    /**
+     *  parent  : Node
+     *  idModal : Id
+     *  index   : Count
+     *  typeModal    : I: Inside || O: Outside
+     *  title   :  Title dialog
+     *  idKey   :   For EditShadow
+     *  numCate:   Edit || Save
+     */
+    function ModalDialog(parent, idModal, index, typeModal, title, idKey,numCate ) {
+        // Declare
+        let nth = 'c_nth_tl'
+        let txtmgio = 'txtmgio'
+        let noidung = 'noidungChonNhieu'
+        let rating = 'chonNhieu'
+        let txaDescription = 'txaDes'
+        let idTable = 'tbody'
+        switch (numCate) {
+            case 1:
+                nth = 'c_nth_tl'
+                txtmgio = 'txtmgio'
+                rating = 'chonNhieu'
+                noidung = 'noidungChonNhieu'
+                txaDescription = 'txaDes'
+                break
+            case 2:
+                // edit_ [element] _ [key primary item sub] _ type + index
+
+                nth = 'edit_' + nth + '_' + idKey + '_'
+                txtmgio = 'edit_' + txtmgio + '_' + idKey + '_'
+                rating = 'edit_' + rating + '_' + idKey + '_'
+                noidung = 'edit_' + noidung + '_' + idKey + '_'
+                txaDescription = 'edit_' + txaDescription + '_' + idKey + '_'
+                break
+            default:
+                nth = 'c_nth_tl'
+                txtmgio = 'txtmgio'
+                rating = 'chonNhieu'
+                noidung = 'noidungChonNhieu'
+                txaDescription = 'txaDes'
+                break
+        }
+
+        // ID Modal set for user field inside
+        let idModalActive = idModal + typeModal + index
+
+        let divThirdModal = document.createElement('div')
+        divThirdModal.setAttribute('class', 'modal fade')
+        divThirdModal.setAttribute('id', idModalActive)
+        divThirdModal.setAttribute('tabindex', '-1')
+        divThirdModal.style.display = 'none'
+        divThirdModal.setAttribute('role', 'dialog')
+        divThirdModal.setAttribute('aria-labelledby', 'exampleModalLabel' + typeModal + index)
+        divThirdModal.setAttribute('aria-hidden', true)
+        let divFourthModal = document.createElement('div')
+        divFourthModal.setAttribute('class', 'modal-dialog')
+        divFourthModal.setAttribute('role', 'document')
+        let divFivethModal = document.createElement('div')
+        divFivethModal.setAttribute('class', 'modal-content')
+
+        let divSixthModalHeader = document.createElement('div')
+        divSixthModalHeader.setAttribute('class', 'modal-header')
+        divSixthModalHeader.innerHTML = '<h5 class="modal-title" id="exampleModalLabel' + typeModal + index + '">' + title +'</h5>'
+            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+            + '<span aria-hidden="true">×</span>'
+            + '</button>'
+
+        let divSixthModalBody = document.createElement('div')
+        divSixthModalBody.setAttribute('class', 'modal-body')
+        let divSixthModalBodyRow = document.createElement('div')
+        divSixthModalBodyRow.setAttribute('class', 'row')
+        divSixthModalBodyRow.setAttribute('data-select2-id', 'sl' + index)
+        //let divSixthModalBodyRowFirstForm = document.createElement('div')
+        //divSixthModalBodyRowFirstForm.setAttribute('class', 'col-md-12')
+        let divColM6a = document.createElement('div')
+        divColM6a.setAttribute('class', 'col-md-6')
+        let divSthModalBodyRowFirstFirstForm = document.createElement('div')
+        divSthModalBodyRowFirstFirstForm.setAttribute('class', 'form-group required-field')
+        divSthModalBodyRowFirstFirstForm.innerHTML = '<label>Người thực hiện:</label>'
+            + '<select id="'+ nth + typeModal + index + '" class="select2-c-nth form-control custom-select" style="width: 100%; height:36px;">'
+            + '<option></option>'
+            + '<option value="GV"> Giảng viên</option>'
+            + '<option value="SV">Cá nhân sinh viên</option>'
+            + '<option value="NSV">Nhóm sinh viên</option>'
+            + '</select>'
+            + '<div class="invalid-feedback">Không được để trống</div>'
+        let divColM6b = document.createElement('div')
+        divColM6b.setAttribute('class', 'col-md-6 required-field')
+        let divLa = document.createElement('label')
+        divLa.innerHTML = 'Số giờ:'
+        let divSthModalBodyRowFirstSecondForm = document.createElement('div')
+        divSthModalBodyRowFirstSecondForm.setAttribute('class', 'input-group')
+        divSthModalBodyRowFirstSecondForm.innerHTML = '<input id="' + txtmgio + typeModal + index + '" type="number" class="form-control" placeholder="0" min="1" aria-describedby="basic-addon2">'
+            + '<div class="input-group-append">'
+            + '<span class="input-group-text" id="basic-addon' + txtmgio + typeModal + index + '">Giờ</span>'
+            + '</div>'
+            + '<div class="invalid-feedback">Không được để trống</div>'
+
+
+        let divFifthModalBodyRowSecond = document.createElement('div')
+        divFifthModalBodyRowSecond.setAttribute('class', 'col-md-12')
+        let divFifthModalBodyRowSecondThird = document.createElement('div')
+        divFifthModalBodyRowSecondThird.setAttribute('class', 'form-group required-field')
+        divFifthModalBodyRowSecondThird.innerHTML = '<label>Nội dung học phần:</label>'
+            + '<select id="' + noidung + typeModal + index + '"  class="select2-c-nth form-control custom-select" style="height: 36px; width: 100%;">'
+            + '<option></option>'
+            + arrNoidungDataString
+            + '</select>'
+            + '<div class="invalid-feedback">Không được để trống</div>'
+
+
+        let divSixthModalBodyRowSecond = document.createElement('div')
+        divSixthModalBodyRowSecond.setAttribute('class', 'col-md-12')
+        let divSixthModalBodyRowSecondThird = document.createElement('div')
+        divSixthModalBodyRowSecondThird.setAttribute('class', 'form-group required-field')
+        divSixthModalBodyRowSecondThird.innerHTML = '<label>Phương pháp đánh giá:</label>'
+            + '<select id="' + rating + typeModal + index + '"  class="select2-c-nth form-control custom-select" multiple="multiple" style="height: 36px; width: 100%;">'
+            //+ '<option></option>'
+            + arrRatingDataString
+            + '</select>'
+            + '<div class="invalid-feedback">Không được để trống</div>'
+
+
+        let divSixthModalBodyRowFourth = document.createElement('div')
+        divSixthModalBodyRowFourth.setAttribute('class', 'col-md-12')
+        divSixthModalBodyRowFourth.innerHTML = '  <div class="form-group required-field">'
+            + '<label>Hoạt động:</label>'
+            + '<textarea id="' + txaDescription + typeModal + index + '" class="form-control" rows="5" placeholder="Mô tả hoạt động"></textarea>'
+            + '<div class="invalid-feedback">Không được để trống, hoặc bị trùng các hoạt động trước</div>'
+            + '</div>'
+
+        let divSixthModalFooter = document.createElement('div')
+        divSixthModalFooter.setAttribute('class', 'modal-footer')
+        divSixthModalFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>'
+        let btnAddDialog = document.createElement('btn')
+        btnAddDialog.setAttribute('class', 'btn btn-success')
+        btnAddDialog.addEventListener('click', () => {
+            let isValidAll
+            switch (numCate) {
+                case 1:
+                    isValidAll = validateHoatDongForm(index, typeModal,1,null)
+                    if (isValidAll) {
+                        appItemToTable(noidung,idTable, nth, txtmgio, rating, txaDescription, index, typeModal, {}, false)
+                        toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                        clearFieladModal(nth, txtmgio, rating, txaDescription, index, typeModal)
+                    } else {
+                        toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                    }
+                    break
+                case 2:
+                    //Todo write event Save when data edit
+                    isValidAll = validateHoatDongForm(index, typeModal, 2, idKey)
+                    if (isValidAll) {
+                        console.log("ibdex", index)
+                        SaveEditFormData(idModalActive, idKey, index, typeModal)
+                        toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                    } else {
+                        toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                    }
+                    break
+                default:
+                    isValidAll = validateHoatDongForm(index, typeModal,1,null)
+                    if (isValidAll) {
+                        console.log("ibdex",index)
+                        appItemToTable(noidung,idTable, nth, txtmgio, rating, txaDescription, index, typeModal, {}, false)
+                        toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                    } else {
+                        toastr.error("@CommonRS.Resources.VI.mes_KhongNhapDayDu", "Lỗi")
+                    }
+                    break
+            }
+
+        })
+        switch (numCate) {
+            case 1:
+                btnAddDialog.innerText = 'Thêm'
+                break
+            case 2:
+                btnAddDialog.innerText = 'Lưu'
+                break
+            default:
+                btnAddDialog.innerText = 'Thêm'
+                break
+        }
+
+        divSixthModalFooter.appendChild(btnAddDialog)
+
+        // Third
+        divColM6a.appendChild(divSthModalBodyRowFirstFirstForm)
+        divColM6b.appendChild(divLa)
+        divColM6b.appendChild(divSthModalBodyRowFirstSecondForm)
+        divSixthModalBodyRow.appendChild(divColM6a)
+        divSixthModalBodyRow.appendChild(divColM6b)
+
+        divSixthModalBodyRowSecond.appendChild(divSixthModalBodyRowSecondThird)
+        divFifthModalBodyRowSecond.appendChild(divFifthModalBodyRowSecondThird)
+
+        //divSixthModalBodyRow.appendChild(divSixthModalBodyRowFirstForm)
+        divSixthModalBodyRow.appendChild(divFifthModalBodyRowSecond)
+        divSixthModalBodyRow.appendChild(divSixthModalBodyRowSecond)
+        //divSixthModalBodyRow.appendChild(divSixthModalBodyRowThird)
+        divSixthModalBodyRow.appendChild(divSixthModalBodyRowFourth)
+
+        divSixthModalBody.appendChild(divSixthModalBodyRow)
+
+        divFivethModal.appendChild(divSixthModalHeader)// modal header
+        divFivethModal.appendChild(divSixthModalBody)
+        divFivethModal.appendChild(divSixthModalFooter)
+
+        divFourthModal.appendChild(divFivethModal)
+        divThirdModal.appendChild(divFourthModal)
+
+        parent.appendChild(divThirdModal)
+
+    }
+    /**
+     * only input Number
+     * id input
+     */
+    function OnlyInputNumber(id) {
+        // console.log(id)
+        let sogio = document.getElementById(id)
+        sogio.addEventListener("keyup", (e) => {
+            let { value } = e.target
+            value = value.replace(/[^0-9]/gi, '')
+            sogio.value = parseInt(value) ? parseInt(value) : 0
+            sogio.setAttribute('value', parseInt(value) ? parseInt(value) : 0)
+        })
+    }
+
+    /**
+     * Modal Show dialog require confirm remove item
+     * Parent:  Node
+     * index:   Count
+     * idModal: encrypt
+     */
+
+    function ModalConfirmRM(parent, index, idModal, titleHeader, contentBody) {
+        let divModalRM = document.createElement('div')
+        divModalRM.setAttribute('class', 'modal fade')
+        divModalRM.setAttribute('tabindex', '-1')
+        divModalRM.setAttribute('role', 'dialog')
+        divModalRM.setAttribute('aria-labelledby', 'exampleModalLabel')
+        divModalRM.setAttribute('aria-hidden', true)
+        divModalRM.setAttribute('id', idModal + index)
+        let divModalDialog = document.createElement('div')
+        divModalDialog.setAttribute('class', 'modal-dialog')
+        divModalDialog.setAttribute('role', 'document')
+        let divModalContent = document.createElement('div')
+        divModalContent.setAttribute('class', 'modal-content')
+
+        let divModalHeader = document.createElement('div')
+        divModalHeader.setAttribute('class', 'modal-header')
+        divModalHeader.innerHTML = '<h5 class="modal-title" id="exampleModalLabel">' + titleHeader + '</h5>'
+            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+            + '<span aria-hidden="true">×</span>'
+            + '</button>'
+        let divModalBody = document.createElement('div')
+        divModalBody.setAttribute('class', 'modal-body')
+        divModalBody.innerText = contentBody
+        let divModalFooter = document.createElement('div')
+        divModalFooter.setAttribute('class', 'modal-footer')
+        divModalFooter.innerHTML = '<a href="javascript:void(0)" class="btn btn-secondary" data-dismiss="modal">Đóng</a>'
+            + ' <a href="javascript:void(0)" class="btn btn-success" onclick="RmSession(' + index + ')" data-dismiss="modal">Xác nhận</a>'
+        //Write delete
+        divModalContent.appendChild(divModalHeader)
+        divModalContent.appendChild(divModalBody)
+        divModalContent.appendChild(divModalFooter)
+
+        divModalDialog.appendChild(divModalContent)
+
+        divModalRM.appendChild(divModalDialog)
+
+        parent.appendChild(divModalRM)
+    }
+
+    /**
+     * Function Render Table
+     * parent : Node
+     * type   : Type
+     * index  : Key
+     */
+    function TableMyClass(parent, index,type) {
+        let divContent = document.createElement('div')
+        divContent.setAttribute('class', 'card m-b-0')
+        divContent.setAttribute('style', 'overflow-x: auto;')
+
+        let table = document.createElement('table')
+        table.setAttribute('class', 'table table-hover table-bordered bg-table-mhgd-p4-t1 m-t-0 m-b-5')
+        let thead = document.createElement('thead')
+        thead.setAttribute('class', 'thead_ct')
+        thead.style.whiteSpace = 'nowrap'
+        thead.innerHTML = '<tr>'
+               + '<th> STT</th >'
+               + '<th>Mô tả hoạt động</th>'
+               + '<th>Người thực hiện</th>'
+               + '<th>Số giờ</th>'
+               + '<th>Nội dung</th>'
+               + '<th>Phương pháp đánh giá</th>'
+               + '<th>Tùy chọn</th>'
+            + '</tr>'
+
+        let tbody = document.createElement('tbody')
+        tbody.setAttribute('id', 'tbody' + type + index)
+
+        table.appendChild(thead)
+        table.appendChild(tbody)
+        divContent.appendChild(table)
+        parent.appendChild(divContent)
+    }
+
+    /*
+     * Xóa hoạt động khỏi bảng trang 4
+     * Develop by: Nguyen
+     * Date: 6/4/2019
+     */
+    let itemP4
+    function storeItemWillBeDeletedFromTablePage4(inp) {
+        itemP4 = inp;
+        document.getElementById('xacNhanXoaItemP4').setAttribute('onclick', 'RemoveItemTable(\'' + itemP4 +'\')')
+    }
+
+
+    /**
+     * Function Append Data from Modal to Table
+     * idTable  : Table Solid
+     * nth      : nguoi thuc hien
+     * txtmgio  : gio
+     * rating   : thanh phan danh gia
+     * txaDescription : Mo ta hoat dong
+     * index    : solid encrypt
+     * type     : Loai inside outside
+     * umrela   : True False
+     * True Render
+     * False append new item
+     */
+    function appItemToTable(noidung, idTable, nth, txtmgio, rating, txaDescription, index, type,
+        { idKey, txaDes, txtHour, txtNth, txtRating, txtNoidung },
+        umrela) {
+        // console.log(idTable, index, type)
+        // ID
+        // let txtNth, txtHour, txtRating, txtRating, txtKqht, txaDes, idKey
+        if (!umrela) {
+            idKey = getRandomInt(10000000)
+        }
+
+        let idTB = idTable + type + index
+        let idnth = nth + type + index
+        let idtxtmgio = txtmgio + type + index
+        let idnoidung = noidung + type + index
+        let idrating = rating + type + index
+        let idtxaDescription = txaDescription + type + index
+        // declare Key
+        let idCollapse = 'collapse' + index
+        let idModalEdit = 'ModalEdit_' + idKey + '_'
+        let idBtnEditModal = idModalEdit + type + index
+
+        // Get id table
+
+        let tbodayTable = document.getElementById(idTB)
+        let txtNoidungtxt;
+        let txtRatingtxt;
+        // Check
+        if (!umrela) {
+            txtNth = $('#' + idnth).val()
+            txtHour = document.getElementById(idtxtmgio).value
+            txtNoidung = $('#' + idnoidung).val()
+            txtRating = $('#' + idrating).val()
+            txaDes = document.getElementById(idtxaDescription).value
+            txtNoidungtxt = $('#' + idnoidung).select2('data').map(x => x.text).join()
+            txtNoidungtxt = (txtNoidungtxt == "undefined" || txtNoidungtxt == undefined) ? "" : txtNoidungtxt
+
+            txtRatingtxt = $('#' + idrating).select2('data').map(x => x.text).join()
+            txtRatingtxt = (txtRatingtxt == "undefined" || txtRatingtxt == undefined) ? "" : txtRatingtxt
+        } else {
+            txtNoidungtxt = arrNoidung.map(x => {
+                if (txtNoidung == x.id) {
+                    return x.noiDungNgan
+                }
+            })
+            console.log("txtNoidungtxt", txtNoidungtxt)
+            txtNoidungtxt = txtNoidungtxt.filter(x => x != undefined);
+            txtNoidungtxt = txtNoidungtxt.join()
+
+            txtRatingtxt = arrRating.map(x => {
+                if (txtRating.includes(x.madg+"")) {
+                    return x.mota
+                }
+            })
+            console.log("txtRatingtxt", txtRatingtxt)
+            txtRatingtxt = txtRatingtxt.filter(x => x != undefined);
+            txtRatingtxt = txtRatingtxt.join()
+
+        }
+
+
+        // Create Array with ID and Object tr
+        let trTbodyTable = 'tr_' + type + '_' + index + '_' + idKey
+        let newObj = {
+            idKey, txtNth, txtHour, txtNoidung, txtRating, txaDes
+        }
+        if (!umrela) {
+            objMainRoot[index][type].push(newObj)
+        }
+        // objMainRoot[index] = objItemSession[type]
+        // todo Append Item to Table
+        let countSequese = tbodayTable.getElementsByTagName('tr').length + 1
+
+        
+        let trTb = document.createElement('tr')
+        trTb.setAttribute('id', trTbodyTable)
+        trTb.innerHTML = '<td>' + countSequese + '</td>'
+            + '<td>' + txaDes + '</td>'
+            + '<td>' + translateIdToNameNguoiThucHien(txtNth) + '</td>'
+            + '<td>' + txtHour + '</td>'
+            + '<td>' + txtNoidungtxt + '</td>'
+            + '<td>' + txtRatingtxt + '</td>'
+            + '<td>'
+            + '<button onClick="EvBeforeEditModal(\'' + idModalEdit + '\',' + index + ',\'' + type + '\',' + idKey + ',2)" data-toggle="modal" data-target="#' + idBtnEditModal + '" class="btn btn-warning btn-sm m-r-10">Chỉnh sửa</button>'
+            + '<button type="button" data-toggle="modal" data-target="#xacNhanXoaTableTrang4" onClick="storeItemWillBeDeletedFromTablePage4(\'' + trTbodyTable +'\')" class="btn btn-danger btn-sm">Xóa</button>'
+            + '</td>'
+        tbodayTable.appendChild(trTb)
+        trTb.children[1].innerText = txaDes
+        let idmodal = 'Modal' + type + index
+        //if (!umrela) {
+        //    $('#' + idmodal).modal('hide')
+        //}
+
+
+        // Appned Modal for Edit
+        let collapse = document.getElementById(idCollapse)
+        // console.log(collapse)
+        let title = ''
+        switch (type.toString()) {
+            case 'I':
+                title = 'Chỉnh sửa hoạt động trong lớp'
+                break
+            case 'O':
+                title = 'Chỉnh sửa hoạt động ngoài lớp'
+                break
+        }
+        ModalDialog(collapse, idModalEdit, index, type, title, idKey, 2)
+        // console.log(type)
+        // console.log(objMainRoot)
+        if (!umrela) {
+            lcStorageMeo.setItem('objRootPage4-'+'@Model.MaKHDT', JSON.stringify(objMainRoot))
+        }
+    }
+
+    /**
+     *
+     * max: limit
+     */
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    /**
+     * Remove Item from table
+     * id:  ID is Tr in tbody
+     */
+    function RemoveItemTable(idItem) {
+        let type = idItem.split('_')[1]
+        let indexKey = idItem.split('_')[2]
+        let keyItem = idItem.split('_')[3]
+
+        let tBodytable = document.getElementById('tbody' + type + indexKey)
+
+        let itemNode = document.getElementById(idItem)
+
+        //Remove Child
+        tBodytable.removeChild(itemNode)
+
+        // Remove Main Object
+        let countATb = 0
+        for (let item of objMainRoot[indexKey][type]) {
+           // todo tiep
+            // remove to object with Jey
+            if (item.idKey === parseInt(keyItem)) {
+                objMainRoot[indexKey][type].splice(countATb,1)
+            }
+            countATb++
+        }
+        let count = 1
+        for (let item of tBodytable.getElementsByTagName('tr')) {
+            item.getElementsByTagName('td')[0].innerText = count
+            count++
+        }
+
+        toastr.success('@CommonRS.Resources.VI.mes_XoaHoatDong', 'Thành công!')
+
+        // Save local storage
+        lcStorageMeo.setItem('objRootPage4-'+'@Model.MaKHDT', JSON.stringify(objMainRoot))
+    }
+
+    /**
+     * Event Edit Modal Before
+     *  index
+     *  typeModal
+     *  idKey: Key primary item
+     *  category: 1 them 2 edit
+     */
+
+    function EvBeforeEditModal(idModal, index, typeModal, idKey, numCategory) {
+        // render effect select2
+        AnimationEffectSelect(idModal, index, typeModal, idKey, numCategory)
+        // Append Data to Modal
+        objMainRoot[index][typeModal].forEach((item, pos) => {
+            // Find Object Data for Edit screen
+            if (item.idKey == idKey) {
+                AppDataModal(item, index,typeModal)
+            }
+        })
+    }
+
+    /**
+     * AppendData to Field Modal
+     * infNth   : Data nguoi thuc hien
+     * infSogio : Data Sogio
+     * infDanhgia:  Data danh gia
+     * infKetqua:   Data ket qua
+     * infHoatdong: Data HoatDong
+     * index:   Primary Key Collapse count
+     * typeModal:   I O
+     **/
+    function AppDataModal({ idKey, txaDes, txtHour, txtNth, txtRating, txtNoidung }, index, typeModal) {
+        let idNth = 'edit_c_nth_tl_' + idKey + '_' + typeModal + index
+        let idGio = 'edit_txtmgio_' + idKey + '_' + typeModal + index
+        let idNoidung = 'edit_noidungChonNhieu_' + idKey + '_' + typeModal + index
+        let idRating = 'edit_chonNhieu_' + idKey + '_' + typeModal + index
+        let idDes = 'edit_txaDes_' + idKey + '_' + typeModal + index
+
+        // Set Value to option
+        // Nguoi thuc thien
+        console.log("txtNth", txtNth)
+        console.log("idNth", idNth)
+        $('#' + idNth).val(txtNth.trim())
+        $('#' + idNth).trigger('change')
+
+        // So gio
+        // console.log(idGio)
+        document.getElementById(idGio).value = txtHour
+
+        //Noi Dung Hoc Phan
+        $('#' + idNoidung).val(txtNoidung)
+        $('#' + idNoidung).trigger('change')
+
+        // Thanh Phan Danh gia
+        $('#' + idRating).val(txtRating)
+        $('#' + idRating).trigger('change')
+
+
+        // Hoat dong
+        document.getElementById(idDes).value = txaDes
+    }
+
+    /**
+     * Clear filed modal
+     *  Event for clear all value item
+     *  idNth
+     *  idHour
+     *  idRating
+     *  idKetqua
+     *  idHoatdong
+     *  index
+     *  type
+     */
+    function clearFieladModal(idNth, idHour, idRating, idKetqua, idHoatdong, index, typeModal) {
+        //Id each item
+        let idPNth = idNth + typeModal + index
+        let idPHour = idHour + typeModal + index
+        let idPRating = idRating + typeModal + index
+        let idPKetqua = idKetqua + typeModal + index
+        let idPHoatdong = idHoatdong + typeModal + index
+
+        // Set Value null to option
+        // Nguoi thuc thien
+        $('#' + idPNth).val(null)
+        $('#' + idPNth).trigger('change')
+
+        // So gio
+        // console.log(idGio)
+        document.getElementById(idPHour).value = 0
+
+        // Thanh Phan Danh gia
+        $('#' + idPRating).val(null)
+        $('#' + idPRating).trigger('change')
+
+        // Ket qua hoc tap mong doi
+        document.getElementById(idPKetqua).value = ''
+
+        // Hoat dong
+        document.getElementById(idPHoatdong).value = ''
+    }
+
+    /**
+     * Event Save data when user edit one of any filed
+     * idModalActive        : ID Modal big
+     * idKey                : Key primary inside item
+     * index                : position session ID
+     * typeModal            : I O
+     */
+
+    function SaveEditFormData(idModalActive, idKey, index, typeModal) {
+        // TODO
+        // ID element
+        let idNth = 'edit_c_nth_tl_' + idKey + '_' + typeModal + index
+        let idGio = 'edit_txtmgio_' + idKey + '_' + typeModal + index
+        let idNoidung = 'edit_noidungChonNhieu_' + idKey + '_' + typeModal + index
+        let idRating = 'edit_chonNhieu_' + idKey + '_' + typeModal + index
+        let idDes = 'edit_txaDes_' + idKey + '_' + typeModal + index
+
+        let idtrTable = 'tr_' + typeModal + '_' + index + '_' + idKey
+        // Get All data in field
+        let txtNth = $('#' + idNth).val()
+        let txtHour = document.getElementById(idGio).value
+        let txtNoidung = $('#' + idNoidung).val()
+        let txtRating = $('#' + idRating).val()
+        let txaDes = document.getElementById(idDes).value
+        console.log("id txaDes", txaDes)
+
+        let trTable = document.getElementById(idtrTable)
+        // Save to object array
+        objMainRoot[index][typeModal].map((item, index) => {
+            if (item.idKey == idKey) {
+                console.log("item nay",item)
+                item.txaDes = txaDes
+                item.txtHour = txtHour
+                item.txtNth = txtNth
+                item.txtNoidung = txtNoidung
+                item.txtRating = txtRating
+                return item
+            }
+        })
+
+
+        let txtNoidungtxt;
+        let txtRatingtxt;
+
+        txtNoidungtxt = arrNoidung.map(x => {
+            if (txtNoidung == x.id) {
+                return x.noiDungNgan
+            }
+        })
+        txtNoidungtxt = txtNoidungtxt.filter(x => x != undefined);
+        txtNoidungtxt = txtNoidungtxt.join()
+
+        txtRatingtxt = arrRating.map(x => {
+            if (txtRating.includes(x.madg + "")) {
+                return x.mota
+            }
+        })
+        txtRatingtxt = txtRatingtxt.filter(x => x != undefined);
+        txtRatingtxt = txtRatingtxt.join()
+
+        // Screen update data in item
+        // Mo Ta Hoat Dong
+        trTable.getElementsByTagName('td')[1].innerText = txaDes
+        // Nguoi Thuc Hien
+        trTable.getElementsByTagName('td')[2].innerText = translateIdToNameNguoiThucHien(txtNth)
+        // So gio
+        trTable.getElementsByTagName('td')[3].innerText = txtHour
+        // Noi dung hoc phan
+        trTable.getElementsByTagName('td')[4].innerText = txtNoidungtxt
+        // Thanh phan danh gia
+        trTable.getElementsByTagName('td')[5].innerText = txtRatingtxt
+
+
+        // Hiddent Modal
+        $('#' + idModalActive).modal('hide')
+
+        lcStorageMeo.setItem('objRootPage4-'+@Model.MaKHDT, JSON.stringify(objMainRoot))
+    }
+
+    /**
+     * Event Onchange save Local element
+     * id   : id parames
+     * index : Position for saave localstorage
+     **/
+    function mEvOChangeSLocal(id, index) {
+        let element = document.getElementById(id)
+        //console.log(element)
+        element.addEventListener('keyup', (e) => {
+            objMainRoot[index][id] = e.target.value
+            lcStorageMeo.setItem('objRootPage4-'+'@Model.MaKHDT', JSON.stringify(objMainRoot))
+        })
+        element.addEventListener('change', (e) => {
+            objMainRoot[index][id] = e.target.value
+            lcStorageMeo.setItem('objRootPage4-'+'@Model.MaKHDT', JSON.stringify(objMainRoot))
+        })
+    }
+
+    //validate function form Them HD Ngoai Lop
+    function validateHoatDongForm(index, modelType, formType, idKey) {
+        let headStr = "";
+        let idKeyStr = "";
+
+        //if form is view edit
+        if (formType == 2) {
+            headStr = "edit_"
+        }
+        if (idKey != null) {
+            idKeyStr = "_"+idKey+"_"
+        }
+
+        let selectNguoiTH = $("#" + headStr + "c_nth_tl" + idKeyStr + modelType + index)
+        let txtSoGio = $("#" + headStr + "txtmgio" + idKeyStr + modelType + index)
+        let txtTPDanhGia = $("#" + headStr + "chonNhieu" + idKeyStr + modelType + index)
+        let txtHoatDong = $("#" + headStr + "txaDes" + idKeyStr + modelType + index)
+        let txtNoiDung = $("#" + headStr + "noidungChonNhieu" + idKeyStr + modelType + index)
+        let isValidAll = true
+        let isDuplicate = false
+
+        if (selectNguoiTH.val() == "") {
+            selectNguoiTH.addClass("is-invalid")
+            isValidAll = false
+        }else {
+            selectNguoiTH.removeClass("is-invalid")
+        }
+
+
+        if (txtSoGio.val() == "") {
+            txtSoGio.addClass("is-invalid")
+            isValidAll = false
+        }else {
+            txtSoGio.removeClass("is-invalid")
+        }
+
+        if (txtNoiDung.val() == "") {
+            txtNoiDung.addClass("is-invalid")
+            isValidAll = false
+        } else {
+            txtNoiDung.removeClass("is-invalid")
+        }
+
+        if (txtTPDanhGia.val().length == 0) {
+            txtTPDanhGia.addClass("is-invalid")
+            isValidAll = false
+        }else {
+            txtTPDanhGia.removeClass("is-invalid")
+        }
+
+        //validate khong trung lai hoat dong
+        if (formType != 2) {    
+            if (modelType == "I") {
+                for (let i in objMainRoot[index].I) {
+                    if (objMainRoot[index].I[i].txaDes == txtHoatDong.val()) {
+                        isDuplicate = true
+                        break;
+                    }
+                }
+            } else {
+                for (let i in objMainRoot[index].O) {
+                    if (objMainRoot[index].O[i].txaDes == txtHoatDong.val()) {
+                        isDuplicate = true
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (txtHoatDong.val() == "" || isDuplicate) {
+            txtHoatDong.addClass("is-invalid")
+            isValidAll = false
+        }else {
+            txtHoatDong.removeClass("is-invalid")
+        }
+
+        return isValidAll
+    }
+
+    function submitPage4() {
+        let maKHDTJS = '@Model.MaKHDT'
+        let sendArray = []
+        for (key in objMainRoot) {
+            if (key == "arrWeek" || key == "countIDSolid" || key == "countWeek") {
+
+            } else {
+                sendArray.push(objMainRoot[key])
+            }
+            
+        }
+
+        console.log("sendList", sendArray)
+
+        let form_datas = { strModelChitiet: JSON.stringify(sendArray), maKHDT: maKHDTJS };
+        $.ajax({
+            url: "@Url.Action("LuuTacVuHP", "API")",
+            type: "post",
+            data: JSON.stringify(form_datas),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8"
+
+        }).done(function (response) {
+            if (response.status == 200) {
+                localStorage.setItem('objRootPage4-' + @Model.MaKHDT, '{}')
+
+                toastr.success(response.message, 'Thành công!');
+                step = 'step5';
+                step4.classList.remove("active");
+                step4.classList.add("completed");
+                step5.classList.add("active");
+                s1content.style.display = 'none'
+                s2content.style.display = 'none'
+                s3content.style.display = 'none'
+                s4content.style.display = 'none'
+                s5content.style.display = 'block'
+                s6content.style.display = 'none'
+                step4.childNodes[5].style.display = 'block'
+                $("#formLPH").select2({
+                    placeholder: "Chọn loại phòng học",
+                    allowClear: true
+                })
+                document.getElementById("backgroundLoader").style.display = "none"
+            } else {
+                toastr.error(response.message, 'Lỗi!');
+                document.getElementById("backgroundLoader").style.display = "none"
+
+            }
+
+        })
+
+        
+    }
+
+
+</script>
+@*------------------------------------ Javascript Trang 4 ------------------------------------*@
+@*numTable = 5 || 6*@
+<script type="text/javascript">
+    //Thêm dữ liệu từ pop-up modal vào bảng
+    var taiLieuMoi = []
+    //Kiểm tra radioButton đang được chọn
+    var radioSelected = ""
+    function handleSelect(selectedRadioValue) {
+        radioSelected = selectedRadioValue.value
+    }
+
+    //Kiểm tra tab pill đang được chọn
+    //Mặc định tabPill - 1: Đang chọn tab thông tin
+    var tabPill = 1;
+    function chooseTab(numberOfTab) {
+        tabPill = numberOfTab
+    }
+
+    //Mở modal thêm tài liệu
+    document.getElementById('themTaiLieuThamKhao').addEventListener('click', function () {
+        document.getElementById('modalThemTitle').innerHTML = "Thêm giáo trình / Tài liệu tham khảo"
+        document.getElementById('luuChinhSuaP5').style.display = "none"
+        document.getElementById('themTaiLieu').style.display = "block"
+
+        //set lại mặc định
+        if (modalEditOpened) {
+            $("#pills-info-tab").trigger("click")
+            $("#tenTaiLieu").val("")
+            $("#tenTacGia").val("")
+            $("#tenNhaXuatBan").val("")
+            $("#namXuatBan").val("")
+            $("#duongDan").val("")
+            document.getElementById('loaiTaiLieu1').checked = false
+            document.getElementById('loaiTaiLieu2').checked = false
+            modalEditOpened = false
+        }
+    })
+
+    //MaKHDT
+    var maKHDT = @Model.MaKHDT;
+
+
+    //Thêm tài liệu
+    document.getElementById('themTaiLieu').addEventListener("click", function () {
+        switch (tabPill) {
+            case 1: {
+                let flag = kiemTraThongTin(5)
+                if (flag) {
+                    let taiLieu = {
+                        LoaiTL: radioSelected,
+                        TenTL: document.getElementById('tenTaiLieu').value,
+                        Tacgia: document.getElementById('tenTacGia').value,
+                        NhaXB: document.getElementById('tenNhaXuatBan').value,
+                        NamXB: document.getElementById('namXuatBan').value,
+                        Kieunhap: tabPill,
+                        MaKHDT: maKHDT
+                    }
+                    //Thêm dữ liệu vào mảng
+                    taiLieuMoi.push(taiLieu)
+
+                    //Update localstore
+                    updateLocalStorePage5()
+                    //Xóa dữ liệu khỏi các trường trong modal popup
+                    xoaDuLieu(5)
+                    //Xuất hiện thông báo thêm thành công
+                    toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                    //Reload lại nội dung trong bảng
+                    renderTable(5)
+                }
+                break
+            };
+            case 2: {
+                let flag = kiemTraThongTin(6)
+                if (flag) {
+                    let taiLieu = {
+                        LoaiTL: radioSelected,
+                        TenTL: document.getElementById('duongDan').value,
+                        Kieunhap: tabPill,
+                        MaKHDT: maKHDT
+                    }
+                    //Thêm dữ liệu vào mảng
+                    taiLieuMoi.push(taiLieu)
+
+                    //Update localstore
+                    updateLocalStorePage5()
+
+                    //Xóa dữ liệu khỏi các trường trong modal popup
+                    xoaDuLieu(6)
+                    //Xuất hiện thông báo thêm thành công
+                    toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                    //Reload lại nội dung trong bảng
+                    renderTable(5)
+                }
+                break
+            };
+        }
+    });
+    //Lưu chỉnh sửa
+    document.getElementById('luuChinhSuaP5').addEventListener("click", function () {
+        switch (tabPill) {
+            case 1: {
+                let flag = kiemTraThongTin(5)
+                if (flag) {
+                    let taiLieu = {
+                        LoaiTL: radioSelected,
+                        TenTL: document.getElementById('tenTaiLieu').value,
+                        Tacgia: document.getElementById('tenTacGia').value,
+                        NhaXB: document.getElementById('tenNhaXuatBan').value,
+                        NamXB: document.getElementById('namXuatBan').value,
+                        Kieunhap: tabPill,
+                        MaKHDT: maKHDT
+                    }
+                    //Lưu vào mảng
+                    taiLieuMoi[rowNumberForEdit] = taiLieu
+
+                    //Update localstore
+                    updateLocalStorePage5()
+
+                    //Xóa dữ liệu khỏi các trường trong modal popup
+                    xoaDuLieu(5)
+                    //Xuất hiện thông báo thêm thành công
+                    toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                    //Reload lại nội dung trong bảng
+                    renderTable(5)
+                    $('#themModal').modal('toggle');
+                }
+                break
+            };
+            case 2: {
+                let flag = kiemTraThongTin(6)
+                if (flag) {
+                    let taiLieu = {
+                        LoaiTL: radioSelected,
+                        TenTL: document.getElementById('duongDan').value,
+                        Kieunhap: tabPill,
+                        MaKHDT: maKHDT
+                    }
+                    //Lưu vào mảng
+                    taiLieuMoi[rowNumberForEdit] = taiLieu
+
+                    //Update localstore
+                    updateLocalStorePage5()
+
+                    //Xóa dữ liệu khỏi các trường trong modal popup
+                    xoaDuLieu(6)
+                    //Xuất hiện thông báo thêm thành công
+                    toastr.success("@CommonRS.Resources.VI.mes_LuuBang", "Thành công")
+                    //Reload lại nội dung trong bảng
+                    renderTable(5)
+                    $('#themModal').modal('toggle');
+                }
+                break
+            };
+        }
+    })
+    //Vị trí của dòng đang được chỉnh sửa (nếu có)
+    var modalEditOpened = false
+    var rowNumberForEdit
+    function storeRowDelete(inNumber) {
+        modalEditOpened = true
+        rowNumberForEdit = parseInt(inNumber)
+
+        //Đổi tiêu đề modal
+        //Thêm giáo trình / Tài liệu tham khảo
+        document.getElementById('modalThemTitle').innerHTML = "Chỉnh sửa giáo trình / Tài liệu tham khảo"
+        document.getElementById('luuChinhSuaP5').style.display = "block"
+        document.getElementById('themTaiLieu').style.display = "none"
+
+
+        ////var mo = document.getElementById('modalEdit');
+        var data = taiLieuMoi[rowNumberForEdit]
+
+        if (data.Kieunhap == 2) {
+            $("#pills-link-tab").trigger("click")
+        } else {
+            $("#pills-info-tab").trigger("click")
+        }
+
+        //Chọn loại tài liệu trong radiobutton
+        if (data.LoaiTL === '1') {
+            radioSelected = '1'
+            document.getElementById("loaiTaiLieu1").checked = true;
+        } else if (data.LoaiTL === '2'){
+            radioSelected = '2'
+            document.getElementById("loaiTaiLieu2").checked = true;
+        } else if (data.LoaiTL === '3'){
+            radioSelected = '3'
+            document.getElementById("loaiTaiLieu3").checked = true;
+        } else if (data.LoaiTL === '4'){
+            radioSelected = '4'
+            document.getElementById("loaiTaiLieu4").checked = true;
+        }
+
+        if (data.Kieunhap == 1) {
+            //Đưa dữ liệu vào tên tài liệu
+            document.getElementById('tenTaiLieu').value = data.TenTL
+            //Đưa dữ liệu vào tên tác giả
+            document.getElementById('tenTacGia').value = data.Tacgia
+            //Đưa dữ liệu vào tên nhà xuất bản
+            document.getElementById('tenNhaXuatBan').value = data.NhaXB
+            //Đưa dữ liệu vào thời gian xuất bản
+            document.getElementById('namXuatBan').value = data.NamXB
+        } else {
+            //Đưa dữ liệu vào ô đường dẫn
+            document.getElementById('duongDan').value = data.TenTL
+        }
+    }
+
+    let objRootPage5Check = JSON.parse(lcStorageMeo.getItem("objRootPage5-" + maKHDT))
+
+    //If localstore not exist create
+    if (objRootPage5Check == null || lcStorageMeo.getItem("objRootPage5-" + maKHDT) == '{}') {
+        lcStorageMeo.setItem("objRootPage5-" + maKHDT, '{}')
+
+        $.getJSON("@Url.Action("LayDanhSachTaiLieuHP", "API")" + "?maKHDT=" + maKHDT, function (result) {
+        taiLieuMoi = result;
+
+        //Reload lại nội dung trong bảng
+        renderTable(5)
+    })
+
+
+    } else {
+        //if localstore Exist
+        $("#formThangdiem").val(objRootPage5Check["formThangdiem"])
+        $("#formGiangday").val(objRootPage5Check["formGiangday"])
+        $("#formHoctap").val(objRootPage5Check["formHoctap"])
+        $("#formNhiemvu").val(objRootPage5Check["formNhiemvu"])
+        $("#formNNGD").val(objRootPage5Check["formNNGD"])
+        $("#formMota").val(objRootPage5Check["formMota"])
+        $("#formLPH").val(objRootPage5Check["formLPH"]).trigger('change')
+        $("#formPTPVGD").val(objRootPage5Check["formPTPVGD"])
+        $("#formPTT").val(objRootPage5Check["formPTT"])
+        $("#formNHDCBS").val(objRootPage5Check["formNHDCBS"])
+        $("#formCSDCLT").val(objRootPage5Check["formCSDCLT"])
+        $("#formNDCS").val(objRootPage5Check["formNDCS"])
+
+
+        $("#tenTaiLieu").val(objRootPage5Check["tenTaiLieu"])
+        $("#tenTacGia").val(objRootPage5Check["tenTacGia"])
+        $("#tenNhaXuatBan").val(objRootPage5Check["tenNhaXuatBan"])
+        $("#namXuatBan").val(objRootPage5Check["namXuatBan"])
+        $("#duongDan").val(objRootPage5Check["duongDan"])
+        taiLieuMoi = objRootPage5Check["taiLieuMoi"]
+
+        //Reload lại nội dung trong bảng
+        renderTable(5)
+    }
+
+
+    document.getElementById("step5-content").addEventListener("keyup", updateLocalStorePage5)
+
+    function updateLocalStorePage5() {
+        let objRootPage5 = JSON.parse(lcStorageMeo.getItem("objRootPage5-" + maKHDT))
+
+        let formThangdiem = $("#formThangdiem").val()
+        let formGiangday = $("#formGiangday").val()
+        let formHoctap = $("#formHoctap").val()
+        let formNhiemvu = $("#formNhiemvu").val()
+        let formNNGD = $("#formNNGD").val()
+        let formMota = $("#formMota").val()
+        let formLPH = $("#formLPH").val()
+        let formPTPVGD = $("#formPTPVGD").val()
+        let formPTT = $("#formPTT").val()
+        let formNHDCBS = $("#formNHDCBS").val()
+        let formCSDCLT = $("#formCSDCLT").val()
+        let formNDCS = $("#formNDCS").val()
+
+
+
+        //Form add
+        let tenTaiLieu = $("#tenTaiLieu").val()
+        let tenTacGia = $("#tenTacGia").val()
+        let tenNhaXuatBan = $("#tenNhaXuatBan").val()
+        let namXuatBan = $("#namXuatBan").val()
+        let duongDan = $("#duongDan").val()
+
+        objRootPage5["formThangdiem"] = formThangdiem
+        objRootPage5["formGiangday"] = formGiangday
+        objRootPage5["formHoctap"] = formHoctap
+        objRootPage5["formNhiemvu"] = formNhiemvu
+        objRootPage5["formNNGD"] = formNNGD
+        objRootPage5["formMota"] = formMota
+        objRootPage5["formLPH"] = formLPH
+        objRootPage5["formPTPVGD"] = formPTPVGD
+        objRootPage5["formPTT"] = formPTT
+        objRootPage5["formNHDCBS"] = formNHDCBS
+        objRootPage5["formCSDCLT"] = formCSDCLT
+        objRootPage5["formNDCS"] = formNDCS
+
+        objRootPage5["tenTaiLieu"] = tenTaiLieu
+        objRootPage5["tenTacGia"] = tenTacGia
+        objRootPage5["tenNhaXuatBan"] = tenNhaXuatBan
+        objRootPage5["namXuatBan"] = namXuatBan
+        objRootPage5["duongDan"] = duongDan
+        objRootPage5["taiLieuMoi"] = taiLieuMoi
+
+        lcStorageMeo.setItem("objRootPage5-" + maKHDT, JSON.stringify(objRootPage5))
+
+    }
+
+    document.querySelector("#layout-father").classList.add("active");
+    document.querySelector("#layout-ul").classList.add("in");
+    document.querySelector("#list-course").classList.add("active");
+</script>
+@*------------------------------------ Javascript Trang 5 ------------------------------------*@

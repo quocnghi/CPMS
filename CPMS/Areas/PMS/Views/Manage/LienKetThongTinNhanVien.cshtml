@@ -1,0 +1,486 @@
+﻿@using Capstone.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Xem kế hoạch giảng dạy";
+    fit_misDBEntities db = new fit_misDBEntities();
+    string userEmail = "";
+    string userName = "";
+    string userPhone = "";
+    string userID = "";
+    List<AspNetRole> userRoles = new List<AspNetRole>();
+    if (Request.IsAuthenticated)
+    {
+        userID = User.Identity.GetUserId();
+        userEmail = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).Email;
+        userName = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).UserName;
+        userPhone = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).PhoneNumber;
+    }
+}
+@{
+    ViewBag.Title = "Liên kết thông tin tài khoản";
+}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Liên kết thông tin tài khoản</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Liên kết thông tin tài khoản</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row m-0">
+        <div class="col-md-5 bg_content" style="float: left;">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Thông tin tài khoản</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-horizontal">
+                        <div class="card-body p-0">
+                            <div class="form-group row">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Tài khoản</label>
+                                <div class="col-sm-9">
+                                    <select id="xkhdt_system" class="select2-system form-control custom-select" style="width: 100%; height:36px;">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Liên kết thông tin</label>
+                                <div class="col-sm-9">
+                                    <select id="accountStatus" class="js-example-placeholder-multiplea js-states form-control" multiple="multiple">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+            {
+                @Html.AntiForgeryToken()
+            }
+        </div>
+        <div class="col-md-2" id="col-area-button-unmmap" style="text-align: center; display: none;">
+            <a href="javascript:void(0)" id="btnUmmapping" class="btn btn-danger">Bỏ liên kết tài khoản</a>
+        </div>
+        <div class="col-md-2" id="col-area-button-map" style="text-align: center; display: none;">
+            <a href="javascript:void(0)" id="btnMapping" class="btn btn-success">Liên kết tài khoản</a>
+        </div>
+        <div class="col-md-5 bg_content" id="staffInfo" style="display: none;">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Thông tin nhân viên</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-horizontal">
+                        <div class="card-body p-0">
+                            <div class="form-group row" id="chooseStaff">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Nhân viên</label>
+                                <div class="col-sm-9">
+                                    <select id="selectNhanVien" class="select2-staff form-control custom-select" style="width: 100%; height:36px;">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label class="col-sm-3 text-right control-label col-form-label">Họ và tên</label>
+                                <div class="form-group col-sm-9">
+                                    <input type="text" class="form-control" id="lblHoTen" placeholder="Họ và tên" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Ngày sinh</label>
+                                <div class="form-group col-sm-9">
+                                    <input type="date" id="inputNgaySinh" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Học vị</label>
+                                <div class="form-group col-sm-9">
+                                    <select id="selectHocVi" class="js-example-placeholder-multiplea js-states form-control" multiple="multiple"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Học hàm</label>
+                                <div class="form-group col-sm-9">
+                                    <select id="selectHocHam" class="js-example-placeholder-multiplea js-states form-control" multiple="multiple"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="lname" class="col-sm-3 text-right control-label col-form-label p-t-0">Giới tính</label>
+                                <div class="col-sm-9">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input type="checkbox" class="custom-control-input" id="gioiTinhNam" disabled>
+                                        <label class="custom-control-label" for="tbm">
+                                            Nam
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input type="checkbox" class="custom-control-input" id="gioiTinhNu" disabled>
+                                        <label class="custom-control-label" for="gvch">
+                                            Nữ
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input type="checkbox" class="custom-control-input" id="gioiTinhKhac" disabled>
+                                        <label class="custom-control-label" for="gvtg">
+                                            Khác
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Số điện thoại</label>
+                                <div class="form-group col-sm-9">
+                                    <input type="number" id="lblSoDienThoai" class="form-control" placeholder="Số điện thoại" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Email</label>
+                                <div class="form-group col-sm-9">
+                                    <input type="email" id="lblEmail" class="form-control" placeholder="Địa chỉ Email" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Địa chỉ</label>
+                                <div class="form-group col-sm-9">
+                                    <input type="text" id="lblDiaChi" class="form-control" placeholder="Địa chỉ nhân viên" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row m-b-0">
+                                <label for="fname" class="col-sm-3 text-right control-label col-form-label">Mã nhân viên</label>
+                                <div class="form-group col-sm-9">
+                                    <select id="selectMaNV" class="js-example-placeholder-multiplea js-states form-control" multiple="multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loaderEmail" style="display: none;"></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dataNhanVienChuaLienKet;
+        $(".select2-system").select2({
+            placeholder: "Chọn tài khoản cần liên kết thông tin",
+            allowClear: true
+        })
+        $(".select2-staff").select2({
+            placeholder: "Chọn thông tin nhân viên",
+            allowClear: true
+        })
+        $('#selectHocVi').select2({});
+        $('#selectHocVi').prop("disabled", true);
+        $('#selectHocHam').select2({});
+        $('#selectHocHam').prop("disabled", true);
+        $('#selectMaNV').select2({});
+        $('#accountStatus').select2({
+            placeholder: "Trạng thái liên kết"
+        })
+        $('#accountStatus').prop("disabled", true);
+        $('#selectMaNV').prop("disabled", true);
+        var isAdmin = false
+        $.getJSON("@Url.Action("DanhSachTaiKhoan", "API")", data => {
+            if (data.length > 0) {
+                for (let item of data) {
+                    var newOption = new Option(item.userEmail + ' - ' + item.userName, item.id, false, false);
+                    $('#xkhdt_system').append(newOption).trigger('change');
+                }
+            }
+        });
+
+        $('#xkhdt_system').on('select2:select', (e) => {
+            let userID = e.params.data.id
+            $.getJSON("@Url.Action("DanhSachNhanVienDaLienKet", "Manage")" + "?id=" + userID, data => {
+                    if (data.length > 0) {
+                        for (let item of data) {
+                            if (item.Id == userID) {
+                                document.getElementById('lblHoTen').value = item.Ho + ' ' + item.Ten;
+                                document.getElementById('lblSoDienThoai').value = item.SDT;
+                                document.getElementById('lblEmail').value = item.Email;
+                                document.getElementById('lblDiaChi').value = item.Diachi;
+                                document.getElementById('inputNgaySinh').value = item.Ngaysinh
+
+                                $('#selectHocVi').val("");
+                                var newOptionHocVi = new Option(item.Thongtinhocvi, item.Thongtinhocvi, true, true);
+                                $('#selectHocVi').append(newOptionHocVi).trigger('change');
+
+                                $('#selectHocHam').val("");
+                                if (item.Thongtinhocham != null) {
+                                    var newOptionHocHam = new Option(item.Thongtinhocham, item.Thongtinhocham, true, true);
+                                    $('#selectHocHam').append(newOptionHocHam).trigger('change');
+                                }
+
+                                $('#selectMaNV').val("");
+                                if (item.Thongtinhocvi != null) {
+                                    var newOptionHocMaNV = new Option(item.MaQL, item.MaQL, true, true);
+                                    $('#selectMaNV').append(newOptionHocMaNV).trigger('change');
+                                }
+
+                                if (item.Gioitinh == 0) {
+                                    $("#gioiTinhNam").prop("checked", true);
+                                    $("#gioiTinhNu").prop("checked", false);
+                                    $("#gioiTinhKhac").prop("checked", false);
+                                } else if (item.Gioitinh == 1) {
+                                    $("#gioiTinhNu").prop("checked", true);
+                                    $("#gioiTinhNam").prop("checked", false);
+                                    $("#gioiTinhKhac").prop("checked", false);
+                                } else if (item.Gioitinh == 2) {
+                                    $("#gioiTinhNam").prop("checked", false);
+                                    $("#gioiTinhNu").prop("checked", false);
+                                    $("#gioiTinhKhac").prop("checked", true);
+                                }
+                                switch (item.Gioitinh) {
+                                    case 0: {
+                                        $("#gioiTinhNam").prop("checked", true);
+                                        break;
+                                    }
+                                    case 1: {
+                                        $("#gioiTinhNu").prop("checked", true);
+                                        break;
+                                    }
+                                    case 2: {
+                                        $("#gioiTinhKhac").prop("checked", true);
+                                        break;
+                                    }
+                                }
+                                $('#accountStatus').html("");
+                                var newOption = new Option("Đã liên kết thông tin", "0", true, true);
+                                $('#accountStatus').append(newOption).trigger('change');
+
+                                document.getElementById('staffInfo').style.display = "block";
+                                let heightCol = document.getElementById('staffInfo').clientHeight;
+                                document.getElementById('col-area-button-unmmap').style.lineHeight = heightCol + 'px';
+                                document.getElementById('col-area-button-unmmap').style.display = "block";
+                                document.getElementById('col-area-button-map').style.display = "none";
+
+                                document.getElementById('chooseStaff').style.display = "none";
+                            } else {
+                                clearDataFields();
+                                $('#accountStatus').html("");
+                                var newOption = new Option("Chưa liên kết thông tin", "0", true, true);
+                                $('#accountStatus').append(newOption).trigger('change');
+
+                                document.getElementById('staffInfo').style.display = "block";
+                                document.getElementById('col-area-button-unmmap').style.display = "none";
+                                document.getElementById('col-area-button-map').style.display = "block";
+                                let heightCol = document.getElementById('staffInfo').clientHeight;
+                                document.getElementById('col-area-button-map').style.lineHeight = heightCol + 'px';
+
+                                document.getElementById('chooseStaff').style.display = "";
+
+                                $.getJSON("@Url.Action("DanhSachNhanVienChuaLienKet", "Manage")", data => {
+                                    $("#selectNhanVien").val(null).trigger("change");
+                                    $("#selectNhanVien").html("");
+                                    if (data.length > 0) {
+                                        dataNhanVienChuaLienKet = data;
+                                        var newOption = new Option('', '', false, false);
+                                        $('#selectNhanVien').append(newOption).trigger('change');
+                                        for (let item of data) {
+                                            var newOption = new Option(item.MaQL + ' - ' + item.Ho + ' ' + item.Ten, item.MaNV, false, false);
+                                            $('#selectNhanVien').append(newOption).trigger('change');
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    } else {
+                        clearDataFields();
+                        $('#accountStatus').html("");
+                        var newOption = new Option("Chưa liên kết thông tin", "0", true, true);
+                        $('#accountStatus').append(newOption).trigger('change');
+                        document.getElementById('staffInfo').style.display = "block";
+                        document.getElementById('col-area-button-unmmap').style.display = "none";
+                        document.getElementById('col-area-button-map').style.display = "block";
+                        let heightCol = document.getElementById('staffInfo').clientHeight;
+                        document.getElementById('col-area-button-map').style.lineHeight = heightCol + 'px';
+
+                        document.getElementById('chooseStaff').style.display = "";
+
+                            $.getJSON("@Url.Action("DanhSachNhanVienChuaLienKet", "Manage")", data => {
+                                $("#selectNhanVien").val(null).trigger("change");
+                                $("#selectNhanVien").html("");
+                                if (data.length > 0) {
+                                    dataNhanVienChuaLienKet = data;
+                                    var newOption = new Option('', '', false, false);
+                                    $('#selectNhanVien').append(newOption).trigger('change');
+                                    for (let item of data) {
+                                        var newOption = new Option(item.MaQL + ' - ' + item.Ho + ' ' + item.Ten, item.MaNV, false, false);
+                                        $('#selectNhanVien').append(newOption).trigger('change');
+                                    }
+                                }
+                            });
+                    }
+                })
+        })
+
+        $('#selectNhanVien').on('select2:select', (e) => {
+            let maNV = e.params.data.id;
+            for (let item of dataNhanVienChuaLienKet) {
+                if (item.MaNV == maNV) {
+                    document.getElementById('lblHoTen').value = item.Ho + ' ' + item.Ten;
+                    document.getElementById('lblSoDienThoai').value = item.SDT;
+                    document.getElementById('lblEmail').value = item.Email;
+                    document.getElementById('lblDiaChi').value = item.Diachi;
+                    document.getElementById('inputNgaySinh').value = item.Ngaysinh
+
+                    $('#selectHocVi').val("");
+                    var newOptionHocVi = new Option(item.Thongtinhocvi, item.Thongtinhocvi, true, true);
+                    $('#selectHocVi').append(newOptionHocVi).trigger('change');
+
+                    $('#selectHocHam').val("");
+                    if (item.Thongtinhocham != null) {
+                        var newOptionHocHam = new Option(item.Thongtinhocham, item.Thongtinhocham, true, true);
+                        $('#selectHocHam').append(newOptionHocHam).trigger('change');
+                    }
+
+                    $('#selectMaNV').val("");
+                    if (item.Thongtinhocvi != null) {
+                        var newOptionHocMaNV = new Option(item.MaQL, item.MaQL, true, true);
+                        $('#selectMaNV').append(newOptionHocMaNV).trigger('change');
+                    }
+
+                    if (item.Gioitinh == 0) {
+                        $("#gioiTinhNam").prop("checked", true);
+                        $("#gioiTinhNu").prop("checked", false);
+                        $("#gioiTinhKhac").prop("checked", false);
+                    } else if (item.Gioitinh == 1) {
+                        $("#gioiTinhNu").prop("checked", true);
+                        $("#gioiTinhNam").prop("checked", false);
+                        $("#gioiTinhKhac").prop("checked", false);
+                    } else if (item.Gioitinh == 2) {
+                        $("#gioiTinhNam").prop("checked", false);
+                        $("#gioiTinhNu").prop("checked", false);
+                        $("#gioiTinhKhac").prop("checked", true);
+                    }
+                    switch (item.Gioitinh) {
+                        case 0: {
+                            $("#gioiTinhNam").prop("checked", true);
+                            break;
+                        }
+                        case 1: {
+                            $("#gioiTinhNu").prop("checked", true);
+                            break;
+                        }
+                        case 2: {
+                            $("#gioiTinhKhac").prop("checked", true);
+                            break;
+                        }
+                    }
+                }
+            }
+        })
+
+        $('#selectNhanVien').on('select2:unselecting', (e) => {
+            clearDataFields()
+        })
+
+        $('#xkhdt_system').on('select2:unselecting', function (e) {
+            document.getElementById('col-area-button-unmmap').style.display = "none";
+            document.getElementById('col-area-button-map').style.display = "none";
+            $('#accountStatus').html("");
+            document.getElementById('staffInfo').style.display = "none";
+            clearDataFields();
+        })
+
+        document.getElementById('btnUmmapping').addEventListener('click', function () {
+            var accountID = $('#xkhdt_system').select2('data')[0].id
+            $.ajax({
+                url: "@Url.Action("XoaLienKetTaiKhoan", "Manage")" + '?accountID=' + accountID,
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                }).done(function (response) {
+                    if (response == "Success") {
+                        clearDataFields();
+                        $('#accountStatus').html("");
+                        var newOption = new Option("Chưa liên kết thông tin", "0", true, true);
+                        $('#accountStatus').append(newOption).trigger('change');
+                        document.getElementById('staffInfo').style.display = "none";
+                        document.getElementById('col-area-button-unmmap').style.display = "none";
+                        document.getElementById('col-area-button-map').style.display = "none";
+                        $("#xkhdt_system").val(null).trigger("change");
+                        $("#accountStatus").val(null).trigger("change");
+                        toastr.success("Đã xóa liên kết tài khoản", "Thành công!");
+                    } else {
+                        toastr.error("Không thể xóa liên kết tài khoản", "Thất bại!");
+                    }
+                })
+        })
+
+        document.getElementById('btnMapping').addEventListener('click', function () {
+            var accountID = $('#xkhdt_system').select2('data')[0].id
+            var staffID = $('#selectNhanVien').select2('data')[0].id
+            if (staffID == '') {
+                toastr.warning("Hãy chọn một thông tin nhân viên", "Lưu ý!");
+            } else {
+                $.ajax({
+                    url: "@Url.Action("LienKetTaiKhoan", "Manage")" + '?accountID=' + accountID + '&staffID=' + staffID,
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                }).done(function (response) {
+                    if (response == "Success") {
+                        clearDataFields();
+                        $('#accountStatus').html("");
+                        var newOption = new Option("Đã liên kết thông tin", "0", true, true);
+                        $('#accountStatus').append(newOption).trigger('change');
+                        document.getElementById('staffInfo').style.display = "none";
+                        document.getElementById('col-area-button-unmmap').style.display = "none";
+                        document.getElementById('col-area-button-map').style.display = "none";
+                        $("#xkhdt_system").val(null).trigger("change");
+                        $("#accountStatus").val(null).trigger("change");
+                        toastr.success("Đã liên kết tài khoản", "Thành công!");
+                    } else {
+                        toastr.error("Không thể liên kết tài khoản", "Thất bại!");
+                    }
+                })
+            }
+        })
+
+        function clearDataFields() {
+            document.getElementById('lblHoTen').value = '';
+            document.getElementById('lblSoDienThoai').value = '';
+            document.getElementById('lblEmail').value = '';
+            document.getElementById('lblDiaChi').value = '';
+            document.getElementById('inputNgaySinh').value = '';
+
+            $('#selectHocVi').html("");
+            $('#selectHocHam').html("");
+            $('#selectMaNV').html("");
+
+            $("#gioiTinhNam").prop("checked", false);
+            $("#gioiTinhNu").prop("checked", false);
+            $("#gioiTinhKhac").prop("checked", false);
+
+            $('#accountStatus').html("");
+        }
+
+        function unSelect() {
+        }
+    });
+</script>

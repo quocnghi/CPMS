@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Capstone.Models.AspNetUser>
+@{
+    ViewBag.Title = "Thongtin";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-wrapper">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Thông tin cá nhân</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang Chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">TT Cá Nhân</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="height:550px">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <div class="section-body">
+                    <form action="/quanlyusers/thongtin" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label style="font-style:italic;margin-left:100px">Ảnh đại diện </label> <br />
+                                <a style="margin-left:150px" href="#"><img src="~/Areas/CMS/images/IconAddPic.png" style="width:40%" /></a>
+                                <br />
+                                <label style="font-style:italic;margin-left:100px">Chọn ảnh từ thư viện máy tính </label>
+                                <input type="hidden" name="id" value="@Model.FirstOrDefault().Id">
+                            </div>
+                            <div class="col-lg-6 ">
+                                <label style="font-style:italic">Tên hiển thị:  </label>
+                                <input type="text" class="form-control" style="width:500px" id="tenhienthi" name="tenhienthi" value="@Model.FirstOrDefault().UserName" />
+                                <br />
+                                <label style="font-style:italic">Email:  </label>
+                                <input type="text" class="form-control" style="width:500px" id="mail" name="mail" value="@Model.FirstOrDefault().Email" />
+                                <br />
+                                <label style="font-style:italic">Số điện thoại:  </label>
+                                <input type="text" class="form-control" style="width:500px" id="sdt" name="sdt" value="@Model.FirstOrDefault().PhoneNumber" />
+                            </div>
+                        </div>
+                        <br />
+                        <a id="" class="btn" style="float:right;border-radius:25px; background-color:#b22222; color:white; border: 2px solid #ffffff;" href="" >Lưu</a>
+                        <a class="btn" style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@Url.Action("Index","Home")">Quay lại</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

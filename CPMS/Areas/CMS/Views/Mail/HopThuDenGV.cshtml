@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewBag.Title = "HopThuDenGV";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<div class="page-wrapper" ng-controller="NotificationController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Hộp Thư Đến</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang Chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Hộp thư đến</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="col-md-12 bg_content" id="detail-invitation" ng-hide="show">
+            <div class="card">
+                <div class="d-flex flex-row comment-row p-l-14">
+                    <div class="p-2"><img src="~/Areas/CMS/Content/Curriculum/assets/images/Logo-vlu-icon.png" alt="user" width="50" class="rounded-circle"></div>
+                    <div class="comment-text w-100">
+                        <br />
+                        <h6 class="font-medium">Khoa Tài Chính - Kế Toán</h6>
+                        <span class="d-block">Ngày gửi: {{ngaytao}}</span>
+                        <div class="form-group row m-t-10">
+                            <div class="col-md-12" ng-bind-html="noidung">
+                            </div>
+                        </div>
+                        <div id="wrapper" ng-hide="btnshow">
+                            <button style="margin-right: 20px" class="btn btn-success" ng-click="accept(MaDC)">Đồng ý</button>
+                            <button class="btn btn-danger" ng-click="decline(MaDC)">Từ chối</button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row" style="display: block;">
+                    <div class="col-md-6 float-md-right">
+                        <button style="float:right; margin-right:10px; margin-bottom:10px" type="button" class="btn btn-primary" ng-click="back()">Quay lại</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 bg_content" id="mailBox" ng-show="show">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" id="parent-unseen" href="#unseen" role="tab"><span class="hidden-sm-up"></span> <span id="text-unseen" class="hidden-xs-down">Chưa xem ({{count}})</span></a> </li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" id="parent-seen" href="#seen" role="tab"><span class="hidden-sm-up"></span><span id="text-seen" class="hidden-xs-down">Đã xem</span></a> </li>
+                    @*<div class="form-group m-b-0">
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control fa-search" id="fname" placeholder="Tìm kiếm">
+                            </div>
+                        </div>*@
+                    @*<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab3</span></a> </li>*@
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content tabcontent-border">
+                    <div class="tab-pane active" id="unseen" role="tabpanel">
+                        <div class="comment-widgets scrollable" style="height: 550px;">
+                            <!-- Comment Row -->
+                            <a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;" ng-repeat="e in emails" ng-click="detail($index, e.MaTB)" ng-if="e.DaXem == false">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/Curriculum/assets/images/Logo-vlu-icon.png" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Khoa Tài chính - Kế toán</h6>
+                                        <span class="d-block">{{e.Chude}}</span>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">{{e.Ngaytao}}</span>
+                                            <span class="badge badge-pill badge-warning float-left" style="font-size: 12px;">Chưa trả lời</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="seen" role="tabpanel">
+                        <div class="comment-widgets scrollable" style="height: 550px;">
+                            <!-- Comment Row -->
+                            <a href="javascript:void(0)" id="detailInvite" style="color: #3e5569;" ng-repeat="e in emails" ng-click="detail($index, e.MaTB)" ng-if="e.DaXem == true">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem chi tiết">
+                                    <div class="p-2"><img src="~/Areas/CMS/Content/Curriculum/assets/images/Logo-vlu-icon.png" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Khoa Công nghệ Thông tin</h6>
+                                        <span class="d-block">{{e.Chude}}</span>
+                                        <div class="comment-footer m-t-10" ng-if="e.Tinhtrang == true">
+                                            <span class="text-muted float-right">{{e.Ngaytao}}</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                        <div class="comment-footer m-t-10" ng-if="e.Tinhtrang == false">
+                                            <span class="text-muted float-right">{{e.Ngaytao}}</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                        <div class="comment-footer m-t-10" ng-if="e.Tinhtrang == null">
+                                            <span class="text-muted float-right">{{e.Ngaytao}}</span>
+                                            <span class="badge badge-pill badge-warning float-left" style="font-size: 12px;">Chưa trả lời</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    @*<div class="tab-pane" id="messages" role="tabpanel">
+                                <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment..</p>
+                                <img src="../../assets/images/background/img4.jpg" class="img-fluid">
+                        </div>*@
+                </div>
+            </div>
+
+        </div>
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+        @*<div id="loader" style="display: none;"></div>
+
+            <div style="display:none;" id="myDiv" class="animate-bottom"></div>*@
+    </div>
+</div>
+<script src="~/Areas/CMS/Content/Curriculum/angular/Notification/NotiModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/Notification/NotiService.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/Notification/NotiController.js"></script>
+<script type="text/javascript">
+    document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+    document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+    $(document).ready(function () {
+        $("#parent-seen").click(function () {
+            document.getElementById("text-seen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+            document.getElementById("text-unseen").setAttribute("style", "color: #4F5467;");
+        });
+        $("#parent-unseen").click(function () {
+            document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+            document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+        });
+        //$("#detailInvite").click(function () {
+        //    document.getElementById('mailBox').style.display = "none";
+        //    document.getElementById('detail-invitation').style.display = "block";
+        //});
+        //$("#btnBack").click(function () {
+        //    document.getElementById('mailBox').style.display = "block";
+        //    document.getElementById('detail-invitation').style.display = "none";
+        //})
+    });
+</script>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+

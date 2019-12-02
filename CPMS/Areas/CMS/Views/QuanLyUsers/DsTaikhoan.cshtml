@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "DsVaiTro";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css">
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<div class="page-wrapper" ng-controller="nhanvienController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Quản lý nhân viên</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lí chung</li>
+                            <li class="breadcrumb-item active" aria-current="page">Quản lý nhân viên</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="ml-auto text-right">
+                <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-success btn-lg" style="font-size:15px; margin-right:10px" ng-click="addNV()">Thêm</button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table @*id="zero_config"*@ class="table table-striped table-bordered">
+                                <thead style="text-align:center ; background-color: firebrick; color: white">
+                                    <tr>
+                                        <th style="text-align:center ;vertical-align: middle">STT</th>
+                                        <th style="text-align:center;vertical-align: middle">Mã NV</th>
+                                        <th style="text-align:center;vertical-align: middle">Họ</th>
+                                        <th style="text-align:center;vertical-align: middle;width:20%">Tên</th>
+                                        <th style="text-align:center;vertical-align: middle">Giới Tính</th>
+                                        @*<th style="text-align:center">Ngày Sinh</th>*@
+                                        <th style="text-align:center;vertical-align: middle">SĐT</th>
+                                        <th style="text-align:center;vertical-align: middle">Email</th>
+                                        @*<th style="text-align:center">Học Vị</th>
+                                            <th style="text-align:center">Học Hàm</th>*@
+                                        <th style="text-align:center;width:50%;vertical-align: middle">Loại nhân viên</th>
+                                        <th style="text-align:center;vertical-align: middle; width:20%">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="nv in nhanviens">
+                                        <td style="text-align:center">{{$index+1}}</td>
+                                        <td style="text-align:center">{{nv.MaQL}}</td>
+                                        <td style="text-align:center">{{nv.Ho}}</td>
+                                        <td style="text-align:center">{{nv.Ten}}</td>
+                                        <td style="text-align:center">{{nv.Gioitinh}}</td>
+                                        @*<td style="text-align:center">{{nv.Ngaysinh}}</td>*@
+                                        <td style="text-align:center">{{nv.SDT}}</td>
+                                        <td style="text-align:center">{{nv.Email}}</td>
+                                        @*<td style="text-align:center">{{nv.Thongtinhocham}}</td>
+                                            <td style="text-align:center">{{nv.Thongtinhocvi}}</td>*@
+                                        <td style="text-align:center">{{nv.LoaiGV}}</td>
+                                        <td style="text-align:center">
+                                            <a title="Chỉnh sửa" href="javascript:void(0)" data-toggle="modal" data-target="#myModal" ng-click="getNhanvien(nv)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                            <a title="Xóa" href="javascript:void(0)" ng-click="deleteNhanvien(nv, $index)"><img src="~/Areas/CMS/images/IconBin3.png" /></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*form them nguoi dung *@
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">{{Action}} nhân viên</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label style="margin-left:15px">Mã nhân viên</label>
+                                <input ng-show="show" disabled type="text" name="manv" class="form-control" style="width:225px" ng-model="ma" />
+                                <input ng-hide="show" disabled type="text" name="manv" class="form-control" style="width:225px" ng-model="nhanvien.MaQL" />
+                                <input type="hidden" ng-model="nhanvien.MaQL" />
+                                <br />
+                                <label style="margin-left:15px">Họ</label>
+                                <input type="text" maxlength="10" class="form-control" ng-model="nhanvien.Ho" />
+                                <br />
+                                <label style="margin-left:15px">Số điện thoại</label>
+                                <input type="text" maxlength="12" class="form-control" ng-model="nhanvien.SDT" />
+                                <br />
+                                <label style="margin-left:15px">Giới tính</label>
+                                <select class="form-control" ng-model="nhanvien.Gioitinh">
+                                    <option hidden>Giới tính</option>
+                                    <option value="0">Nam</option>
+                                    <option value="1">Nữ</option>
+                                </select>
+                                <br />
+                                <label style="margin-left:15px">Học vị</label>
+                                <select class="form-control" ng-model="nhanvien.Thongtinhocvi">
+                                    <option hidden>Học Vị</option>
+                                    <option value="Cử nhân">Cử nhân</option>
+                                    <option value="Thạc sĩ">Thạc sĩ</option>
+                                    <option value="Tiến sĩ">Tiến sĩ</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label style="margin-left:15px">Loại nhân viên</label>
+                                <select class="form-control" ng-model="nhanvien.LoaiGV">
+                                    <option hidden>Loại nhân viên</option>
+                                    <option value="0">Giảng viên cơ hữu</option>
+                                    <option value="1">Giảng viên thỉnh giảng</option>
+                                    <option value="2">Nhân viên</option>
+                                </select>
+                                <br />
+                                <label style="margin-left:15px">Tên</label>
+                                <input type="text" maxlength="12" class="form-control" ng-model="nhanvien.Ten" />
+                                <br />
+                                <label style="margin-left:15px">Email</label>
+                                <input type="text" maxlength="50" class="form-control" ng-model="nhanvien.Email" />
+                                <br />
+                                <label style="margin-left:15px">Ngày sinh</label>
+                                <input class="form-control" type="date" ng-model="nhanvien.Ngaysinh" />
+                                @*mydatepicker*@
+                                <br />
+                                <label style="margin-left:15px">Học hàm</label>
+                                <select class="form-control" ng-model="nhanvien.Thongtinhocham">
+                                    <option hidden>Học Hàm</option>
+                                    <option value="Phó giáo sư">Phó giáo sư</option>
+                                    <option value="Giáo sư">Giáo sư</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" ng-show="show" class="btn btn-success" data-dismiss="modal" ng-click="addNhanvien(ma,nhanvien)">Thêm</button>
+                        <button type="button" ng-hide="show" class="btn btn-success" data-dismiss="modal" ng-click="editNhanvien(nhanvien)">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/DataTables/datatables.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script>
+    jQuery('.mydatepicker').datepicker();
+</script>
+<script>
+    /****************************************
+     *       Basic Table                   *
+     ****************************************/
+    $('#zero_config').DataTable();
+</script>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script>
+    BASE_URL = @Url.Content("~/");
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLNhanvien/NVModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLNhanvien/NVService.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLNhanvien/NVController.js"></script>

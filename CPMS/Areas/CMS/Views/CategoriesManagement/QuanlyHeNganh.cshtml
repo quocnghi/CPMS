@@ -1,0 +1,230 @@
+﻿
+@{
+    ViewBag.Title = "QuanlyHeNganh";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<div class="page-wrapper" ng-controller="QLHenganhController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Quản Lý Hệ Ngành</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lí chung</li>
+                            <li class="breadcrumb-item" aria-current="page">Quản lý danh mục</li>
+                            <li class="breadcrumb-item active" aria-current="page">QL hệ ngành</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <a href="" style="margin-left:20px; font-size:18px" data-toggle="modal" data-target="#addhenganh">Thêm Hệ Ngành</a>
+                <a href="" style="margin-left:20px; font-size:18px" data-toggle="modal" data-target="#addhenganh2">Thêm Hệ</a>
+                <a href="" style="margin-left:20px; font-size:18px" data-toggle="modal" data-target="#addhenganh3">Thêm Ngành</a>
+                <br />
+                <br />
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align: middle; text-align:center">STT</th>
+                                <th style="vertical-align: middle; text-align:center">Tên khoa</th>
+                                <th style="vertical-align: middle; text-align:center">Tên hệ</th>
+                                <th style="vertical-align: middle; text-align:center">Tên ngành</th>
+                                <th style="vertical-align: middle; text-align:center">Tên rút gọn</th>
+                                <th style="vertical-align: middle; text-align:center">Mã đăng ký</th>
+                                <th style="vertical-align: middle; text-align:center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="HN in nganhs">
+                                <th style="vertical-align: middle; text-align:center">{{$index + 1}}</th>
+                                <th style="vertical-align: middle; text-align:center">{{HN.KHOA}}</th>
+                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH != null">{{HN.TenHe}}</td>
+                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH == null">{{HN.Mota}}</td>
+                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH != null">{{HN.Mota}}</td>
+                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH == null"></td>
+                                <td style="vertical-align: middle; text-align:center">{{HN.Tenrutgon}}</td>
+                                <td style="vertical-align: middle; text-align:center">{{HN.MaDK}}</td>
+                                <td style="vertical-align: middle; text-align:center">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#edithenganh1" ng-click="gethenganh(HN, $index)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                    @*<a href="javascript:void(0)" ng-click="deletehenganh(HN, $index)"><img src="~/images/IconBin3.png" style="width:35px; "></a>*@
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Form them he nganh*@
+    <div class="modal fade" id="addhenganh">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm Hệ / Ngành</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Chọn khoa</label>
+                    <select class="form-control" style="width:450px" ng-model="Hn.MaKhoa">
+                        <option ng-repeat="ma in KHOA" value="{{ma.MaKhoa}}">{{ma.TenKhoa}}</option>
+                    </select>
+                    <br />
+                    <label style="font-style:italic">Tên hệ</label>
+                    <input type="text" class="form-control" ng-model="Tenhe" />
+                    <br />
+                    <label style="font-style:italic">Tên ngành</label>
+                    <input type="text" class="form-control" ng-model="Hn.Mota" />
+                    <br />
+                    <label style="font-style:italic">Tên rút gọn</label>
+                    <input type="text" class="form-control" ng-model="Hn.Tenrutgon" />
+                    <br />
+                    <label style="font-style:italic">Mã đăng ký</label>
+                    <input type="text" class="form-control" ng-model="Hn.MaDK" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addHenganh(Hn, Tenhe)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Form them he *@
+    <div class="modal fade" id="addhenganh2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm Hệ / Ngành</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Chọn khoa</label>
+                    <select class="form-control" style="width:450px" ng-model="Hn.MaKhoa">
+                        <option ng-repeat="ma in KHOA" value="{{ma.MaKhoa}}">{{ma.TenKhoa}}</option>
+                    </select>
+                    <br />
+                    <label style="font-style:italic">Tên hệ</label>
+                    <input type="text" class="form-control" ng-model="Hn.Mota" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addHe(Hn)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Form them he *@
+    <div class="modal fade" id="addhenganh3">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm Hệ / Ngành</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Chọn hệ</label>
+                        <select class="form-control" style="width:450px"ng-model="Hn.MaQH">
+                            <option ng-repeat="he in henganhs" value="{{he.MaQH}}">{{he.Mota}}</option>
+                        </select>
+                    <br />
+                    <label style="font-style:italic">Tên ngành</label>
+                    <input type="text" class="form-control" ng-model="Hn.Mota" />
+                    <br />
+                    <label style="font-style:italic">Tên rút gọn</label>
+                    <input type="text" class="form-control" ng-model="Hn.Tenrutgon" />
+                    <br />
+                    <label style="font-style:italic">Mã đăng ký</label>
+                    <input type="text" class="form-control" ng-model="Hn.MaDK" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addNganh(Hn)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Form chinh sua he nganh*@
+    <div class="modal fade" id="edithenganh1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Chỉnh sửa Hệ / Ngành</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div ng-if="editHn.MaQH == null">
+                        <label style="font-style:italic">Chọn khoa</label>
+                        <select class="form-control" style="width:450px" ng-model="editKh.MaKhoa">
+                            <option ng-repeat="ma in KHOA" value="{{ma.MaKhoa}}">{{ma.TenKhoa}}</option>
+                        </select>
+                        <br />
+                        <label style="font-style:italic">Tên hệ</label>
+                        <input type="text" class="form-control" ng-model="editHn.Mota" />
+                    </div>
+                    <div ng-if="editHn.MaQH != null">
+                        <label style="font-style:italic">Chọn hệ</label>
+                        <select class="form-control" style="width:450px" ng-model="editHn.MaQH">
+                            <option ng-repeat="he in henganhs" value="{{he.MaQH}}">{{he.Mota}}</option>
+                        </select>
+                        <br />
+                        <label style="font-style:italic">Tên ngành</label>
+                        <input type="text" class="form-control" ng-model="editHn.Mota" />
+                        <br />
+                        <label style="font-style:italic">Tên rút gọn</label>
+                        <input type="text" class="form-control" ng-model="editHn.Tenrutgon" />
+                        <br />
+                        <label style="font-style:italic">Mã đăng ký</label>
+                        <input type="text" class="form-control" ng-model="editHn.MaDK" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="editHenganh(editHn, editKh,editHn)">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*nut len dau trang*@
+    <div class='lentop'>
+        <div>
+            <img src='~/Areas/CMS/images/top.png' />
+        </div>
+    </div>
+</div>
+</div>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#conTent2").hide();
+        $('.thongtin').click(function () {
+            $("#conTent1").show('slow');
+            $("#conTent2").hide();
+        });
+        $('.duongdan').click(function () {
+            $("#conTent2").show('slow');
+            $("#conTent1").hide();
+
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLHeNganh/QLHenganhModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLHeNganh/QLHanganhService.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLHeNganh/QLHenganhController.js"></script>

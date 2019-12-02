@@ -1,0 +1,510 @@
+﻿@using Microsoft.AspNet.Identity
+@using Capstone.Models;
+@{
+    Layout = "";
+    fit_misDBEntities db = new fit_misDBEntities();
+    string userID = "";
+    string userEmail = "";
+    string userName = "";
+    bool roleTruongBoMon = false;
+    bool roleAdmin = false;
+    if (Request.IsAuthenticated)
+    {
+        userID = User.Identity.GetUserId();
+        userEmail = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).Email;
+        userName = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).UserName;
+        roleTruongBoMon = User.IsInRole(UserRoles.roleTruongBoMon);
+        roleAdmin = User.IsInRole(UserRoles.roleAdmin);
+    }
+}
+<input id="checkRoleCur" value="@roleTruongBoMon" hidden />
+<input id="emailCheckLogin" value="@userEmail" hidden />
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <input id="emailCheckLogin" value="@userEmail" hidden />
+        <input id="userIdMeo" value="@userID" hidden />
+        <header class="topbar m-b-10" data-navbarbg="skin5">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "CMS" })">
+                        <b class="logo-icon">
+                            <img src="@Url.Content("~/Areas/PMS/Content/images/logo-vlu.png")" height="50px" width="45px" alt="logo" class="light-logo">
+                        </b>
+                        <span class="logo-text p-l-15">
+                            <!-- dark Logo text -->
+                            <img src="@Url.Content("~/Areas/PMS/Content/images/logo-vlu-text.png")" width="100px" height="auto" alt="homepage" class="light-logo">
+                        </span>
+                    </a>
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
+                </div>
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+
+                    <ul class="navbar-nav float-left mr-auto">
+                        <li class="nav-item d-none d-md-block">
+                            <a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar"><i class="mdi mdi-menu font-24"></i></a>
+                        </li>
+                        @*<li class="nav-item search-box">
+                            <a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+                            <div class="app-search position-absolute">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm &amp; chọn"> <a class="srh-btn"><i class="ti-close"></i></a>
+                            </div>
+                        </li>*@
+
+                    </ul>
+
+                    <ul class="navbar-nav float-right">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="mdi mdi-bell font-24"></i>
+                                <div class="notification-number" id="nav_num" style="display: none;">
+                                    <span id="nav_Badge" class="count"></span>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <div id='nav_boxNotifi' class="scrollable" style="height: 0px;width:420px;">
+                                    @*<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="right" title="Nhấn để xem chi tiết"><img src="/Content/images/users/has.jpg" alt="user" width="25" class="rounded-circle m-r-5"><b>Phạm Ngọc Duy</b> đã <b><span style="color: #28b779;">đồng ý</span></b> lời mời giảng dạy</a>
+                                        <a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="right" title="Nhấn để xem chi tiết"><img src="/Content/images/users/has.jpg" alt="user" width="25" class="rounded-circle m-r-5"><b>Phan Thị Hồng</b> đã <b><span style="color: #da542e;">từ chối</span></b> lời mời giảng dạy</a>
+                                        <a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="right" title="Nhấn để xem chi tiết"><img src="/Content/images/users/has.jpg" alt="user" width="25" class="rounded-circle m-r-5"><b>Nguyễn Đắc Quỳnh My</b> đã <b><span style="color: #28b779;">đồng ý</span></b> lời mời giảng dạy</a>
+                                        <a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="right" title="Nhấn để xem chi tiết"><img src="/Content/images/users/has.jpg" alt="user" width="25" class="rounded-circle m-r-5"><b>Bùi Minh Phụng</b> đã <b><span style="color: #28b779;">đồng ý</span></b> lời mời giảng dạy</a>
+                                        <a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="right" title="Nhấn để xem chi tiết"><img src="/Content/images/users/has.jpg" alt="user" width="25" class="rounded-circle m-r-5"><b>Lý Thị Huyền Châu</b> đã <b><span style="color: #da542e;">từ chối</span></b> lời mời giảng dạy</a>
+                                        <a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="right" title="Nhấn để xem chi tiết"><img src="/Content/images/users/has.jpg" alt="user" width="25" class="rounded-circle m-r-5"><b>Đặng Đình Hòa</b> đã <b><span style="color: #28b779;">đồng ý</span></b> lời mời giảng dạy</a>*@
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("HopThuDen","Mail")">Xem thêm</a>
+                            </div>
+                        </li>
+
+                        @*<li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="font-24 mdi mdi-comment-processing"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mailbox animated bounceInDown" aria-labelledby="2">
+                                <ul class="list-style-none">
+                                    <li>
+                                        <div class="">
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-success btn-circle"><i class="ti-calendar"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Sự kiện hôm nay</h5>
+                                                        <span class="mail-desc">Nhắc nhở về sự kiện</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-info btn-circle"><i class="ti-settings"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Cài đặt</h5>
+                                                        <span class="mail-desc">Bạn có thể tùy chỉnh lại template</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-primary btn-circle"><i class="ti-user"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Bách Trần</h5>
+                                                        <span class="mail-desc">Scrum Master</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-danger btn-circle"><i class="fa fa-link"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Thắng Nguyễn</h5>
+                                                        <span class="mail-desc">Business Analyst</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>*@
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img title="@User.Identity.GetUserName()" src="@Url.Content("~/Areas/PMS/Content/images/users/has.jpg")" alt="user" class="rounded-circle" width="31"></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> @userName</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("HopThuDen","Mail")"><i class="ti-email m-r-5 m-l-5"></i> Tin nhắn</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("Index", "Manage")"><i class="ti-settings m-r-5 m-l-5"></i> Cài đặt tài khoản</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-power-off m-r-5 m-l-5"></i> Đăng xuất</a>
+                                @*<div class="dropdown-divider"></div>
+                                <div class="p-l-30 p-10"><a href="javascript:void(0)" class="btn btn-sm btn-success btn-rounded">Xem thông tin</a></div>*@
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <aside class="left-sidebar" data-sidebarbg="skin5">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav" class="p-t-30">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-graduation-cap"></i><span class="hide-menu"> Quản Lý CTDT</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                                <li class="sidebar-item"><a href="@Url.Action("List","CTDTKhung", new { area = "CMS" })" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Danh sách CTDT Khung </span></a></li>
+                                <li class="sidebar-item"><a href="@Url.Action("Index","CTDTKeHoach", new { area = "CMS" })" class="sidebar-link"><i class="fas fa-indent"></i><span class="hide-menu">Danh sách CTDT Kế hoạch</span></a></li>
+                                <li class="sidebar-item"><a href="@Url.Action("DSMaTran","MaTran", new { area = "CMS" })" class="sidebar-link"><i class="fas fa-cog"></i><span class="hide-menu"> Ma Trận Quan Hệ </span></a></li>
+                                <li class="sidebar-item"><a href="@Url.Action("CtdtList","CourseSyllabus", new { area = "CMS" })" class="sidebar-link"><i class="fas fa-address-book"></i><span class="hide-menu"> Học Phần Phân Công </span></a></li>
+                            </ul>
+                        </li>
+                        @*<li class="sidebar-item selected"> <a class="sidebar-link waves-effect waves-dark sidebar-link active" href="#" aria-expanded="false"><i class="far fa-columns"></i><span class="hide-menu">Dashboard</span></a></li>*@
+                        <li class="sidebar-item">
+                            <a id="layout-father" class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="far fa-chalkboard-teacher"></i><span class="hide-menu m-l-5">Kế hoạch Giảng dạy </span></a>
+                            <ul id="layout-ul" aria-expanded="false" class="collapse first-level">
+                                <li class="sidebar-item p-l-10"><a href="@Url.Action("XemKeHoachGiangDay", "KeHoachGiangDay")" id="list-subject" class="sidebar-link"><i class="fal fa-book"></i><span class="hide-menu">Xem kế hoạch giảng dạy</span></a></li>
+                                @if (roleTruongBoMon)
+                                {
+                                    <li class="sidebar-item p-l-10"><a href="@Url.Action("PhanCongGiangVien", "GiangVien")" id="list-lecturer" class="sidebar-link"><i class="fal fa-users"></i><span class="hide-menu"> Phân công Giảng viên </span></a></li>
+                                    <li class="sidebar-item p-l-10"><a href="@Url.Action("DeCuongMonHoc", "DeCuongMonHoc")" id="list-course-syllabus" class="sidebar-link"><i class="fal fa-list-alt"></i><span class="hide-menu">Đề cương môn học</span></a></li>
+
+                                }
+                                <li class="sidebar-item p-l-10"><a href="@Url.Action("MonHocGiangDay", "DeCuongMonHoc")" id="list-course" class="sidebar-link"><i class="fal fa-clipboard"></i><span class="hide-menu">Môn học giảng dạy</span></a></li>
+                            </ul>
+                        </li>
+                        @if (roleTruongBoMon)
+                        {
+                            <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("HopThuDen", "Mail")" aria-expanded="false"><i class="fal fa-envelope"></i><span class="hide-menu m-l-5">Hộp thư đến</span></a></li>
+                        }
+                        else
+                        {
+                            // Hộp thư đến cho Giảng viên
+                            <li class="sidebar-item" id="list-gv-item"><a class="sidebar-link waves-effect waves-dark sidebar-link" id="list-gv" href="@Url.Action("HopThuDen", "Mail")" aria-expanded="false"><i class="fal fa-envelope"></i><span class="hide-menu m-l-5">Hộp thư đến</span></a></li>
+                        }
+                        @if (roleAdmin)
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cog"></i><span class="hide-menu m-l-5">Quản Lý Chung</span></a>
+                                <ul aria-expanded="false" class="collapse  first-level">
+                                    <li class="sidebar-item p-l-10"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("DsTaikhoan", "QuanLyUsers", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-users"></i><span class="hide-menu">Quản lý nhân viên</span></a></li>
+                                    <li class="sidebar-item p-l-10"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("DsVaiTro", "QuanLyUsers", new { area = "CMS" })" aria-expanded="false"><i class=" fas fa-street-view"></i><span class="hide-menu">Quản lý người dùng</span></a></li>
+                                    <li class="sidebar-item p-l-10"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Config", "ConfigManagement", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-ribbon"></i><span class="hide-menu">Quản lý cấu hình</span></a></li>
+                                    <li class="sidebar-item p-l-10">
+                                        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-folder"></i><span class="hide-menu">Quản Lý Danh Mục</span></a>
+                                        <ul aria-expanded="false" class="collapse  first-level">
+                                            <li class="sidebar-item p-l-10"><a href="@Url.Action("QuanlyHeNganh", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý hệ ngành</span></a></li>
+                                            <li class="sidebar-item p-l-10"><a href="@Url.Action("QuanlyKhoiLop", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý khối lớp </span></a></li>
+                                            <li class="sidebar-item p-l-10"><a href="@Url.Action("QuanlyKhoa", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khoa</span></a></li>
+                                            <li class="sidebar-item p-l-10"><a href="@Url.Action("QuanlyKhoiKT", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khối kiến thức</span></a></li>
+
+                                            @*<li class="sidebar-item"><a href="@Url.Action("CautrucPhienban","CategoriesManagement")" class="sidebar-link"><span class="hide-menu"> Quản lý cấu trúc phiên bản </span></a></li>*@
+                                            <li class="sidebar-item p-l-10"><a href="@Url.Action("Index", "EmailTemplate", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý biểu mẫu mail </span></a></li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else if (ViewBag.Role == "HeadofEditor")
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cog"></i><span class="hide-menu"> Quản Lý Chung</span></a>
+                                <ul aria-expanded="false" class="collapse  first-level">
+                                    <li class="sidebar-item p-l-10"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Config", "ConfigManagement", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-ribbon"></i><span class="hide-menu">Quản lý cấu hình</span></a></li>
+                                    <li class="sidebar-item p-l-10">
+                                        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-folder"></i><span class="hide-menu">Quản Lý Danh Mục</span></a>
+                                        <ul aria-expanded="false" class="collapse  first-level">
+                                            <li class="sidebar-item p-l-20"><a href="@Url.Action("QuanlyHeNganh", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý hệ ngành</span></a></li>
+                                            <li class="sidebar-item p-l-20"><a href="@Url.Action("QuanlyKhoiLop", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý khối lớp </span></a></li>
+                                            <li class="sidebar-item p-l-20"><a href="@Url.Action("QuanlyKhoa", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khoa</span></a></li>
+                                            <li class="sidebar-item p-l-20"><a href="@Url.Action("QuanlyKhoiKT", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khối kiến thức</span></a></li>
+                                            <li class="sidebar-item p-l-20"><a href="@Url.Action("Index", "EmailTemplate", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý biểu mẫu mail </span></a></li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if (roleAdmin)
+                        {
+                            <li class="sidebar-item">
+                                <a id="layout-father" class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fal fa-users"></i><span class="hide-menu m-l-5">Quản lý tài khoản</span></a>
+                                <ul id="layout-ul" aria-expanded="false" class="collapse first-level">
+                                    <li class="sidebar-item p-l-10"><a href="@Url.Action("PhanQuyenTaiKhoan", "Manage")" id="" class="sidebar-link"><i class="fal fa-users-cog"></i><span class="hide-menu">Phân quyền tài khoản</span></a></li>
+                                    <li class="sidebar-item p-l-10"><a href="@Url.Action("LienKetThongTinNhanVien", "Manage")" id="" class="sidebar-link"><i class="fal fa-link"></i><span class="hide-menu">Liên kết thông tin nhân viên</span></a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+
+    }
+
+
+}
+else
+{ <input id="checkLogin" value="false" hidden />
+    <header class="topbar" data-navbarbg="skin5">
+        <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+            <div class="navbar-header" data-logobg="skin5">
+                <!-- This is for the sidebar toggle which is visible on mobile only -->
+                <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                <!-- ============================================================== -->
+                <!-- Logo -->
+                <!-- ============================================================== -->
+                <a class="navbar-brand" href="#">
+                    <!-- Logo icon -->
+                    <b class="logo-icon">
+                        <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                        <!-- Dark Logo icon -->
+                        <img src="@Url.Content("~/Content/images/logo-vlu.png")" height="50px" width="45px" alt="logo" class="light-logo">
+
+                    </b>
+                    <!--End Logo icon -->
+                    <!-- Logo text -->
+                    <span class="logo-text p-l-15">
+                        <!-- dark Logo text -->
+                        <img src="@Url.Content("~/Content/images/logo-vlu-text.png")" width="100px" height="auto" alt="homepage" class="light-logo">
+
+                    </span>
+                    <!-- Logo icon -->
+                    <!-- <b class="logo-icon"> -->
+                    <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                    <!-- Dark Logo icon -->
+                    <!-- <img src="../../assets/images/logo-text.png" alt="homepage" class="light-logo" /> -->
+                    <!-- </b> -->
+                    <!--End Logo icon -->
+                </a>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Toggle which is visible on mobile only -->
+                <!-- ============================================================== -->
+                <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Logo -->
+            <!-- ============================================================== -->
+            <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+                <!-- ============================================================== -->
+                <!-- toggle and nav items -->
+                <!-- ============================================================== -->
+                <ul class="navbar-nav float-left mr-auto"></ul>
+
+                <ul class="navbar-nav float-right">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="@Url.Action("Register","Account")">
+                            Đăng ký
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="@Url.Action("Login","Account")">
+                            Đăng nhập
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <aside class="left-sidebar" data-sidebarbg="skin5">
+        <!-- Sidebar scroll-->
+
+    </aside>
+}
+
+<script>
+
+    // SignalR
+    let emailCheckLogin
+    try {
+        emailCheckLogin = document.getElementById('emailCheckLogin').value
+    } catch {
+        emailCheckLogin = false
+    }
+  
+    let checkRoleCur = document.getElementById('checkRoleCur').value
+
+    let countOld = -1
+    let nav_boxNotifi = document.getElementById('nav_boxNotifi')
+    let nav_Badge = document.getElementById('nav_Badge')
+    let nav_num = document.getElementById('nav_num')
+    
+
+    //Function for SignalR
+    var listNotSeen = (context) => {
+        //console.log(context)
+        if (countOld !== context.length) {
+            $('#nav_boxNotifi').empty()
+            for (let item of context) {
+                addRowNotifi(nav_boxNotifi, item)
+            }
+            countOld = context.length
+            if (countOld > 0) {
+                nav_num.style.display = 'block'
+                nav_Badge.innerText = countOld
+                // Count increa height
+                let countMain = nav_boxNotifi.getElementsByTagName('a').length
+                // console.log(countMain)
+                switch (countMain) {
+                    case 0:
+                        nav_boxNotifi.style.height = '0px'
+                        nav_boxNotifi.style.width = '100px'
+                        break
+                    case 1:
+                        nav_boxNotifi.style.height = '70px'
+                        nav_boxNotifi.style.width = '420px'
+                        break
+                    case 2:
+                        nav_boxNotifi.style.height = '140px'
+                        nav_boxNotifi.style.width = '420px'
+                        break
+                    case 3:
+                        nav_boxNotifi.style.height = '210px'
+                        nav_boxNotifi.style.width = '420px'
+                        break
+                    case 4:
+                        nav_boxNotifi.style.height = '280px'
+                        nav_boxNotifi.style.width = '420px'
+                        break
+                }
+                if (countMain > 4) {
+                    nav_boxNotifi.style.height = '180px'
+                    nav_boxNotifi.style.width = '420px'
+                }
+            }
+        } else {
+            nav_num.style.display = 'none'
+        }
+    }
+
+    function LoadNotifi(){
+
+        $.getJSON('@Url.Action("GetMessages", "Notification")?checkBol=false&&userEmail=' + emailCheckLogin, data => {
+            console.log("send")
+        }).done(function (result) {
+            console.log("Done", result)
+            listNotSeen(result)
+            if (typeof listNotSeenContent != "undefined") {
+                listNotSeenContent(result)
+            }
+            //console.log("second success");
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                var err = textStatus + ", " + error;
+                console.log("Request Failed: " + err);
+            })
+            .always(function () {
+                //console.log("complete");
+            });
+
+    }
+
+
+    
+    // console.log(emailCheckLogin)
+    if (emailCheckLogin !== false && emailCheckLogin !== '') {
+        $(function () {
+            
+            let notifiPart = $.connection.notification
+
+
+            notifiPart.client.notifUpdated = () => {
+                LoadNotifi()
+                if (typeof LoadNotifiview != "undefined") {
+                    LoadNotifiview()
+                }
+            }
+
+
+            $.connection.hub.start().done(function () {
+                if (emailCheckLogin !== false) {
+                    // False is list not seen
+                    LoadNotifi()
+                }
+            })
+
+            $(document).ready(function () {
+                // console.log('Hello')
+                //notifi.server.getListNoti(true, emailCheckLogin)
+                if (typeof LoadNotifiview != "undefined") {
+                    LoadNotifiview()
+                }
+                
+            })
+
+        })
+        function addRowNotifi(main_box, { DaXem, Kieu, MANO, NguoiGui, Nguon, ThongTin, TrangThai, idNguoiGui, idNguoiNhan, NguoiNhan, ThoiGianRaDoi }) {
+
+            let idNavMano = 'navMano_' + MANO
+
+            let aboundFirst = document.createElement('a')
+            aboundFirst.setAttribute('id', idNavMano)
+            aboundFirst.setAttribute('class', 'dropdown-item')
+            aboundFirst.setAttribute('href', '#')
+            aboundFirst.setAttribute('data-toggle', 'tooltip')
+            aboundFirst.setAttribute('data-placement', 'right')
+            aboundFirst.setAttribute('title', 'Nhấn để xem chi tiết')
+            //Check Time
+            let duration = moment(ThoiGianRaDoi).fromNow()
+            let checkDay = duration.split(' ')
+            checkDay[1] === 'giờ' ? duration : checkDay[1] === 'phút' ? duration : duration = moment(ThoiGianRaDoi).format('dddd, MMMM-Do-YYYY')
+            //let checkCool = TrangThai ? 'đồng ý' : 'từ chối'
+            let stringContent = ''
+            if (checkRoleCur) {
+                stringContent = '<div class="row"><div class="col-md-2 col-2"><img src="@Url.Content("~/Content/images/users/has.jpg")" alt="user" width="50" class ="rounded-circle m-r-5" /></div>' + '<div class="col-md-10 col-2"><p style="margin: 0;"><b>' + NguoiGui + '</b> đã'
+                    + '<b><span style="color: #da542e;"> trả lời </span></b> lời mời giảng dạy </p>'
+                    + '<p style="font-family: auto; margin: 0;">' + duration + '</p>'
+                    + '</div></div>'
+            } else {
+                stringContent = '<div class="row"><div class="col-md-2 col-2"><img src="@Url.Content("~/Content/images/users/has.jpg")" alt="user" width="50" class ="rounded-circle m-r-5" /></div>' + '<div class="col-md-10 col-2"><p style="margin: 0;"><b>' + NguoiGui + '</b> đã'
+                    + '<b><span style="color: #28b779;"> </span></b>gởi lời mời giảng dạy đến bạn</p>'
+                    + '<p style="font-family: auto; margin: 0;">' + duration + '</p>'
+                    + '</div></div>'
+            }
+
+
+            // aboundFirst.appendChild(imgSecond)
+            aboundFirst.innerHTML = stringContent
+
+            main_box.appendChild(aboundFirst)
+
+            $('#' + idNavMano).on('click', function (e) {
+                let MANO = idNavMano.split('_')[1]
+                //console.log(MANO)
+                setTimeout(doingModified, 2000)
+                function doingModified() {
+                    $.ajax({
+                        method: "GET",
+                        url: '@Url.Action("modifiedNotifi", "api")?MANO=' + MANO
+                    })
+                        .done(function (msg) {
+                            if (msg.check) {
+                                window.location.href = "@Url.Action("ChiTietThongBao", "Mail")/" + MANO
+
+                            }
+                        })
+                }
+            })
+
+        }
+    }
+</script>

@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="info_SchoolAddress" xml:space="preserve">
+    <value>45 Nguyễn Khắc Nhu, Phường Cô Giang, Quận 1, Tp. HCM</value>
+  </data>
+  <data name="mes_CCDGTrong" xml:space="preserve">
+    <value>Không được để trống công cụ đánh giá và thời điểm đánh giá</value>
+  </data>
+  <data name="mes_ChonNganhHoc" xml:space="preserve">
+    <value>Vui lòng chọn một Ngành học</value>
+  </data>
+  <data name="mes_ChonNganhHocKhac" xml:space="preserve">
+    <value>Vui lòng chọn Ngành học khác</value>
+  </data>
+  <data name="mes_ChonToanBoThuMoiGD" xml:space="preserve">
+    <value>Vui lòng chọn toàn bộ thư mời giảng dạy</value>
+  </data>
+  <data name="mes_ChuaChonKH" xml:space="preserve">
+    <value>Bạn chưa chọn Khóa học muốn tạo kế hoạch giảng dạy</value>
+  </data>
+  <data name="mes_ChuaChonTPDG" xml:space="preserve">
+    <value>Bạn chưa chọn thành phần đánh giá</value>
+  </data>
+  <data name="mes_ChuaDuocPC" xml:space="preserve">
+    <value>Học kỳ chưa được phân công giảng dạy</value>
+  </data>
+  <data name="mes_DaGuiMail" xml:space="preserve">
+    <value>Đã gửi email đến Giảng viên</value>
+  </data>
+  <data name="mes_DaNopDCThanhCong" xml:space="preserve">
+    <value>Đã nộp đề cương học phần {tenhp} thành công</value>
+  </data>
+  <data name="mes_DaThietLapRole" xml:space="preserve">
+    <value>Đã thiết lập vai trò cho tài khoản</value>
+  </data>
+  <data name="mes_DienNgayBDKT" xml:space="preserve">
+    <value>Vui lòng lựa chọn ngày bắt đầu và kết thúc học kỳ</value>
+  </data>
+  <data name="mes_DongYPheDuyet" xml:space="preserve">
+    <value>Đã đồng ý phê duyệt đề cương học phần</value>
+  </data>
+  <data name="mes_DuongDanKhongDung" xml:space="preserve">
+    <value>Đường dẫn không đúng định dạng</value>
+  </data>
+  <data name="mes_HanCNDCTrong" xml:space="preserve">
+    <value>Hạn cập nhật đề cương bị bỏ trống</value>
+  </data>
+  <data name="mes_HanNopDCTrong" xml:space="preserve">
+    <value>Hạn cập nhật đề cương bị bỏ trống</value>
+  </data>
+  <data name="mes_KHDTDaCo" xml:space="preserve">
+    <value>Kế hoạch giảng dạy đã được tạo</value>
+  </data>
+  <data name="mes_KhongCoGiThayDoi" xml:space="preserve">
+    <value>Không có gì thay đổi để lưu</value>
+  </data>
+  <data name="mes_KhongCoGV" xml:space="preserve">
+    <value>Không có giáo viên nào để gửi mail</value>
+  </data>
+  <data name="mes_KhongCoGVGuiMail" xml:space="preserve">
+    <value>Không có giảng viên để gửi mail</value>
+  </data>
+  <data name="mes_KhongCoHK" xml:space="preserve">
+    <value>Năm học chưa có học kỳ</value>
+  </data>
+  <data name="mes_KhongDuocDeTrong" xml:space="preserve">
+    <value>Các trường thông tin không được để trống</value>
+  </data>
+  <data name="mes_KhongGuiMail" xml:space="preserve">
+    <value>Không thể gửi mail</value>
+  </data>
+  <data name="mes_KhongLuuDuoc" xml:space="preserve">
+    <value>Không lưu được dữ liệu</value>
+  </data>
+  <data name="mes_KhongNhapDayDu" xml:space="preserve">
+    <value>Hãy nhập đủ thông tin nội dung</value>
+  </data>
+  <data name="mes_KhongTaiDuoc" xml:space="preserve">
+    <value>Không tải được dữ liệu</value>
+  </data>
+  <data name="mes_KhongThePheDuyetDC" xml:space="preserve">
+    <value>Không thể phê duyệt đề cương</value>
+  </data>
+  <data name="mes_KhongTheTao" xml:space="preserve">
+    <value>Không thể tạo</value>
+  </data>
+  <data name="mes_KhongTheThemMoiDuocNua" xml:space="preserve">
+    <value>Bạn không thê tạo thêm thẻ mới được nữa</value>
+  </data>
+  <data name="mes_KhongTimThay" xml:space="preserve">
+    <value>Không tìm thấy dữ liệu</value>
+  </data>
+  <data name="mes_LuaChonTruocKhiPheDuyetDC" xml:space="preserve">
+    <value>Hãy chọn Đồng ý hoặc Từ chối trước khi nhấn nút Xác nhận</value>
+  </data>
+  <data name="mes_LuuBang" xml:space="preserve">
+    <value>Đã lưu dữ liệu vào bảng</value>
+  </data>
+  <data name="mes_LuuGomNhomTC" xml:space="preserve">
+    <value>Đã lưu gom nhóm tiêu chí</value>
+  </data>
+  <data name="mes_LuuThanhCong" xml:space="preserve">
+    <value>Lưu dữ liệu thành công</value>
+  </data>
+  <data name="mes_LuuTruocKhiChuyen" xml:space="preserve">
+    <value>Cần lưu trước khi chuyển trang</value>
+  </data>
+  <data name="mes_MonHocDaDuocChon" xml:space="preserve">
+    <value>Môn học đã được chọn, vui lòng lựa chọn môn học khác</value>
+  </data>
+  <data name="mes_MucTieuTrong" xml:space="preserve">
+    <value>Mục tiêu học phần không được để trống</value>
+  </data>
+  <data name="mes_NamHocChuaCoDL" xml:space="preserve">
+    <value>Năm học chưa có dữ liệu</value>
+  </data>
+  <data name="mes_NamHocTangDan" xml:space="preserve">
+    <value>Năm học phải có giá trị tăng dần và cách nhau 1 năm</value>
+  </data>
+  <data name="mes_NamHocTrong" xml:space="preserve">
+    <value>Năm Học bị trống</value>
+  </data>
+  <data name="mes_NgayBDNgayKTTrungVoiNam" xml:space="preserve">
+    <value>Thời gian bắt đầu và kết thúc học kỳ không trùng khớp với năm học</value>
+  </data>
+  <data name="mes_NgayKTLonHonBD" xml:space="preserve">
+    <value>Ngày kết thúc học kỳ phải lớn hơn ngày bắt đầu học kỳ. Vui lòng chọn lại</value>
+  </data>
+  <data name="mes_NhapLyDoTuChoi" xml:space="preserve">
+    <value>Vui lòng nhập lý do khi từ chối</value>
+  </data>
+  <data name="mes_PheDuyetDCThanhCong" xml:space="preserve">
+    <value>Đề cương đã được phê duyệt</value>
+  </data>
+  <data name="mes_SuaCCDG" xml:space="preserve">
+    <value>Đã lưu chỉnh sửa công cụ và thời điểm đánh giá</value>
+  </data>
+  <data name="mes_SuaKQHT" xml:space="preserve">
+    <value>Đã lưu kết quả học tập mong đợi vừa được chỉnh sửa</value>
+  </data>
+  <data name="mes_SuaTPDG" xml:space="preserve">
+    <value>Đã lưu chỉnh sửa thành phần đánh giá vào bảng</value>
+  </data>
+  <data name="mes_TaiThanhCong" xml:space="preserve">
+    <value>Tải dữ liệu thành công</value>
+  </data>
+  <data name="mes_ThemCCDG" xml:space="preserve">
+    <value>Đã thêm công cụ đánh giá và thời điểm đánh giá vào bảng</value>
+  </data>
+  <data name="mes_ThemHoatDong" xml:space="preserve">
+    <value>Đã thêm hoạt động thành công</value>
+  </data>
+  <data name="mes_ThemKQHT" xml:space="preserve">
+    <value>Đã thêm Kết quả học tập mong đợi vào bảng</value>
+  </data>
+  <data name="mes_ThemTPDG" xml:space="preserve">
+    <value>Đã thêm thành phần đánh giá vào bảng</value>
+  </data>
+  <data name="mes_TongPhaiBang100" xml:space="preserve">
+    <value>Tổng trọng số phải bằng 100%</value>
+  </data>
+  <data name="mes_Trong" xml:space="preserve">
+    <value>Nhập thời hạn nộp đề cương không đúng</value>
+  </data>
+  <data name="mes_TuChoiPheDuyet" xml:space="preserve">
+    <value>Đã từ chối phê duyệt đề cương học phần</value>
+  </data>
+  <data name="mes_TuChoiPheDuyetDC" xml:space="preserve">
+    <value>Đề cương đã bị từ chối phê duyệt</value>
+  </data>
+  <data name="mes_XoaBang" xml:space="preserve">
+    <value>Đã xóa tài liệu khỏi bảng</value>
+  </data>
+  <data name="mes_XoaBuoi" xml:space="preserve">
+    <value>Đã xóa buổi học</value>
+  </data>
+  <data name="mes_XoaCCDG" xml:space="preserve">
+    <value>Đã xóa công cụ và thời điểm đánh giá</value>
+  </data>
+  <data name="mes_XoaHoatDong" xml:space="preserve">
+    <value>Đã xoá hoạt động</value>
+  </data>
+  <data name="mes_XoaKQHT" xml:space="preserve">
+    <value>Đã xóa Kết quả học tập mong đợi khỏi bảng</value>
+  </data>
+  <data name="mes_XoaMucDo" xml:space="preserve">
+    <value>Đã xoá mức độ</value>
+  </data>
+  <data name="mes_XoaND" xml:space="preserve">
+    <value>Đã xóa nội dung</value>
+  </data>
+  <data name="mes_XoaTaiLieu" xml:space="preserve">
+    <value>Đã xóa tài liệu khỏi bảng</value>
+  </data>
+  <data name="role_Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="role_GiangVien" xml:space="preserve">
+    <value>Giảng viên</value>
+  </data>
+  <data name="role_GiangVienCoHuu" xml:space="preserve">
+    <value>Giảng viên cơ hữu</value>
+  </data>
+  <data name="role_GiangVienThinhGiang" xml:space="preserve">
+    <value>Giảng viên thỉnh giảng</value>
+  </data>
+  <data name="role_TroLyGiaoVuKhoa" xml:space="preserve">
+    <value>Trợ lý giáo vụ khoa</value>
+  </data>
+  <data name="role_TruongBoMon" xml:space="preserve">
+    <value>Trưởng bộ môn</value>
+  </data>
+  <data name="var_GiangVien" xml:space="preserve">
+    <value>Giảng viên</value>
+  </data>
+  <data name="var_KienThucChuyenNganh" xml:space="preserve">
+    <value>Kiến thức chuyên ngành</value>
+  </data>
+  <data name="var_KienThucCoSoNganh" xml:space="preserve">
+    <value>Kiến thức cơ sở ngành</value>
+  </data>
+  <data name="var_NhomSinhVien" xml:space="preserve">
+    <value>Nhóm sinh viên</value>
+  </data>
+  <data name="var_SinhVien" xml:space="preserve">
+    <value>Sinh viên</value>
+  </data>
+</root>

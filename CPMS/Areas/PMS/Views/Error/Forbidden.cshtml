@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Từ chối truy cập";
+}
+
+<div class="main-wrapper">
+    <div class="error-box">
+        <div class="error-body text-center">
+            <h1 class="error-title text-danger">403</h1>
+            <h3 class="text-uppercase error-subtitle">YÊU CẦU TRUY CẬP BỊ TỪ CHỐI!</h3>
+            <p class="text-muted m-t-30 m-b-30">CÓ VẺ NHƯ BẠN ĐANG CỐ GẮNG TRUY CẬP VÀO NỘI DUNG KHÔNG ĐƯỢC PHÉP</p>
+            <a onclick="backPage()" href="javascript:void(0)" class="btn btn-danger btn-rounded waves-effect waves-light m-b-40">Quay trở lại</a>
+        </div>
+    </div>
+</div>
+<script>
+    function backPage() {
+        window.history.back();
+    }
+</script>

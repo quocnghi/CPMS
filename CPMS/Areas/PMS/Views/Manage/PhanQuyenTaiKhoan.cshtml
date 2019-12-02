@@ -1,0 +1,181 @@
+﻿@using Capstone.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Xem kế hoạch giảng dạy";
+    fit_misDBEntities db = new fit_misDBEntities();
+    string userEmail = "";
+    string userName = "";
+    string userPhone = "";
+    string userID = "";
+    List<AspNetRole> userRoles = new List<AspNetRole>();
+    if (Request.IsAuthenticated)
+    {
+        userID = User.Identity.GetUserId();
+        userEmail = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).Email;
+        userName = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).UserName;
+        userPhone = db.AspNetUsers.FirstOrDefault(s => s.Id == userID).PhoneNumber;
+    }
+}
+@{
+    ViewBag.Title = "Phân quyền tài khoản";
+}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Phân quyền tài khoản</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Phân quyền tài khoản</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-6 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Vai trò của tài khoản</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-horizontal">
+                    <div class="card-body p-0">
+                        <div class="form-group row">
+                            <label for="fname" class="col-sm-3 text-right control-label col-form-label">Tài khoản</label>
+                            <div class="col-sm-9">
+                                <select id="xkhdt_system" class="select2-system form-control custom-select" style="width: 100%; height:36px;">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="lname" class="col-sm-3 text-right control-label col-form-label p-t-0">Vai trò</label>
+                            <div class="col-sm-9">
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" class="custom-control-input" value="@UserRoles.roleTruongBoMon" id="tbm" name="roleUser" disabled>
+                                    <label class="custom-control-label" for="tbm">
+                                        @UserRoles.roleTruongBoMon
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" class="custom-control-input" value="@UserRoles.roleGiaoVienCoHuu" id="gvch" name="roleUser" disabled>
+                                    <label class="custom-control-label" for="gvch">
+                                        @UserRoles.roleGiaoVienCoHuu
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" class="custom-control-input" value="@UserRoles.roleGiaoVienThinhGiang" id="gvtg" name="roleUser" disabled>
+                                    <label class="custom-control-label" for="gvtg">
+                                        @UserRoles.roleGiaoVienThinhGiang
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row m-t-20">
+            <div class="col-md-12" style="text-align: right;">
+                <button id='btnLuuThongTin' href='javascript:void(0)' class="btn btn-success">Lưu thông tin</button>
+            </div>
+        </div>
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+        {
+            @Html.AntiForgeryToken()
+        }
+    </div>
+    <div id="loaderEmail" style="display: none;"></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".select2-system").select2({
+            placeholder: "Chọn tài khoản cần phân quyền",
+            allowClear: true
+        })
+
+        $.getJSON("@Url.Action("DanhSachTaiKhoan", "API")", data => {
+            if (data.length > 0) {
+                for (let item of data) {
+                    var newOption = new Option(item.userEmail + ' - ' + item.userName, item.id, false, false);
+                    $('#xkhdt_system').append(newOption).trigger('change');
+                }
+            }
+        });
+
+        var isAdmin = false
+
+        $('#xkhdt_system').on('select2:select', (e) => {
+            let userID = e.params.data.id
+            document.getElementById('tbm').checked = false
+            document.getElementById('gvch').checked = false
+            document.getElementById('gvtg').checked = false
+            document.getElementById('tbm').removeAttribute('disabled')
+            document.getElementById('gvch').removeAttribute('disabled')
+            document.getElementById('gvtg').removeAttribute('disabled')
+            $.getJSON('@Url.Action("DanhSachRoles", "API")' + '?id=' + userID, data => {
+                for (let item of data) {
+                    if (item == 'Giảng viên cơ hữu') {
+                        document.getElementById('gvch').checked = true
+                    } else if (item == 'Giảng viên thỉnh giảng') {
+                        document.getElementById('gvtg').checked = true
+                    } else if (item == "Trưởng bộ môn") {
+                        document.getElementById('tbm').checked = true
+                    } else if (item == "Admin") {
+                        isAdmin = true
+                    }
+                }
+            })
+        })
+
+        $('#xkhdt_system').on('select2:unselecting', function (e) {
+            document.getElementById('tbm').setAttribute('disabled', '')
+            document.getElementById('gvch').setAttribute('disabled', '')
+            document.getElementById('gvtg').setAttribute('disabled', '')
+            document.getElementById('tbm').checked = false
+            document.getElementById('gvch').checked = false
+            document.getElementById('gvtg').checked = false
+        })
+
+        document.getElementById('btnLuuThongTin').addEventListener('click', function () {
+            var listRole = [];
+            $.each($("input[name='roleUser']:checked"), function () {
+                listRole.push($(this).val());
+            });
+            if (document.getElementById('gvch').checked == true || document.getElementById('gvtg').checked == true) {
+                listRole.push('Giảng viên');
+            }
+            if (isAdmin) {
+                listRole.push('Admin');
+            }
+            let uEmail = $('#xkhdt_system').select2('data')
+            uEmail = uEmail[0].id
+            $.ajax({
+                url: "@Url.Action("LuuPhanQuyen", "Manage")",
+                type: "POST",
+                data: {
+                    listrole: listRole,
+                    email: uEmail
+                },
+                traditional: true
+            }).done(function (response) {
+                if (response == "success") {
+                    toastr.success('@CommonRS.Resources.VI.mes_DaThietLapRole', 'Thành công!');
+                } else {
+                    toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Thất bại!');
+                }
+            });
+        });
+    });
+</script>

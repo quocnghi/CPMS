@@ -1,0 +1,206 @@
+﻿@model IEnumerable<Capstone.Areas.CMS.Models.CTDTData>
+@{
+    ViewBag.Title = "EditCTDTKehoachStep1";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<style>
+    label {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="page-wrapper">
+
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Chỉnh sửa Chương Trình Đào Tạo Kế Hoạch - Bước 1 </h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lý CTDT</li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","CTDTKeHoach", new { area = "CMS" }))">Danh Sách CTDT Kế hoạch</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Thêm mới CTDT Kế hoạch</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <h6 class="card-subtitle"></h6>
+                <form action="@Url.Action("EditCTDTKehoachStep1", "CTDTKeHoach", new { area = "CMS" })" method="post" class="m-t-40">
+                    <div>
+                        <div class="tab-content row">
+                            <div class="container col-12 tab-pane active" id="list">
+                                <h2 style="text-align:center">CHỈNH SỬA THÔNG TIN CHUNG CHƯƠNG TRÌNH ĐÀO TẠO KẾ HOẠCH</h2>
+                                <br />
+                                <hr />
+                                <input type="hidden" name="ID" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT" />
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label for="ctdt">Tên chương trình đào tạo  </label><label style="color:red">*</label>
+                                        <input id="tenctdt" name="Tenctdt" autofocus type="text" maxlength="100" class="form-control" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().TenCT" required />
+                                        <div class="row">
+                                            <input type="hidden" name="mahenganh" value="@Model.FirstOrDefault().henganh.FirstOrDefault().MaHN" />
+                                            <div class="col-3">
+                                                <label for="ndt">Hệ đào tạo</label><label style="color:red">*</label>
+                                                @*<select id="hedaotao" name="hedaotao" class="form-control" required disabled>
+                                                    <option hidden>Chọn hệ đào tạo</option>
+                                                    @foreach (var item in Model.FirstOrDefault().henganh)
+                                                    {
+                                                        if (item.MaQH == null)
+                                                        {
+                                                            <option selected value="@item.MaHN">@item.Mota</option>
+                                                        }
+                                                    }
+                                                        </select>*@
+                                                <input id="hedaotao" name="hedaotao" class="form-control" required disabled value="@Model.FirstOrDefault().henganh.FirstOrDefault().Mota" />
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="ndt">Ngành đào tạo</label><label style="color:red">*</label>
+                                                <input id="nganhdaotao" name="Nganhdaotao" class="form-control" required disabled value="@Model.FirstOrDefault().ctdt.FirstOrDefault().sc_HeNganh.Mota" />
+                                                @*<select id="nganhdaotao" name="Nganhdaotao" class="form-control" required disabled>
+                                                    @foreach (var item in Model.FirstOrDefault().henganh)
+                                                    {
+                                                        if (@Model.FirstOrDefault().ctdt.FirstOrDefault().MaHN == item.MaHN)
+                                                        {
+                                                            <option selected value="@item.MaHN">@item.Mota</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.MaHN">@item.Mota</option>
+                                                        }
+                                                    }
+                                                    @*<option hidden>Chọn ngành đào tạo</option>*@
+                                                @*</select>*@
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="row">
+                                                    <label for="ctdt">Phiên bản CTDT </label> <label style="color:red">*</label>
+                                                </div>
+                                                <input id="nganhdaotao" name="Nganhdaotao" class="form-control" required disabled value="@Model.FirstOrDefault().ctdt.FirstOrDefault().Phienban" />
+                                                @*<input id="phienbanctdt" name="Phienbanctdt" type="text" class="form-control" maxlength="20" required disabled />*@
+                                            </div>
+                                            @*<div class="col-6">
+                                                    <label for="ndt">Hệ ngành đào tạo - Tên rút gọn</label><label style="color:red">*</label>
+                                                    <select class="select2 form-control custom-select" id="henganh" name="henganh" required>
+                                                        @foreach (var item in Model.FirstOrDefault().henganh)
+                                                        {
+                                                            if (@Model.FirstOrDefault().ctdt.FirstOrDefault().MaHN == item.MaHN)
+                                                            {
+                                                                <option selected value="@item.MaHN">@item.Mota - @item.Tenrutgon</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.MaHN">@item.Mota - @item.Tenrutgon</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="ctdt">Phiên bản chương trình đào tạo</label><label style="color:red">*</label>
+                                                    <input id="phienbanctdt" maxlength="20" name="Phienbanctdt" type="text" class="form-control" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().Phienban" required />
+
+                                                </div>*@
+                                        </div>
+
+                                        <label for="tddt">Trình độ đào tạo</label>
+                                        <input id="trinhdodaotao" name="Trinhdodaotao" maxlength="20" type="text" class="form-control" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().Trinhdo" />
+
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label for="td">Thang điểm:</label>
+                                        <input id="thangdiem" name="Thangdiem" type="text" maxlength="100" class="form-control" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().Thangdiem" />
+                                        <label for="lhdt">Loại hình đào tạo</label>
+                                        <input id="loaihinhdaotao" name="Loaihinhdaotao" maxlength="100" type="text" class="form-control" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().HinhthucDT" />
+                                        <label for="tgdt">Thời gian đào tạo</label>
+                                        <input id="thoigiandaotao" name="Thoigiandaotao" maxlength="200" type="text" class="form-control" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().ThoigianDT" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label for="qtdtdktn">Quy trình đào tạo, điều kiện tốt nghiệp</label>
+                                        <textarea id="quytrinhdaotaodieukientotnghiep" name="Quytrinhdaotaodieukientotnghiep" rows="5" class="form-control">@Model.FirstOrDefault().ctdt.FirstOrDefault().QuytrinhDT</textarea>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label for="dtts">Đối tượng tuyển sinh</label>
+                                        <textarea id="doituongtuyensinh" name="Doituongtuyensinh" class="form-control">@Model.FirstOrDefault().ctdt.FirstOrDefault().Doituong</textarea>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="csvcpvht">Cơ sở vật chất phục vụ học tập</label>
+                                        <textarea id="cosovatchat" name="Cosovatchat" rows="5" class="form-control">@Model.FirstOrDefault().ctdt.FirstOrDefault().CosoVC</textarea>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        <span style="color:red">(*) Bắt buộc nhập </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <hr />
+                    <input type="submit" class="btn" style="float:right;border-radius:25px; background-color:#b22222; color:white; border: 2px solid #ffffff;" href="@Url.Action("EditCTDTKehoachStep2","CTDTKeHoach", new { id = Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT })" value="Tiếp tục" />
+                    <a class="btn" style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@Url.Action("Index","CTDTKeHoach")">Quay lại</a>
+                </form>
+                @*nut len dau trang*@
+                <div class='lentop'>
+                    <div>
+                        <img src='https://1.bp.blogspot.com/-k6sikOdzFXQ/VwqCKDosmEI/AAAAAAAAKxE/nLxLhkTIO6o3iE5ZWmtxo2bf4QHdzPQNQ/s1600/top.png' />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script>
+    //***********************************//
+    // For select 2
+    //***********************************//
+    $(".select2").select2();
+
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/DataTables/datatables.min.js"></script>
+<script>
+    /****************************************
+     *       Basic Table                   *
+     ****************************************/
+    $('#zero_config').DataTable();
+</script>
+
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/ckeditor.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/samples/js/sample.js"></script>
+<script>
+    CKEDITOR.replace('quytrinhdaotaodieukientotnghiep');
+    CKEDITOR.replace('cosovatchat');
+    CKEDITOR.replace('doituongtuyensinh');
+</script>

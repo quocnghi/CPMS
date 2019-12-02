@@ -1,0 +1,340 @@
+﻿
+@{
+    ViewBag.Title = "Thư mời giảng dạy" + ViewBag.idcuatao;
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Thư mời giảng dạy</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Hộp thư đến</li>
+                        <li class="breadcrumb-item active" aria-current="page">Thư mời giảng dạy</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content" style="display: block;">
+        <div class="card-body m-b-20 p-0">
+            <h4 class="card-title">Chi tiết thư mời giảng dạy</h4>
+        </div>
+        <div class="card">
+            <div class="d-flex flex-row comment-row p-l-14">
+                <div class="p-2"><img src="@Url.Content("~/Content/images/users/has.jpg")" alt="user" width="50" class="rounded-circle"></div>
+                <div class="comment-text w-100" style="display: grid;">
+                    <h6 class="font-medium">@ViewBag.nguoiGui</h6>
+                    <span class="d-block">Thời gian gửi: @ViewBag.thoiGianGui</span>
+                    @if (ViewBag.kieuNotification == null)
+                    {
+                        <br />
+                        <div><h4>@Html.Raw(ViewBag.Chude)</h4></div>
+                    }
+                    <div><b>@Html.Raw(ViewBag.ThongTin)</b></div>
+                    <div class="card m-t-10 m-b-10" style="overflow-x: auto;">
+                        @*<span><b>Ngành học:</b> Kỹ thuật Phần mềm</span>
+            <span><b>Khóa học:</b> K21</span>
+            <span><b>Năm học:</b> 2018-2019 - <b>Học kỳ:</b> 2</span>*@
+                        @*check if nếu là kiểu lời mời giảng dạy*@
+
+                        @if (ViewBag.kieuNotification == @"Đã trả lời mời")
+                        {
+                            <div>Bạn đã trả lời thông báo này</div>
+                        }
+
+                        @if (ViewBag.kieuNotification == @"Lời mời giảng dạy")
+                        {
+                            @model IEnumerable<ProgramManagement.Controllers.ModelMonHocAcceptDeny>
+
+                            <table class="table table-hover table-bordered bg_table_htd m-t-10 m-b-0">
+                                <thead class="hopthuden_gv">
+                                    <tr>
+                                        <th rowspan="2">STT</th>
+                                        <th rowspan="2">Khóa</th>
+                                        <th rowspan="2" style="width: 350px">Tên môn học</th>
+                                        <th rowspan="2">Số tín chỉ</th>
+                                        <th colspan="3">Số giờ</th>
+                                        <th rowspan="2" style="width: 200px;">Chấp nhận lời mời giảng dạy?</th>
+                                        <th rowspan="2" style="width: 80px;">Cập nhật đề cương</th>
+                                    </tr>
+                                    <tr>
+                                        <td>TS</td>
+                                        <td>LT</td>
+                                        <td>TH/BT</td>
+                                    </tr>
+                                </thead>
+                                <tbody id='hopthuden_gv_body'>
+                                    @{int stt = 0;}
+                                    @foreach (var ele in Model)
+                                    {
+                                        stt++;
+                                        <tr>
+                                            <td>@stt</td>
+                                            <td>@ele.TenKhoa</td>
+                                            <td>@ele.TenMonHoc</td>
+                                            <td>@ele.SoTC</td>
+                                            <td>
+                                                @{
+                                                    //Tính tổng
+                                                    int th = int.Parse(ele.GioTH);
+                                                    int lt = int.Parse(ele.GioLT);
+                                                    int tong = th + lt;
+                                                }
+                                                @tong
+                                            </td>
+
+                                            <td>@ele.GioLT</td>
+
+                                            <td>@ele.GioTH</td>
+
+                                            <td>
+                                                <form name="formAnswer" id="form-@ele.MaDeCuongGV" class="form-Answer">
+                                                    <div class="custom-control custom-radio subject-ar m-r-10">
+                                                        <input type="radio" class="custom-control-input subject-accept" id="accept-sub-@ele.MaDeCuongGV"
+                                                               name="sub" value="accept" onclick="handleSelect(this)" required>
+                                                        <label class="custom-control-label" for="accept-sub-@ele.MaDeCuongGV">
+                                                            Đồng ý
+                                                        </label>
+                                                    </div>
+                                                    <div class="subject-ar">|</div>
+                                                    <div class="custom-control custom-radio subject-ar m-l-10">
+                                                        <input type="radio" class="custom-control-input" id="reject-sub-@ele.MaDeCuongGV"
+                                                               name="sub" value="reject" onclick="handleSelect(this)" required>
+                                                        <label class="custom-control-label" for="reject-sub-@ele.MaDeCuongGV">
+                                                            Từ chối
+                                                        </label>
+                                                    </div>
+                                                </form>
+                                            </td>
+
+                                            <td>
+                                                @if (ele.capnhatdecuong == true)
+                                                {
+                                                    <div>Có</div>
+                                                }
+                                                else
+                                                {
+                                                    <div>Không</div>
+                                                }
+                                            </td>
+                                        </tr>
+
+
+                                    }
+                                </tbody>
+                            </table>
+                            <div class="row m-t-10" id="reject-reason" style="display: none;">
+                                <div class="col-md-6 float-md-left">
+                                    <label>Lý do từ chối lời mời giảng dạy?</label>
+                                    <div class="form-group row">
+                                        <div class="col-md-9">
+                                            <div class="form-group row">
+                                                <div class="col-md-9">
+                                                    <form id="reasonArea">
+                                                        <div class="custom-control custom-radio mr-sm-2">
+                                                            <input type="radio" class="custom-control-input" value="1" name="reason-checkbox" id="reason1" onclick="handleReason(this)">
+                                                            <label class="custom-control-label" for="reason1">Trùng lịch dạy</label>
+                                                        </div>
+                                                        <div class="custom-control custom-radio mr-sm-2">
+                                                            <input type="radio" class="custom-control-input" value="2" name="reason-checkbox" id="reason2" onclick="handleReason(this)">
+                                                            <label class="custom-control-label" for="reason2">Không hợp lý</label>
+                                                        </div>
+                                                        <div class="custom-control custom-radio mr-sm-2">
+                                                            <input type="radio" class="custom-control-input" value="3" name="reason-checkbox" id="reason3" onclick="handleReason(this)">
+                                                            <label class="custom-control-label" for="reason3">Lý do khác</label>
+                                                            <textarea class="form-control" id="reason-input" placeholder="Nhập lý do từ chối *" style="display: none;" required></textarea>
+                                                            <div class="invalid-feedback" id="reason-input-error" style="display: none;">
+                                                                *Bắt buộc nhập lý do
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="display: block;">
+                <div class="col-md-6 float-md-right">
+                    <div class="d-flex justify-content-end p-t-10">
+                        <a id="back-btn" href="/Mail/HopThuDen/" class="btn btn-warning m-r-10">Quay lại</a>
+                        <a id="btnSubmit" href="javascript:void(0)" class="btn btn-success">Lưu</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loader" style="display: none;"></div>
+
+    <div style="display:none;" id="myDiv" class="animate-bottom"></div>
+</div>
+
+<script type="text/javascript">
+    //Lý do
+    var reasonstr = ""
+
+
+    //Number of Subject
+    var numberOfForm = document.getElementsByClassName("form-Answer");
+    var listSubjectAnswer = [];
+    var currentStatus = false;
+
+    //Import forms to list object
+    for (i = 0; i < numberOfForm.length; i++) {
+        var subject = {
+            id: numberOfForm[i].id,
+            status: ""
+        }
+        listSubjectAnswer.push(subject);
+    }
+    console.log(listSubjectAnswer)
+
+    //Changing object status when user click on radio button
+    function handleSelect(radioSelect) {
+        if (radioSelect.value == "accept") {
+            //var selectIn = radioSelect.id;
+            //var selectNumber = selectIn[selectIn.length - 1];
+            //listSubjectAnswer[selectNumber - 1].status = "true";
+
+            //Split ra để lấy idDeCuong
+            var selectIn = radioSelect.id.split("-")
+            for (let i = 0; i < listSubjectAnswer.length; i++) {
+                if (listSubjectAnswer[i].id == "form-" + selectIn[2]) {
+                    listSubjectAnswer[i].status = "true"
+                }
+            }
+        } else {
+            //var selectIn = radioSelect.id;
+            //var selectNumber = selectIn[selectIn.length - 1];
+            //listSubjectAnswer[selectNumber - 1].status = "false";
+
+             //Split ra để lấy idDeCuong
+            var selectIn = radioSelect.id.split("-")
+            for (let i = 0; i < listSubjectAnswer.length; i++) {
+                if (listSubjectAnswer[i].id == "form-" + selectIn[2]) {
+                    listSubjectAnswer[i].status = "false"
+                }
+            }
+        }
+        console.log("reasonstr", reasonstr)
+        checkStatus();
+    }
+
+    //Checking status for display or hide reason input area
+    function checkStatus() {
+        var countReject = 0;
+        for (i = 0; i < numberOfForm.length; i++) {
+            if (listSubjectAnswer[i].status == "false") {
+                countReject += 1;
+                break;
+            }
+        }
+        if (countReject != 0) {
+            document.getElementById('reject-reason').style.display = "block";
+
+            var isCheckedInReason3 = document.getElementById("reason1").checked = true;
+            reasonstr = $("#reason1").siblings()[0].innerText
+
+
+        } else {
+            document.getElementById('reject-reason').style.display = "none";
+            reasonCheck = false;
+        }
+    }
+
+    //Showing or hiding the reason input area
+    var reasonCheck = false;
+    function handleReason(reason) {
+        switch (reason.value) {
+            case "1":
+                reasonCheck = false;
+                document.getElementById('reason-input').classList.remove('is-invalid');
+                document.querySelector('.invalid-feedback').style.display = "none";
+                document.getElementById('reason-input').style.display = "none";
+                reasonstr = $("#reason1").siblings()[0].innerText
+                break;
+            case "2":
+                reasonCheck = false;
+                document.getElementById('reason-input').classList.remove('is-invalid');
+                document.querySelector('.invalid-feedback').style.display = "none";
+                document.getElementById('reason-input').style.display = "none";
+                reasonstr = $("#reason2").siblings()[0].innerText
+                break;
+            case "3":
+                reasonCheck = true;
+                document.getElementById('reason-input').style.display = "block";
+                reasonstr = $("#reason-input").val()
+                break;
+        }
+    }
+
+    //An hien cac option trong phan dong y/tu choi loi moi giang day
+    $(document).ready(function () {
+        var btnSubmit = document.getElementById("btnSubmit");
+        btnSubmit.addEventListener("click", function () {
+            if (reasonCheck == true && (document.getElementById('reason-input').value === "")) {
+                document.getElementById('reason-input').classList.add('is-invalid');
+                document.querySelector('.invalid-feedback').style.display = "block";
+                toastr.error('@ResourcePM.Resources.VI.mes_NhapLyDoTuChoi', 'Lỗi!');
+            } else {
+                //Khi Thoả điều kiện cho lưu
+                let isCheckedAll = true;
+                var lstGui = [];
+                for (let i = 0; i < listSubjectAnswer.length; i++) {
+                    if (listSubjectAnswer[i].status == "") {
+                        isCheckedAll = false;
+                        break;
+                    }
+                    let subject = { maDeCuongGV: listSubjectAnswer[i].id.split('-')[1], giaTri: listSubjectAnswer[i].status }
+                    lstGui.push(subject)
+                }
+
+                //if Reason3 checked give a value of text area
+                if ($("#reason3").is(':checked')) {
+                    reasonstr = $("#reason-input").val()
+                }
+
+                //check hết rồi
+                if (isCheckedAll) {
+
+                    let form_data = { listDeCuongGVChapNhanTuChoi: JSON.stringify(lstGui), lyDo: reasonstr, emailNguoiGui: "@ViewBag.EmailNguoiGui", maThongBaoHienTai: "@ViewBag.maNotifi" }
+                    $.ajax({
+                        url: "@Url.Action("ThayDoiTrangThaiDeCuongGV", "Mail")",
+                        type: "post",
+                        data: form_data,
+                        traditional: true
+                    }).done(function (response) {
+                        if (response == "done") {
+                            toastr.success('@ResourcePM.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+                            $("#btnSubmit").hide()
+                        }
+
+                    }).fail(function (err) {
+                        toastr.error('@ResourcePM.Resources.VI.mes_ChonToanBoThuMoiGD', 'Lỗi!');
+                    })
+                    console.log("lstGui", lstGui)
+
+                }
+                //nếu chưa check hết
+                else {
+                    toastr.error('@ResourcePM.Resources.VI.mes_ChonToanBoThuMoiGD', 'Lỗi!');
+                }
+
+            }
+        });
+        document.getElementById('list-gv-item').classList.add("selected");
+        document.getElementById('list-gv').classList.add("active");
+    });
+</script>

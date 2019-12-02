@@ -1,0 +1,1432 @@
+﻿<div class="col-md-12 p-0">
+    <!-- modalTaoTieuChi material rating-->
+    @*<a class="btn btn-info" href="javascript:void(0)" data-toggle="modal" onclick="checkExistNodeSeem()" data-target="#modalTaoTieuChi">Thêm hoạt động</a>*@
+    <!-- Modal -->
+    <div class="modal fade" id="modalTaoTieuChi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thêm hoạt động đánh giá</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Hoạt động đánh giá: </label>
+                        <select id="idSel_main" class="js-select2Material form-control custom-select" name="state" style="width: 100%; height:36px;">
+                            <option></option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" onclick="{ createRubric(null) }" class="btn btn-success">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content -->
+    <div id="cdContent" style="display: block" class="card">
+    </div>
+    <div class="modal fade" id="modalConfirmPage3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận xóa mức độ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalConfirmPage3Content">
+                    Bạn có muốn xóa mức độ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success" id="btnXacNhanXoaMucDo" data-dismiss="modal">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div id="loader"  style="display: block"></div>*@
+    <br />
+</div>
+
+<script>
+    //====================== Animation passive ======================//
+    $(document).ready(function () {
+        $('.js-select2Material').select2({
+            placeholder: 'Vui lòng chọn thành phần',
+            allowClear: true
+        })
+        //$('#idSel_main').empty()
+        //RenderPageOption(@Model.MaKHDT)
+    })
+    //let btn_purpose = document.getElementById('btn_purpose')
+    //btn_purpose.addEventListener('click', () => {
+    //    setTimeout(() => {
+    //        $('.select2-multi-purpose').select2({
+    //            placeholder: "Chọn tiêu chí",
+    //            allowClear: true
+    //        })
+    //    }, 200)
+    //})
+
+    //======================= Event Handler =========================//
+    let cMainIndex = 1111          // Count index main
+    let btn_createTab = document.getElementById('btn_createTab')
+    //Node NavTabs
+    //let navTabs_attendance = document.getElementById('navTabs_attendance')
+    //Main content card
+    let cdContent = document.getElementById('cdContent')
+    let loaderDiv = document.getElementById('loader')
+    // declare width and height navtabs
+    //let tabHeight = navTabs_attendance.offsetHeight
+    //let tabWidth = navTabs_attendance.offsetWidth
+    // nav-item have width 160px
+    let wTabPrimi = '159'
+
+    //Declare Object include item
+    //let activateObj = {
+    //    DL: { name: 'Dự lớp', status: false },
+    //    BTCN: { name: 'Bài tập cá nhân', status: false },
+    //    TLTL: { name: 'Thảo luận trong lớp', status: false },
+    //    TCK: { name: 'Thi cuối kỳ', status: false }
+    //}
+    let activateObj = {}
+
+    let keyGroup = {}
+    let optionPur = {} //Array Purpose
+    //btn_createTab.addEventListener('click', eveCreateTab)
+
+    /**
+     *
+     * keyPane  : Pri key main
+     * type     : true:         manual
+     *            False:        auto
+     * item      :  Obj
+     */
+    function eveCreateTab(keyPane, type, item) {
+
+        key = type ? cMainIndex : item.MaTC
+        //declare
+        let idnavTabs = 'navTabs_' + keyPane
+        let navTabs = document.getElementById(idnavTabs)
+        // Tab Main Pane
+        let idPaneMain = 'PaneMain_' + keyPane
+        let PaneMain = document.getElementById(idPaneMain)
+
+        let curHeightTab = navTabs.offsetHeight
+        let curWidthTab = navTabs.offsetWidth
+
+        // declare
+        activateObj[keyPane].purpose[key] = {}
+        //declare option false
+        activateObj[keyPane].purpose[key].status = false
+        //declare obj scope large
+        activateObj[keyPane].purpose[key].level = {}
+
+        checkTabSize(navTabs, curWidthTab - 100 - wTabPrimi, curHeightTab)
+
+        // Render tab
+        RenderTabItem(navTabs, keyPane, cMainIndex, 'Tiêu chí mới', type, item)
+        // Render Pane
+        RenderTabContent(PaneMain, keyPane, cMainIndex, type, item)
+
+        // check resize
+        checkTabSize(navTabs, curWidthTab, curHeightTab)
+
+        // Select tab new
+        activeNavTab(idnavTabs, keyPane, key) // show tab
+
+        cMainIndex++
+    }
+    /**
+     * Render one Tab on bar
+     * parent   : node main you can render tab
+     * index      : pisition
+     * title      : header
+     * type       : true manual
+     *              False auto
+     * item       : material once item
+     */
+    function RenderTabItem(parent, keyPane, index, title, type, item) {
+        title = type ? title : item.Mota
+        index = type ? index : item.MaTC
+        //check parent
+        if (checkLimitTab(parent) === 1) {
+            if (title.length > 10) {
+                title = title.substring(0, 10) + '...'
+            }
+        }
+
+        // Creat Node
+        let liNavItem = document.createElement('li')
+        liNavItem.setAttribute('class', 'nav-item')
+        liNavItem.setAttribute('id', 'NavItem_' + keyPane + '_' + index)
+        liNavItem.setAttribute('data-toggle', 'tooltip')
+        liNavItem.setAttribute('data-placement', 'top')
+        let pNavLink = document.createElement('p')
+        pNavLink.setAttribute('class', 'nav-link-Customs')
+        pNavLink.setAttribute('data-toggle', 'tab')
+        pNavLink.setAttribute('href', '#' + keyPane + '_' + index)
+        pNavLink.setAttribute('role', 'tab')
+
+        let spanUp = document.createElement('span')
+        spanUp.setAttribute('class', 'hidden-sm-up')
+        let spanDown = document.createElement('span')
+        spanDown.setAttribute('class', 'hidden-xs-down')
+        spanDown.setAttribute('id', 'spTitle_' + keyPane + '_' + index)
+        spanDown.innerText = title
+
+        // Append Node
+        pNavLink.appendChild(spanUp)
+        pNavLink.appendChild(spanDown)
+        liNavItem.appendChild(pNavLink)
+
+        // get position after button add tab
+        let positionAfter = parent.getElementsByTagName('li').length - 1
+
+        switch (checkLimitTab(parent)) {
+            case 0:
+                parent.insertBefore(liNavItem, parent.children[positionAfter]) // append
+                break
+            case 1:
+                // insert before btn add
+                parent.insertBefore(liNavItem, parent.children[positionAfter]) // append
+                break
+            case 2:
+                toastr.error('@ResourcePM.Resources.VI.mes_KhongTheThemMoiDuocNua', 'Thông báo !')
+                break
+            default:
+                toastr.error('@ResourcePM.Resources.VI.mes_KhongTheThemMoiDuocNua', 'Thông báo !')
+                break
+        }
+    }
+    /**
+ *  Render one Tab with content
+ *  parent
+ *  index
+ *  keyPane       : Key Content id ex: Home
+ *  type          : true manual
+ *                  false auto
+ *  item
+ */
+    function RenderTabContent(parent, keyPane, index, type, item) {
+        let countItem = 1
+        index = type ? index : item.MaTC
+        
+        let descript =  type ? '' : item.Mota
+        let trongso = type ? 0 : item.Trongso
+        //append set activateObj
+        activateObj[keyPane].purpose[index].name = descript
+        activateObj[keyPane].purpose[index].percent = trongso
+        // Create Node
+        let divTabPane = document.createElement('div')
+        divTabPane.setAttribute('class', 'tab-pane')
+        divTabPane.setAttribute('id', keyPane + '_' + index)
+        divTabPane.setAttribute('role', 'tabpanel')
+        let divRow = document.createElement('div')
+        divRow.setAttribute('class', 'row')
+
+        let divFirst = document.createElement('div')
+        divFirst.setAttribute('class', 'col-md-9 m-t-20')
+        let divFirstForm = document.createElement('div')
+        divFirstForm.setAttribute('class', 'form-group required-field')
+        divFirstForm.innerHTML = '<label>Tên tiêu chí:</label>'
+            + '<textarea id="txaPurpose_' + keyPane + '_' + index + '" rows="5" type="text" class="form-control" placeholder="Mục tiêu của nội dung trình bày" readonly>'
+            +  descript
+            + '</textarea>'
+            + '<div class="invalid-feedback">Không được để trống</div>'
+
+        let divSecond = document.createElement('div')
+        divSecond.setAttribute('class', 'col-md-3 m-t-20')
+        let divSecondSon = document.createElement('div')
+        divSecondSon.innerHTML = '<div class="form-group required-field">'
+            +'<label for="fname" >Trọng số tiêu chí đánh giá:</label>'
+            + '<div class="input-group mb-3"><input value="' + trongso + '" style="width:50px;" type="text" class="form-control" id="txtPer_' + keyPane + '_' + index + '" placeholder="Nhập trọng số tiêu chí đánh giá" readonly>'
+            + '<div class="input-group-append"><span class="input-group-text" id="basic-addon2">%</span></div >'
+            + '<div class="invalid-feedback">Không được để trống</div>'
+            + '</div>'
+        
+        divSecond.appendChild(divSecondSon)
+
+        //Event for button
+        let divThirdRow = document.createElement('div')
+        divThirdRow.setAttribute('class', 'row p-10')
+        divThirdRow.setAttribute('id', 'rowPLevel_' + keyPane + '_' + index)
+        
+        divFirst.appendChild(divFirstForm)
+
+        if (countItem === 0) {
+            crLevelInPane(divThirdRow, keyPane, index, countItem,true,'')
+        }
+
+        divRow.appendChild(divFirst)
+        divRow.appendChild(divSecond)
+
+        divTabPane.appendChild(divRow)
+        divTabPane.appendChild(divThirdRow)
+
+        parent.appendChild(divTabPane)
+
+        rerenderProGress(keyPane)
+    }
+
+    /**
+     * Check size navtabs and resize tab item
+     * height
+     * width
+     **/
+    function checkTabSize(parent, width, height) {
+        //if (tabWidth < width && tabHeight < height) {
+        //    resizeTabs(navTabs_attendance,'150px')
+        //}
+        // count item in child
+        let lengthItem = parent.children.length - 1
+
+        // total pixel
+        let sumWidth = lengthItem * wTabPrimi + 65
+        //console.log(sumWidth, width)
+
+        if (sumWidth > width) {
+            let sizeTab = (width - 65) / lengthItem
+            //console.log(sizeTab)
+            resizeTabs(parent, sizeTab + 'px')
+            parent.children[lengthItem].children[0].style.height = height + 'px'
+        }
+    }
+    /**
+     * Resize tab follow width
+     * parent   : node iclude item inside
+     * size
+     */
+    function resizeTabs(parent, size) {
+        let totalParent = parent.children.length - 1
+        for (let i = 0; i < totalParent; i++) {
+            parent.children[i].children[0].style.width = size
+        }
+        // console.log(parent.offsetHeight, parent.offsetWidth)
+    }
+    /**
+     * Check only 20tab on view
+     * 1440 * 900 13inch Macbook
+     */
+    function checkLimitTab(parent) {
+        let lengthItem = parent.children.length
+        if (lengthItem < 6) {
+            return 0 // split length content
+        } else if (lengthItem < 22) {
+            return 1 // allow append
+        } else if (lengthItem > 22) {
+            return 2 // dont' append
+        }
+    }
+    
+    /**
+     * Function active NavTab with ID
+     * idParent          : id Parent include childrent
+     * keyPane           : nametab
+     * index             : position
+     */
+    function activeNavTab(idParent, keyPane, index) {
+        let idTab = keyPane + '_' + index
+        $('#' + idParent + ' p[href="#' + idTab + '"]').tab('show')
+    }
+    /**
+     * active with index child
+     */
+    function activeNavTabIndex(idParent, index) {
+        $(`#${idParent} li:nth-child(${index}) p`).tab('show') // Select third tab
+    }
+
+    /**
+     * Render title tooltip
+     * keyPane          Type Large table
+     * Index            Primary Key
+     *
+     */
+    function RenderPurposeNav(keyPane, index)
+    {
+        //console.log("activateObj", activateObj)
+        let idliNavItem = 'NavItem_' + keyPane + '_' + index
+        let liNavItem = document.getElementById(idliNavItem)
+
+        let { name } = activateObj[keyPane].purpose[index]
+        //console.log(keyPane, index, activateObj[keyPane].purpose[index])
+        liNavItem.setAttribute('data-original-title', name)
+        $('[data-toggle="tooltip"]').tooltip()
+    }
+
+    /**
+     * Create Level inside Pane content
+     * Example: Muc do 1
+     * parent       : node parent
+     * keyPane      : key of Pane
+     * index        : position
+     * key          : index item
+     * type         : true manual
+     *                false auto
+     * item           data
+     */
+    function crLevelInPane(parent, keyPane, index, key, type, item) {
+        let keyEncrypt = type ? getRandomInt(1000000000) : item.id
+
+        let des = type ? '' : item.des
+        let name = type ? '' : item.name
+        let trongso = type ? '' : item.wei
+        //console.log(item)
+        //Object Declare
+        if (type) {
+            activateObj[keyPane].purpose[index].level[keyEncrypt] = {}
+        }
+        //activateObj[keyPane].purpose[index].level[keyEncrypt].des = des
+        //activateObj[keyPane].purpose[index].level[keyEncrypt].name = name
+        //activateObj[keyPane].purpose[index].level[keyEncrypt].wei = trongso
+
+        // Create Node
+        let rowInitial = document.createElement('div')
+        rowInitial.setAttribute('class', 'col-md-6 p-l-0 p-r-0')
+        rowInitial.setAttribute('style', 'border: 2px solid #e7eaed; border-radius: 5px; border-spacing: 2px;')
+        rowInitial.setAttribute('id', 'snip_' + keyPane + '_' + index + '_' + keyEncrypt)
+
+        let divFirst = document.createElement('div')
+        divFirst.setAttribute('class', 'col-md-12 p-t-10')
+        let pFirstFirst = document.createElement('h4')
+        pFirstFirst.setAttribute('class', 'col-md-6 p-l-0')
+        pFirstFirst.setAttribute('style', 'display: inline-block;')
+        pFirstFirst.innerHTML = '<span>Mức độ ' + key + ' </span> &ensp;'
+        let aParent = document.createElement('div')
+        aParent.setAttribute('class', 'col-md-6 p-0 text-right')
+        aParent.setAttribute('style', 'display: inline-block;')
+
+        let divThird = document.createElement('div')
+        divThird.setAttribute('class', 'col-md-12')
+        divThird.innerHTML = '<div class="form-group required-field">'
+            + '<label>Mô tả:</label>'
+            + ' <textarea value="' + des + '" id="txaDes_' + keyPane + '_' + index + '_' + keyEncrypt + '" type="text" rows="3" class="form-control tcHTextArea" placeholder="Mô tả nội dung" readonly>' + des + '</textarea>'
+            + '<p style="color:red;font-size:12px;display:none" id="vd_' + keyPane + '_' + index + '_' + keyEncrypt+'">Vui lòng điền đầy đủ thông tin các ô trên</p>'
+            + '</div>'
+
+
+        let divSecondA = document.createElement('div')
+        divSecondA.setAttribute('class', 'col-md-6')
+        divSecondA.setAttribute('style', 'display: inline-block;')
+        let divSecondFirst = document.createElement('div')
+        divSecondFirst.setAttribute('class', 'form-group required-field')
+        divSecondFirst.innerHTML = '<label>Tên mức độ:</label>'
+            + ' <input value="' + name + '" id="txtLevel_' + keyPane + '_' + index + '_' + keyEncrypt + '" type="text" class="form-control" placeholder="Tên mức độ" readonly>'
+
+        let divSecondB = document.createElement('div')
+        divSecondB.setAttribute('class', 'col-md-6')
+        divSecondB.setAttribute('style', 'display: inline-block;')
+        let divSecondSecond = document.createElement('div')
+        divSecondSecond.setAttribute('class', 'form-group')
+        divSecondSecond.innerHTML = '<div class="form-group required-field">'
+            +' <label>Trọng số của mức độ:</label>'
+            + '<div class="input-group mb-3"><input value="' + trongso + '" style="width:50px;" type="text" id="txtWei_' + keyPane + '_' + index + '_' + keyEncrypt + '" class="form-control" placeholder="Nhập trọng số của mức độ" readonly>'
+            + '<div class="input-group-append"><span class="input-group-text" id="basic-addon2">%</span></div>'
+            + '</div>'
+
+        divFirst.appendChild(pFirstFirst)
+        divFirst.appendChild(aParent)
+        divSecondA.appendChild(divSecondFirst)
+        divSecondB.appendChild(divSecondSecond)
+
+        rowInitial.appendChild(divFirst)
+        rowInitial.appendChild(divSecondA)
+        rowInitial.appendChild(divSecondB)
+        rowInitial.appendChild(divThird)
+
+
+        parent.appendChild(rowInitial)
+
+        type || RenderPurposeNav(keyPane, index)
+    }
+
+    /**
+     * Rename level after delete
+     * parent       : node parent
+     **/
+    function rnPosTitLev(parent) {
+        let count = 1
+        for (let item of parent.children) {
+            item.getElementsByTagName('span')[0].innerHTML = 'Mức độ ' + count
+            count++
+        }
+    }
+
+    var arrayGroup = []
+
+    /**
+     * add group inside purepose
+     * parent          : parent you can add
+     * keyPane         : key Name of side
+     * key             : position index
+     * checkNumber     : Ex: '' news : #'' old exist
+     */
+    let keyIndexGlobal = 3 // Count Element
+    function addGroupItem(parent, keyPane, keyOld) {
+        let paarr = document.getElementById(parent)
+        let key = paarr.children.length
+        keyIndexGlobal += 5
+        let keyEncrypt = keyIndexGlobal
+        if (keyOld !== '') {
+            keyEncrypt = keyOld
+        }
+        keyGroup[keyPane][keyEncrypt] = []
+
+        let newArrayGroupItem
+        if (arrayGroup.length == 0) {
+            newArrayGroupItem = {
+                typeGroup: keyPane,
+                idComponents: keyEncrypt,
+                status: false
+            }
+            arrayGroup.push(newArrayGroupItem)
+        } else {
+            for (let item of arrayGroup) {
+                if (item.idComponents != keyEncrypt) {
+                    newArrayGroupItem = {
+                        typeGroup: keyPane,
+                        idComponents: keyEncrypt,
+                        status: false
+                    }
+                    arrayGroup.push(newArrayGroupItem)
+                }
+            }
+        }
+        //console.log(keyGroup, keyEncrypt)
+        let divInitial = document.createElement('div')
+        divInitial.setAttribute('class', 'col-md-12 border-top')
+        divInitial.setAttribute('id', 'divGroup_' + keyPane + '_' + keyEncrypt)
+
+        let divFirst = document.createElement('div')
+        divFirst.setAttribute('class', 'col-md-12 p-0 m-b-0 m-t-10')
+        let pFirstFirst = document.createElement('p')
+        pFirstFirst.setAttribute('class', 'tcHLevel col-md-6 p-0')
+        pFirstFirst.innerHTML = '<span>Nhóm ' + key + ' &ensp;</span>'
+        pFirstFirst.setAttribute('style', 'display: inline-block')
+        let aParent = document.createElement('div')
+        aParent.setAttribute('class', 'col-md-6 text-right')
+        aParent.setAttribute('style', 'display: inline-block')
+
+        let divSecond = document.createElement('div')
+        divSecond.setAttribute('class', 'form-group required-field')
+        divSecond.innerHTML = '<label>Tên nhóm:</label>'
+            + '<input id="txtGroup_' + keyPane + '_' + keyEncrypt + '" type="text" class="form-control" placeholder="Tên nhóm" readonly/>'
+        let divSecondFB = document.createElement('div')
+        divSecondFB.setAttribute('class', 'invalid-feedback')
+        divSecondFB.innerHTML = 'Không được để trống'
+        let divThird = document.createElement('div')
+        divThird.setAttribute('class', 'form-group required-field')
+        divThird.innerHTML = '<label>Tiêu chí đánh giá:</label>'
+        let divThirdFB = document.createElement('div')
+        divThirdFB.setAttribute('class', 'feedback')
+        divThirdFB.setAttribute('id', 'fb_' + keyPane + '_' + keyEncrypt)
+        divThirdFB.innerHTML = 'Không được để trống'
+        divSecond.appendChild(divSecondFB)
+
+        /**
+         * Todo render Multiple Select2
+         *
+         */
+        
+        divFirst.appendChild(pFirstFirst)
+
+        renderMulSelect(divThird, keyPane, keyEncrypt)
+        divThird.appendChild(divThirdFB)
+
+        divInitial.appendChild(divFirst)
+        divInitial.appendChild(divSecond)
+        divInitial.appendChild(divThird)
+
+        paarr.appendChild(divInitial)
+
+        OptionRenderStatus(keyPane, false)
+        //After render Option i will clock option is True
+        OptionRenderStatus(keyPane, true)
+
+        //Declare event for selected
+        let sel = 'sel_' + keyPane + '_' + keyEncrypt
+
+        $(document).ready(function () {
+            // Selected option
+            $('#' + sel).on('select2:select', function (e) {
+                let { id } = e.params.data
+                let indexId = id.split('_')[1]
+                for (let item of optionPur[keyPane]) {
+                    if (item.id === indexId) {
+                        //console.log(item, indexId)
+                        item.status = true
+                        //ReRenderFollowAction(keyPane, sel, true)
+                        keyGroup[keyPane][keyEncrypt].push(indexId) // add data inside group
+                        OptionRenderStatus(keyPane, true)
+                    }
+                }
+            })
+
+            // Remove selected option
+            $('#' + sel).on('select2:unselect', function (e) {
+                let { id } = e.params.data
+                let indexId = id.split('_')[1]
+                $('#' + sel).ready(function () {
+                    for (let item of optionPur[keyPane]) {
+                        if (item.id === indexId) {
+                            item.status = false
+                            //remove Item from KeyGroup
+                            let position = keyGroup[keyPane][keyEncrypt].indexOf(indexId)
+
+                            keyGroup[keyPane][keyEncrypt].splice(position, 1)
+                            //console.log(keyGroup, position)
+                            OptionRenderStatus(keyPane, false) //Unclock option is False
+                        }
+                    }
+                })
+            })
+
+            $('.select2-multi-purpose').select2({
+                placeholder: "Tên nhóm"
+            })
+            $('.select2-multi-purpose').prop('disabled', true)
+        });
+    }
+
+
+    /**
+     * Rerender Node is Choose
+     * keyPane
+     * idSelChoose
+     * check        : true select, false remove
+     */
+    function ReRenderFollowAction(keyPane, idSelChoose, checkType) {
+        if (keyGroup.length > 0) {
+            if (checkType) {
+                for (let keyIndex of keyGroup) {
+                    let idSel = 'sel_' + keyPane + '_' + keyIndex
+                    if (idSelChoose !== idSel) {
+                        for (let subItem of optionPur[keyPane]) {
+                            if (subItem.status === checkType) {
+                                $('#purpose_' + subItem.id + '_' + keyIndex).prop('disabled', checkType)
+                                // console.log('#purpose_' + subItem.id + '_' + keyIndex)
+                            }
+                        }
+                    }
+                }
+                $('.select2-multi-purpose').select2({
+                    placeholder: "Tên nhóm",
+                    allowClear: true
+                })
+            } else {
+                OptionRenderStatus(checkType) //unClock
+            }
+        }
+    }
+
+    /**
+     * OptionRender Clock || unclock
+     * true is Clock
+     * false is unClock follow status
+     *
+     */
+    function OptionRenderStatus(keyPane, status) {
+        for (let keyIndex in keyGroup[keyPane]) {
+            for (let subItem of optionPur[keyPane]) {
+                if (subItem.status === status) {
+                    $('#purpose_' + subItem.id + '_' + keyIndex).prop('disabled', status)
+                    // console.log('#purpose_' + subItem.id + '_' + keyIndex)
+                }
+            }
+        }
+        $('.select2-multi-purpose').select2({
+            placeholder: "Tên nhóm",
+            allowClear: true
+        })
+    }
+
+    /**
+     *
+     * max: limit
+     */
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    /**
+     * Create rubric
+     * keyPaneMain     null: get Value manual
+     *          !== null: render with auto
+     */
+    function createRubric(keyPaneMain) {
+        let idSel_main = 'idSel_main'
+        let selectValueText = keyPaneMain === null ? $('#' + idSel_main).select2('data')[0].text : 'Khac Null Nha'
+        let keyPane = keyPaneMain === null ? $('#' + idSel_main).val() : keyPaneMain
+        if (selectValueText != "") {
+
+            let divInitial = document.createElement('div')
+            divInitial.setAttribute('class', 'card card-custom m-t-10 m-b-0')
+            divInitial.setAttribute('id', 'dash_' + keyPane)
+            // render Header
+            renderHeader(divInitial, keyPane)
+            // render body
+            renderBody(divInitial, keyPane)
+
+            cdContent.appendChild(divInitial)
+
+            $('#ModalPur_' + keyPane).on('hidden.bs.modal', function (e) {
+                clearDataInModalGroup('rowPur_', keyPane)
+                keyGroup[keyPane] = {}
+
+                for (let item of arrayGroup) {
+                    if (item.status == false) {
+                        let pos = arrayGroup.indexOf(item)
+                        arrayGroup.splice(pos, 1)
+                    }
+                }
+                //optionPur = []
+            })
+            //change status
+            activateObj[keyPane].status = true
+            activateObj[keyPane].totalNum = 0
+            //Declare object empty
+            activateObj[keyPane].purpose = {}
+            activateObj[keyPane].group = []
+            keyGroup[keyPane] = {}
+            optionPur[keyPane] = []
+
+            $('#' + idSel_main).val(null).trigger('change')
+            $('#modalTaoTieuChi').modal('hide')
+            // check screen status notification
+            keyPaneMain || toastr.success('@ResourcePM.Resources.VI.mes_ThemHoatDong', 'Thành công!')
+        } else {
+            toastr.error('@ResourcePM.Resources.VI.mes_ChuaChonTPDG', 'Lỗi!')
+        }
+    }
+
+    /**
+     * Render Header TABLE
+     * parent:  node main
+     * keypane: type
+     * index
+     */
+    function renderHeader(parent, keyPane) {
+        let idGenera = keyPane
+        // create Header
+        let header = document.createElement('div')
+        header.setAttribute('class', 'card-header p-0')
+        header.setAttribute('id', 'heading_' + idGenera)
+
+        let h5header = document.createElement('h5')
+        h5header.setAttribute('class', 'mb-0')
+        h5header.innerHTML = '<button id="btnheader_' + keyPane + '" class="btn btn-link p-l-10 collapsed" data-toggle="collapse" data-target="#collapse_' + idGenera + '" aria-expanded="false" type="button">'
+            + 'Đánh giá hoạt động ' + activateObj[keyPane].name.toLowerCase()
+            + '</button >'
+
+        header.appendChild(h5header)
+
+        parent.appendChild(header)
+    }
+
+    /**
+     * Handler render table collapse
+     * parent       : node parent
+     * keyPane      : type modal
+     */
+    function renderBody(parent, keyPane) {
+        let idGenera = keyPane
+
+        // declare div
+        let divInitial = document.createElement('div')
+        divInitial.setAttribute('class', 'm-l-10 m-r-10 m-t-10 collapse')
+        divInitial.setAttribute('id', 'collapse_' + idGenera)
+        divInitial.setAttribute('aria-labelledby', 'heading_' + idGenera)
+
+        let cardDiv = document.createElement('div')
+        cardDiv.setAttribute('class', 'card')
+
+        let divFirst = document.createElement('div')
+        divFirst.setAttribute('class', 'col-md-12 text-right p-r-0')
+        let btnFirstFirst = document.createElement('button')
+        btnFirstFirst.setAttribute('class', 'btn btn-info')
+        btnFirstFirst.setAttribute('id', 'btnPur_' + idGenera)
+        btnFirstFirst.setAttribute('data-toggle', 'modal')
+        btnFirstFirst.setAttribute('data-target', '#ModalPur_' + idGenera)
+        btnFirstFirst.innerText = 'Xem gom nhóm tiêu chí'
+        btnFirstFirst.addEventListener('click', () => {
+            initialGroup(keyPane)
+            /**
+             *  Check
+             *
+             */
+        })
+        //navTab
+        let ulSecond = document.createElement('ul')
+        ulSecond.setAttribute('class', 'nav nav-tabs tableBworser')
+        ulSecond.setAttribute('role', 'tablist')
+        ulSecond.setAttribute('id', 'navTabs_' + idGenera)
+        let liNavLink = document.createElement('li')
+        liNavLink.setAttribute('class', 'nav-item')
+        let pNavLinkLast = document.createElement('p')
+        pNavLinkLast.setAttribute('class', 'nav-link-Last')
+        pNavLinkLast.innerHTML = '<span class="hidden-sm-up"></span>'
+        let spanSecondSecond = document.createElement('span')
+        spanSecondSecond.setAttribute('class', 'hidden-xs-down')
+
+        //tab pane
+        let divThird = document.createElement('div')
+        divThird.setAttribute('id', 'PaneMain_' + idGenera)
+        divThird.setAttribute('class', 'tab-content tabcontent-border')
+
+        //Modal
+        let divModal = document.createElement('div')
+        divModal.setAttribute('class', 'modal fade')
+        divModal.setAttribute('id', 'ModalPur_' + idGenera)
+        divModal.setAttribute('tabindex', '-1')
+        divModal.setAttribute('role', 'dialog')
+        divModal.setAttribute('aria-hidden', true)
+        divModal.style.display = 'none'
+        let divModalDialog = document.createElement('div')
+        divModalDialog.setAttribute('class', 'modal-dialog')
+        divModalDialog.setAttribute('role', 'document')
+        let divModalContent = document.createElement('div')
+        divModalContent.setAttribute('class', ' modal-content')
+
+        let divModalHeader = document.createElement('div')
+        divModalHeader.setAttribute('class', 'modal-header')
+        divModalHeader.innerHTML =
+            '<h5 class="modal-title"> Gom nhóm tiêu chí </h5>'
+            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+            + '<span aria-hidden="true">×</span>'
+            + '</button>'
+
+        let divModalBody = document.createElement('div')
+        divModalBody.setAttribute('class', 'modal-body p-b-0')
+        let rowModalBody = document.createElement('div')
+        rowModalBody.setAttribute('class', 'row')
+        rowModalBody.setAttribute('id', 'rowPur_' + idGenera)
+        let colModalBodyFirst = document.createElement('div')
+        colModalBodyFirst.setAttribute('class', 'col-md-12 text-right p-b-15 p-r-16')
+
+        let divModalFooter = document.createElement('div')
+        divModalFooter.setAttribute('class', 'modal-footer')
+        let buttonCancelModalFooter = document.createElement('div')
+        buttonCancelModalFooter.setAttribute('class', 'btn btn-secondary')
+        buttonCancelModalFooter.setAttribute('data-dismiss', 'modal')
+        buttonCancelModalFooter.innerText = 'Đóng'
+
+        //let buttonSaveModalFooter = document.createElement('button')
+        //buttonSaveModalFooter.setAttribute('class', 'btn btn-success')
+        //buttonSaveModalFooter.innerText = 'Lưu'
+        ////Todo Event save
+        //buttonSaveModalFooter.addEventListener('click', () => {
+        //    saveOrderGroup(keyPane)
+        //})
+
+        //AppendChild
+        divFirst.appendChild(btnFirstFirst)
+        
+        pNavLinkLast.appendChild(spanSecondSecond)
+        liNavLink.appendChild(pNavLinkLast)
+        ulSecond.appendChild(liNavLink)
+        
+        rowModalBody.appendChild(colModalBodyFirst)
+        divModalBody.appendChild(rowModalBody)
+
+        divModalFooter.appendChild(buttonCancelModalFooter)
+
+        divModalContent.appendChild(divModalHeader)
+        divModalContent.appendChild(divModalBody)
+        divModalContent.appendChild(divModalFooter)
+
+        divModalDialog.appendChild(divModalContent)
+        divModal.appendChild(divModalDialog)
+
+        cardDiv.appendChild(divFirst)
+        crProgressBar(cardDiv, keyPane)
+        cardDiv.appendChild(ulSecond)
+        cardDiv.appendChild(divThird)
+        cardDiv.appendChild(divModal)
+
+        divInitial.appendChild(cardDiv)
+
+        parent.appendChild(divInitial)
+    }
+
+    let virtualDeleteArea = []
+
+    /* Des: Check all fields in modal is not null
+     * Return value: True (If it's not null), False (If it's null)
+     * Develop by: Nguyen
+     * Date: 02/04/2019
+     */
+    function checkModalFieldNotNull(typeMo) {
+        let newGroup = []
+        let check = true
+        for (let item of arrayGroup) {
+            if (item.typeGroup == typeMo) {
+                newGroup.push(item)
+            }
+        }
+        for (let item of newGroup) {
+            for (let itemWillBeDeleted of virtualDeleteArea) {
+                if (item = itemWillBeDeleted) {
+                    let pos = newGroup.indexOf(item)
+                    newGroup.splice(pos, 1)
+                }
+            }
+        }
+        for (let item of newGroup) {
+            let textTenNhom = document.getElementById('txtGroup_' + item.typeGroup + '_' + item.idComponents).value
+            let selectTenNhom = $('#sel_' + item.typeGroup + '_' + item.idComponents).select2('data')
+            let textTenNhomId = document.getElementById('txtGroup_' + item.typeGroup + '_' + item.idComponents)
+            let selectTenNhomId = $('#sel_' + item.typeGroup + '_' + item.idComponents)
+            let parentSelect = document.getElementById('fb_' + item.typeGroup + '_' + item.idComponents)
+            if (textTenNhom == "" || selectTenNhom.length == 0) {
+                check = false
+            }
+            if (textTenNhomId.value == "") {
+                textTenNhomId.classList.add('is-invalid')
+            } else {
+                textTenNhomId.classList.remove('is-invalid')
+            }
+            if (selectTenNhomId.select2('data').length == 0) {
+                parentSelect.classList.remove('feedback')
+                parentSelect.classList.add('feedback-show')
+            } else {
+                parentSelect.classList.add('feedback')
+                parentSelect.classList.remove('feedback-show')
+            }
+            if (textTenNhom != "" && selectTenNhom.length > 0) {
+                let pos = arrayGroup.indexOf(item)
+                arrayGroup[pos].status = true
+            }
+        }
+        return check
+    }
+
+    /**
+     * Rename index group
+     * parent       :Node father
+     * keyPane      :Type
+     */
+    function renameItemGroup(parent, keyPane) {
+        let countArr = parent.children.length
+        // console.log(countArr)
+        if (countArr > 1) {
+            for (let index = 1; index < countArr; index++) {
+                let item = parent.children[index]
+                item.getElementsByTagName('span')[0].innerHTML = 'Nhóm ' + index + ' &ensp;'
+                //console.log(item.getElementsByTagName('span')[0])
+            }
+        }
+    }
+
+    /**
+     * render Multiple Select2 from purpose
+     * parent       : Node parent is father
+     * keyPane      : type table when u choose
+     */
+    function renderMulSelect(parent, keyPane, keyEncrypt) {
+        let optionHTML = ''
+        //for (let indexKey in activateObj[keyPane].purpose) {
+        //    let { status } = activateObj[keyPane].purpose[indexKey]
+        //    if (status === false) {
+        //        let { name } = activateObj[keyPane].purpose[indexKey]
+        //        let item = '<option id="purpose_' + indexKey + '_' + keyEncrypt +'" value="' + 'purpose_' + indexKey + '">' + name + '</option>'
+        //        optionHTML += item
+        //    }
+        //}
+
+        for (let item of optionPur[keyPane]) {
+            let { status } = item
+            let itemNew = '<option id="purpose_' + item.id + '_' + keyEncrypt + '" value="' + 'purpose_' + item.id + '" di>' + item.name + '</option>'
+            optionHTML += itemNew
+        }
+        //Clock optio status is True
+
+        let selThirdSecond = document.createElement('select')
+        selThirdSecond.setAttribute('class', 'select2-multi-purpose form-control m-t-15')
+        selThirdSecond.setAttribute('id', 'sel_' + keyPane + '_' + keyEncrypt)
+        selThirdSecond.setAttribute('multiple', 'multiple')
+        selThirdSecond.setAttribute('style', 'height: 36px;width: 100%;')
+        selThirdSecond.innerHTML = optionHTML
+
+        parent.appendChild(selThirdSecond)
+    }
+
+    /**
+     * Clear data in Modal
+     * IdRow        : primary Key
+     * keyPane      : type Pane
+     */
+    function clearDataInModalGroup(idRow, keyPane) {
+        // console.log('hello world')
+        let idrowGroup = idRow + keyPane
+        let rowGroup = document.getElementById(idrowGroup)
+        let countTotal = rowGroup.children.length
+        while (rowGroup.firstChild) {
+            if (rowGroup.children.length === 1) {
+                break
+            }
+            rowGroup.removeChild(rowGroup.lastChild)
+        }
+    }
+
+    /**
+     * Save group when user orderby
+     * keyPane      : type
+     * key          : keyencrypt
+     * [nameGroup, arrSelect]
+     */
+    function saveOrderGroup(keyPane) {
+        //console.log(arrayGroup)
+        let flag = checkModalFieldNotNull(keyPane)
+        if (flag) {
+            if (virtualDeleteArea.length > 0) {
+                for (let item of arrayGroup) {
+                    let pos = arrayGroup.indexOf(item)
+                    arrayGroup.splice(pos, 1)
+                }
+            }
+            activateObj[keyPane].group = []
+            for (let keyIndex in keyGroup[keyPane]) {
+                let arrItem = []
+                let idtxtGroup = 'txtGroup_' + keyPane + '_' + keyIndex
+                //let idsel = 'sel_' + keyPane + '_' + keyIndex
+                let txtGroup = document.getElementById(idtxtGroup)
+                // console.log(keyIndex)
+                // AFLTER change status
+                //let countRub = $('#' + idsel).val().length
+                //if (countRub > 0) {
+                //    let arr = $('#' + idsel).val()
+                //    for (let itub of arr) {
+                //        let id = itub.split('_')[1]
+                //        activateObj[keyPane].purpose[id].status = true
+                //    }
+                //}
+
+                arrItem.push(keyIndex)
+                arrItem.push(txtGroup.value ? txtGroup.value : '')
+                arrItem.push(keyGroup[keyPane][keyIndex] ? keyGroup[keyPane][keyIndex] : '')
+
+                activateObj[keyPane].group.push(arrItem)
+            }
+            keyGroup[keyPane] = {}
+            $('#ModalPur_' + keyPane).modal('toggle')
+            toastr.success('@ResourcePM.Resources.VI.mes_LuuGomNhomTC', 'Thành công!')
+            //clear info inside option Group
+            optionPur[keyPane].map(s => s.status = false)
+        } else {
+            toastr.error('@ResourcePM.Resources.VI.mes_KhongDuocDeTrong', 'Lỗi!')
+        }
+
+    }
+
+    /**
+     * Initial Group order by purpose
+     * keyPane      : type Modal
+     */
+    function initialGroup(keyPane) {
+        let count = activateObj[keyPane].group.length
+        let parent = 'rowPur_' + keyPane
+        /**
+          * Passdata to OptionPur for Select
+          **/
+        let countProperty = Object.keys(activateObj[keyPane].purpose).length
+        if (countProperty > 0) {
+            //clear option Pur
+            optionPur[keyPane] = []
+            for (let item in activateObj[keyPane].purpose) {
+                let obj = {}
+                obj.status = false
+                obj.id = item
+                obj.name = activateObj[keyPane].purpose[item].name
+                optionPur[keyPane].push(obj)
+            }
+        }
+        if (count > 0) {
+            for (let item of activateObj[keyPane].group) {
+                let idtxtGr = 'txtGroup_' + keyPane + '_' + item[0]
+                let idGrRub = 'sel_' + keyPane + '_' + item[0]
+                keyGroup[keyPane][item[0]] = []
+
+                try {
+                    let itemParent = document.getElementById(idtxtGr)
+                    //console.log(itemParent)
+                    if (itemParent === null) {
+                        addGroupItem(parent, keyPane, item[0])
+                        keyGroup[keyPane][item[0]] = [...item[2]]
+                        //console.log(item[2])
+
+                        // Render follow option Pur
+                        setDataGroupPur(idtxtGr, idGrRub, keyPane, item)
+                        // console.log(item)
+                    } else {
+                        keyGroup[keyPane][item[0]] = [...item[2]]
+                        setDataGroupPur(idtxtGr, idGrRub, keyPane, item)
+                    }
+
+                } catch {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * set Data for group by Purpose
+     *
+     */
+    function setDataGroupPur(idNameGr, idGrRubric, keyPane, data) {
+        let NameGroup = document.getElementById(idNameGr)
+        NameGroup.value = data[1]
+
+        //set data follow keyObject
+        let arrNewObj = []
+        for (let item of data[2]) {
+            let id = 'purpose_' + item
+            arrNewObj.push(id)
+        }
+        $('#' + idGrRubric).val(arrNewObj).trigger('change')
+
+        if (data[2].length > 0) {
+            for (let item of data[2]) {
+
+                //let { name } = activateObj[keyPane].purpose[id]
+
+                // Create a DOM Option and pre-select by default
+                //var newOption = new Option(name, item, true, true)
+                //// Append it to the select
+                //$('#' + idGrRubric).append(newOption).trigger('change')
+                optionPur[keyPane].map(s => {
+                    if (s.id === item) {
+                        s.status = true
+                        return s
+                    }
+                })
+            }
+        }
+
+        OptionRenderStatus(keyPane, false)
+        OptionRenderStatus(keyPane, true)
+        //console.log(item)
+
+        $('.select2-multi-purpose').select2({
+            placeholder: "Tên nhóm",
+            allowClear: true
+        })
+
+    }
+
+    /**
+     * Create Progress bar for percent Subject
+     * parent       : Node parent
+     * keyPane      : Key primary
+     */
+    function crProgressBar(parent, keyPane) {
+        let divAbout = document.createElement('div')
+        divAbout.setAttribute('class', 'card m-t-15')
+        let divProgress = document.createElement('div')
+        divProgress.setAttribute('class', 'progress m-t-5 m-b-10')
+        divProgress.style.height = '10px'
+        let span = document.createElement('span')
+        span.setAttribute('class', 'text-success font-bold')
+        span.setAttribute('id', 'titleProgre_' + keyPane)
+        span.innerText = '0%'
+        let divGressBar = document.createElement('div')
+        divGressBar.setAttribute('class', 'progress-bar progress-bar-striped progress-bar-animated bg-success')
+        divGressBar.setAttribute('id', 'progress_' + keyPane)
+
+        let pValidate = document.createElement('p')
+        pValidate.setAttribute('class', 'm-0 m-t-15')
+        pValidate.setAttribute('id', 'vlProgress_' + keyPane)
+        pValidate.innerText = 'Vui lòng điều chỉnh đủ 100%'
+        pValidate.style.color = 'red'
+        pValidate.style.fontSize = '12px'
+        pValidate.style.display ='none'
+
+        divAbout.appendChild(span)
+
+        divProgress.appendChild(divGressBar)
+
+        divAbout.appendChild(divProgress)
+
+        divAbout.appendChild(pValidate)
+
+        parent.appendChild(divAbout)
+    }
+
+    /**
+     * Rerender Draw and total progressbar
+     * keyPane      :key Parent
+     */
+    function rerenderProGress(keyPane) {
+        let idPrBar = 'progress_' + keyPane
+        let ProgressBar = document.getElementById(idPrBar)
+        let idTittlePro = 'titleProgre_' + keyPane
+        let titlePro = document.getElementById(idTittlePro)
+        let success = 'progress-bar progress-bar-striped progress-bar-animated bg-success'
+        let danger = 'progress-bar progress-bar-striped progress-bar-animated bg-danger'
+
+        let total = 0
+        for (let keyIndex in activateObj[keyPane].purpose) {
+            total += activateObj[keyPane].purpose[keyIndex].percent
+        }
+        activateObj[keyPane].totalNum = total
+        titlePro.innerText = total + '%'
+        titlePro.setAttribute('value', total)
+        if (total > 100) {
+            //console.log(total)
+            ProgressBar.style.width = total + '%'
+            ProgressBar.setAttribute('class', danger)
+            titlePro.setAttribute('class','text-danger font-bold')
+        } else {
+            //console.log(total)
+            ProgressBar.style.width = total + '%'
+            ProgressBar.setAttribute('class', success)
+            titlePro.setAttribute('class', 'text-success font-bold')
+        }
+    }
+    /**
+     * Render FirstPage when direct
+     *
+     **/
+    function RenderPageOption(makhdt) {
+        let idSel = 'idSel_main'
+        let SelMain = document.getElementById(idSel)
+        $('#' + idSel).empty()
+        document.getElementById('cdContent').innerHTML=''
+        $.getJSON("@Url.Action("MaterialActive","API")", { MaKHDT : makhdt })
+            .done(function (json) {
+                //create Object
+                for (let item of json) {
+                    activateObj[item.MaDG] = {}
+                    activateObj[item.MaDG].name = item.Noidung
+                    activateObj[item.MaDG].Level1 = {}
+                    activateObj[item.MaDG].Level2 = {}
+                    activateObj[item.MaDG].Level3 = {}
+                }
+                for (let item of json) {
+                    if (item.Tieuchi !== null) {
+                        activateObj[item.MaDG][LelItemCheck(item)][item.Tieuchi.MaTC] = {}
+                        activateObj[item.MaDG][LelItemCheck(item)][item.Tieuchi.MaTC] = item.Tieuchi
+                    }
+                }
+                for (let item in activateObj) {
+                        let option = document.createElement('option')
+                        option.setAttribute('value', item)
+                        option.setAttribute('id', 'main_' + item)
+                        option.innerText = activateObj[item].name
+                        SelMain.appendChild(option)
+                }
+                Promise.all([RenderDOMActive(activateObj), cvLevGroup(activateObj)]).then(function (values) {
+                })
+            })
+            .fail(function (jqxhr, textStatus, error) {
+            })
+    }
+    function loadingComplete() {
+        loaderDiv.style.display = "none"
+        cdContent.style.display = ""
+    }
+
+    /**
+     * Function Check Level Status once item
+     * item             Object
+     */
+    function LelItemCheck(item) {
+        if (item.Tieuchi.Trongso === null) {
+            return "Level1"
+        }
+        if (item.Tieuchi.Trongso !== null && item.Tieuchi.Mucdo === null) {
+            return "Level2"
+        }
+        if (item.Tieuchi.Mucdo !== null) {
+            return "Level3"
+        }
+    }
+    /**
+     * Save Level1 to group activate for render Object
+     * json        : activateObj
+     */
+    function cvLevGroup(json) {
+        for (let keyPane in json) {
+            let countLevel2 = Object.keys(json[keyPane].Level2).length
+            if (countLevel2 > 0 ) {
+                let objGroupLV2 = {}
+                for (let keyLvF in json[keyPane].Level1) {
+                    let item = json[keyPane].Level1[keyLvF]
+                    let arrSub = [item.MaTC, item.Mota]
+                    json[keyPane].group.push(arrSub)
+                }
+                //create Key
+                for (let keyIndex in json[keyPane].Level2) {
+                    let item = json[keyPane].Level2[keyIndex]
+
+                    if (item.MaQH !== null) {
+                        objGroupLV2[item.MaQH] = []
+                    }
+                }
+
+                //save to object fake
+                for (let keyIndex in json[keyPane].Level2) {
+                    let item = json[keyPane].Level2[keyIndex]
+                    if (item.MaQH !== null) {
+                        objGroupLV2[item.MaQH].push(item.MaTC)
+                    }
+                }
+
+                //save to object real
+                for (let item of json[keyPane].group) {
+                    if (typeof objGroupLV2[item[0]] !== 'undefined') {
+                        item.push(objGroupLV2[item[0]])
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Render Any Item inside WEbpage
+     * render from activeObj
+     * JSON Object activeObj
+     */
+    function RenderDOMActive(JTObj) {
+        for (let keyPane in JTObj) {
+            let countPure = Object.keys(JTObj[keyPane].Level2).length
+            if (countPure > 0) {
+                createRubric(keyPane)
+                // Save level2 to Purpose obj ActivateObj
+                for (let subKey in activateObj[keyPane].Level2) {
+                    eveCreateTab(keyPane, false, activateObj[keyPane].Level2[subKey])
+                }
+
+                // save level3 to level purpose to object
+                for (let keyLevel3 in activateObj[keyPane].Level3) {
+                    // Key original Index
+                    let keyLevelPur = activateObj[keyPane].Level3[keyLevel3].MaQH
+                    let idKey = activateObj[keyPane].Level3[keyLevel3].MaTC
+                    activateObj[keyPane].purpose[keyLevelPur].level[idKey] = {}
+                    activateObj[keyPane].purpose[keyLevelPur].level[idKey].id = keyLevel3
+                    activateObj[keyPane].purpose[keyLevelPur].level[idKey].des = activateObj[keyPane].Level3[keyLevel3].Mota
+                    activateObj[keyPane].purpose[keyLevelPur].level[idKey].name = activateObj[keyPane].Level3[keyLevel3].Mucdo
+                    activateObj[keyPane].purpose[keyLevelPur].level[idKey].wei = activateObj[keyPane].Level3[keyLevel3].Trongso
+
+                    //console.log(keyLevelPur)
+                }
+                for (let keyPur in activateObj[keyPane].purpose) {
+                    //render Item in Level active
+                    for (let keyItem in activateObj[keyPane].purpose[keyPur].level) {
+                        let idParentInLevel = 'rowPLevel_' + keyPane + '_' + keyPur
+                        let ParentLevel = document.getElementById(idParentInLevel)
+                        let keyIndex = ParentLevel.children.length + 1
+                        //console.log(keyItem)
+                        crLevelInPane(ParentLevel, keyPane, keyPur, keyIndex, false, activateObj[keyPane].purpose[keyPur].level[keyItem])
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Push POST to Server Save Data
+     **/
+    function submitSaveSv(maKHDT) {
+            let listLevel1 = []
+            for (let keyPane in activateObj) {
+
+                //Save Level2 from Level1
+                let ObjectLarge = activateObj[keyPane]
+                if (typeof ObjectLarge.group !== 'undefined' && ObjectLarge.group.length > 0) {
+                    for (let item of activateObj[keyPane].group) {
+                        Level1 = {}
+                        Level1.Mota = item[1]
+                        Level1.MaDG = keyPane
+                        Level1.Trongso = null
+                        Level1.MaQH = null
+                        Level1.LevelNext = []
+                        // Level2
+                        if (item.length > 2) {
+                            for (let sub of item[2]) {
+                                let Level2 = {}
+                                Level2.LevelNext = []
+                                let item = activateObj[keyPane].purpose[sub]
+                                Level2.MaDG = keyPane
+                                Level2.MaQH = null
+                                Level2.Mota = item.name
+                                Level2.Trongso = item.percent
+
+                                for (let keyRub in activateObj[keyPane].purpose[sub].level) {
+                                    let subItem = activateObj[keyPane].purpose[sub].level[keyRub]
+                                    let Level3New = {}
+                                    Level3New.LevelNext = []
+                                    Level3New.MaDG = keyPane
+                                    Level3New.Mota = subItem.des
+                                    Level3New.Mucdo = subItem.name
+                                    Level3New.Trongso = subItem.wei
+                                    Level2.LevelNext.push(Level3New)
+                                }
+
+                                Level1.LevelNext.push(Level2)
+                                delete activateObj[keyPane].purpose[sub]
+                            }
+                            listLevel1.push(Level1)
+                        }
+                    }
+                }
+
+                for (let keyPur in activateObj[keyPane].purpose) {
+                    let Level2 = {}
+                    Level2.LevelNext = []
+                    let item = activateObj[keyPane].purpose[keyPur]
+                    Level2.MaDG = keyPane
+                    Level2.MaQH = null
+                    Level2.Mota = item.name
+                    Level2.Trongso = item.percent
+
+                    for (let keyRub in activateObj[keyPane].purpose[keyPur].level) {
+                        let subItem = activateObj[keyPane].purpose[keyPur].level[keyRub]
+                        let Level3New = {}
+                        Level3New.LevelNext = []
+                        Level3New.MaDG = keyPane
+                        Level3New.Mota = subItem.des
+                        Level3New.Mucdo = subItem.name
+                        Level3New.Trongso = subItem.wei
+                        Level2.LevelNext.push(Level3New)
+                    }
+
+                    listLevel1.push(Level2)
+                }
+            }
+
+            $.ajax({
+                url: "@Url.Action("SaveRubric", "API")",
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({ listLevel1, makhdt: @Model.MaKHDT }),
+                success: function (response) {
+                    console.log(response)
+                    toastr.success('@ResourcePM.Resources.VI.mes_LuuThanhCong', 'Thành công!')
+                    step = 'step4';
+                    step3.classList.remove("active");
+                    step3.classList.add("completed");
+                    step4.classList.add("active");
+                    s1content.style.display = 'none'
+                    s2content.style.display = 'none'
+                    s3content.style.display = 'none'
+                    s4content.style.display = 'block'
+                    s5content.style.display = 'none'
+                    step3.childNodes[5].style.display = 'block'
+                    document.getElementById("backgroundLoader").style.display = "none"
+
+                },
+                error: function (su) {
+                    toastr.error('@ResourcePM.Resources.VI.mes_KhongLuuDuoc', 'Thất bại!')
+                    document.getElementById("backgroundLoader").style.display = "none"
+
+                }
+            })
+    }
+</script>

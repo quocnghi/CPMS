@@ -1,0 +1,74 @@
+﻿@model List<Capstone.Models.t_CTDaotao>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Mind Map -->
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/Mindmap/css/select2.min.css">
+<link rel="stylesheet" href="~/Areas/CMS/Content/Curriculum/Mindmap/css/stylemindmap.css" />
+
+<style>
+    .guideline {
+        float: left !important;
+        margin-top: 25px;
+    }
+
+    .breadcrumb {
+        font-size: 15px;
+    }
+
+    #btn1 {
+        margin-right: 60px;
+        margin-bottom: 15px;
+        float: right;
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+
+    a {
+        font-size: 16px;
+    }
+
+    th {
+        font-size: 20px;
+    }
+</style>
+<!-- Mind Map -->
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/Mindmap/css/select2.min.css">
+<link rel="stylesheet" href="~/Areas/CMS/Content/Curriculum/Mindmap/css/stylemindmap.css" />
+<script type="text/javascript" src="~/Areas/CMS/Content/Curriculum/Mindmap/js/select2.min.js"></script>
+<script type="text/javascript" src="~/Areas/CMS/Content/Curriculum/Mindmap/js/d3.min.js"></script>
+<!--main-container-part-->
+<div class="page-wrapper">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Quản Lý Chương Trình Đào Tạo</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Quản Lý CTDT</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding-left:20px; padding-top:20px; margin-left:25px">
+        <b style="font-size:15px">Tìm kiếm nội dung:</b>
+        <div id="searchName" style="padding-left: 20px;padding-top: 20px;top: -15px"></div>
+    </div>
+
+    <div id="content">
+        <div class="claims_box" id="claims_box">
+            <span class="close">&times;</span>
+            <div class="claims_text" contenteditable="false" id="claims_text">
+                This is where the pop-up box should show up.
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="~/Areas/CMS/Content/Curriculum/Mindmap/js/mindmap.js"></script>
+</div>
+<!--end-main-container-part-->

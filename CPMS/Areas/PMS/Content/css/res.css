@@ -1,0 +1,32 @@
+/*5 độ phân giải hiển thị màn hình phổ biến nhất:
+- 1280 px	800 px	11%
+- 1366 px	768 px	35%
+- 1440 px	900 px	6%
+- 1600 px	900 px	6%
+- 1920 px	1080 px	20%
+*/
+
+/*Độ phân giải: 1280 px	800 px*/
+@media only screen and (max-width: 1280px) and (min-width: 800px) {
+    /*.large {
+        display: none;
+    }*/
+}
+
+/*Độ phân giải: 1366 px	768 px*/
+@media only screen and (max-width: 1366px) and (min-width: 768px) {
+    /*.large {
+        display: none;
+    }*/
+}
+
+/*Độ phân giải: 1440 px	900 px*/
+@media only screen and (max-width: 1440px) and (min-width: 900px) {
+    /*.large {
+        display: none;
+    }*/
+}
+
+/*Độ phân giải: 1920 px	1080 px*/
+@media only screen and (max-width: 1920px) and (min-width: 1080px) {
+}

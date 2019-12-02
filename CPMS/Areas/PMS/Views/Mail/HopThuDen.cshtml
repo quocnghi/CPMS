@@ -1,0 +1,367 @@
+﻿@using Microsoft.AspNet.Identity
+@using Capstone.Models;
+@{
+    ViewBag.Title = "Hộp thư đến";
+    fit_misDBEntities db = new fit_misDBEntities();
+    var emailUser = "";
+    if (Request.IsAuthenticated)
+    {
+        string idMeo = User.Identity.GetUserId();
+        emailUser = db.AspNetUsers.FirstOrDefault(s => s.Id == idMeo).Email;
+    }
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Hộp thư đến</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Hộp thư đến</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Danh sách thư đến</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs p-b-0" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" id="parent-unseen" href="#unseen" role="tab"><span class="hidden-sm-up"></span> <span id="text-unseen" class="hidden-xs-down">Chưa xem </span></a> </li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" id="pSeen" href="#seen" role="tab"><span class="hidden-sm-up"></span><span id="text-seen" class="hidden-xs-down">Đã xem</span></a> </li>
+                @*<div class="form-group m-b-0">
+
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control fa-search" id="fname" placeholder="Tìm kiếm">
+                            </div>
+                    </div>*@
+
+                @*<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Tab3</span></a> </li>*@
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content tabcontent-border">
+                <div class="tab-pane active" id="unseen" role="tabpanel">
+                    <div id='main_box' class="comment-widgets scrollable box-Border-U" style="height: 550px;">
+                        <!-- Comment Row -->
+                        @*<a data-toggle="collapse" data-target="#collapseE" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Phan Thị Hồng</h6>
+                                        <b><span class="d-block">Đồng ý lời mời giảng dạy</span></b>
+                                        <div id="collapseE" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Ghi chú: Tôi đồng ý với lời mời giảng dạy, tuy nhiên Khoa cần sắp xếp lại thời gian biểu.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                        <!-- Comment Row -->
+                        @*<a data-toggle="collapse" data-target="#collapseF" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Bùi Minh Phụng</h6>
+                                        <b><span class="d-block">Từ chối lời mời giảng dạy</span></b>
+                                        <div id="collapseF" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Lý do: Do một số lý do nên tôi không thể giảng dạy các môn học như Khoa đề xuất.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                    </div>
+                </div>
+                <div class="tab-pane" id="seen" role="tabpanel">
+                    <div id='main_boxseen' class="comment-widgets scrollable box-Border-U" style="height: 550px;">
+                        <!-- Comment Row -->
+                        @*<a data-toggle="collapse" data-target="#collapseA" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Phan Thị Hồng</h6>
+                                        <span class="d-block">Đồng ý lời mời giảng dạy</span>
+                                        <div id="collapseA" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Ghi chú: Tôi đồng ý với lời mời giảng dạy, tuy nhiên Khoa cần sắp xếp lại thời gian biểu.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                        <!-- Comment Row -->
+                        @*<a data-toggle="collapse" data-target="#collapseB" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Bùi Minh Phụng</h6>
+                                        <span class="d-block">Từ chối lời mời giảng dạy</span>
+                                        <div id="collapseB" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Lý do: Do một số lý do nên tôi không thể giảng dạy các môn học như Khoa đề xuất.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                        <!-- Comment Row -->
+                        @*<a data-toggle="collapse" data-target="#collapseC" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Phạm Ngọc Duy</h6>
+                                        <span class="d-block">Từ chối lời mời giảng dạy</span>
+                                        <div id="collapseC" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Ghi chú: Tôi không có ý kiến gì thêm.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-success float-left" style="font-size: 12px;">Đồng ý</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                        <!-- Comment Row -->
+                        @*<a data-toggle="collapse" data-target="#collapseD" aria-expanded="true" aria-controls="collapseOne">
+                                <div class="d-flex flex-row comment-row" data-toggle="tooltip" title="Nhấn để xem thêm">
+                                    <div class="p-2"><img src="/Content/images/users/has.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                    <div class="comment-text w-100">
+                                        <h6 class="font-medium">Nguyễn Đắc Quỳnh My</h6>
+                                        <span class="d-block">Từ chối lời mời giảng dạy</span>
+                                        <div id="collapseD" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            Lý do: Do một số lý do nên tôi không thể giảng dạy các môn học như Khoa đề xuất.
+                                        </div>
+                                        <div class="comment-footer m-t-10">
+                                            <span class="text-muted float-right">01/01/2019</span>
+                                            <span class="badge badge-pill badge-danger float-left" style="font-size: 12px;">Từ chối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>*@
+                    </div>
+                </div>
+                @*<div class="tab-pane" id="messages" role="tabpanel">
+                            <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment..</p>
+                            <img src="../../assets/images/background/img4.jpg" class="img-fluid">
+                    </div>*@
+
+            </div>
+        </div>
+
+    </div>
+    <div id="snackbar">Some text some message..</div>
+    <div id="loader" style="display: none;"></div>
+
+    <div style="display:none;" id="myDiv" class="animate-bottom"></div>
+</div>
+<script type="text/javascript">
+    document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+    document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+    $(document).ready(function () {
+        $("#pSeen").click(function () {
+            document.getElementById("text-seen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+            document.getElementById("text-unseen").setAttribute("style", "color: #4F5467;");
+        })
+        $("#parent-unseen").click(function () {
+            document.getElementById("text-unseen").setAttribute("style", "font-weight: bold; color: #4F5467;");
+            document.getElementById("text-seen").setAttribute("style", "color: #4F5467;");
+        })
+    });
+</script>
+<script src="@Url.Content("~/Scripts/moment.js")"></script>
+<script>
+    let count = 0
+    let countSeen = 0
+    let main_box = document.getElementById('main_box')
+    let main_boxseen = document.getElementById('main_boxseen')
+    let textUnseen = document.getElementById('text-unseen')
+
+    var listNotSeenContent = (model) => {
+        if (count !== model.length) {
+            textUnseen.innerText = 'Chưa xem (' + model.length + ')'
+            $('#main_box').empty()
+            for (let item of model) {
+                addRowComment(main_box, true, item)
+            }
+            count = model.length
+            // console.log(model)
+        }
+    }
+
+    var listSeenview = (model) => {
+
+        if (countSeen !== model.length) {
+            $('#main_boxseen').empty()
+            for (let item of model) {
+                addRowComment(main_boxseen, false, item)
+            }
+            countSeen = model.length
+            // console.log(model)
+        }
+    }
+
+    function LoadNotifiview() {
+
+        $.getJSON('@Url.Action("GetMessages", "notification")?checkBol=true&&emailUser=' + emailCheckLogin, data => {
+            
+        }).done(function (result) {
+            //console.log("xinchao1", result)
+            listSeenview(result)
+            console.log("second success");
+        })
+            .fail(function (jqxhr, textStatus, error) {
+                var err = textStatus + ", " + error;
+                console.log("Request Failed: " + err);
+            })
+            .always(function () {
+                console.log("complete");
+            });
+
+    }
+
+    
+
+
+    moment.locale('vi')
+    
+
+    function functionRedirect() {
+        var isconsl = JSON.parse(this.getAttribute("checkIsConllapse"))
+        this.setAttribute('checkIsConllapse', 'true')
+        if (isconsl == true) {
+            var str = this.getAttribute("data-target")
+            var id = str.split('_')[1]
+
+            window.location.href = "@Url.Action("ChiTietThongBao", "Mail")/" + id
+        }
+    }
+
+
+    /*
+     * Params True is Have Ajax, False is Not ajax
+     */
+    function addRowComment(main_box, checkAjax, { DaXem, GhiChu, Kieu, MANO, NguoiGui, Nguon, ThongTin, TrangThai, idNguoiGui, idNguoiNhan, NguoiNhan, ThoiGianRaDoi }) {
+        let aboundFirst = document.createElement('a')
+        let id_Collapse = 'collapse_' + MANO
+        aboundFirst.setAttribute('data-toggle', 'collapse')
+        aboundFirst.setAttribute('data-target', '#' + id_Collapse)
+        aboundFirst.setAttribute('aria-expanded', 'true')
+        aboundFirst.setAttribute('aria-controls', 'collapseOne')
+        aboundFirst.setAttribute('is-collapse', 'false')
+        aboundFirst.setAttribute('checkIsNotSeen', 'false')
+        //aboundFirst.setAttribute('href', "/Mail/ChiTietThongBao/" + MANO)
+        aboundFirst.addEventListener("click", functionRedirect);
+
+        let divboundSecond = document.createElement('div')
+        divboundSecond.setAttribute('id', 'noti_' + MANO)
+        divboundSecond.setAttribute('class', 'd-flex flex-row comment-row')
+        divboundSecond.setAttribute('data-toggle', 'tooltip')
+        divboundSecond.setAttribute('title', 'Nhấn để xem thêm')
+
+        let divboundThird = document.createElement('div')
+        divboundThird.setAttribute('class', 'p-2')
+
+        let imgThird = document.createElement('img')
+        imgThird.setAttribute('src', '@Url.Content("~/Content/images/users/has.jpg")')
+        imgThird.setAttribute('alt', 'user')
+        imgThird.setAttribute('width', '50')
+        imgThird.setAttribute('class', 'rounded-circle')
+
+        divboundThird.appendChild(imgThird)
+
+        let divboundThirdSecond = document.createElement('div')
+        divboundThirdSecond.setAttribute('class', 'comment-text w-100')
+
+        let h6fourth = document.createElement('h6')
+        h6fourth.setAttribute('class', 'font-medium')
+        h6fourth.innerText = NguoiGui
+
+        let bFourth = document.createElement('b')
+        bFourth.innerHTML = '<span class="d-block">' + ThongTin + '</span>'
+
+        let divFourthColap = document.createElement('div')
+        divFourthColap.setAttribute('id', id_Collapse)
+        divFourthColap.setAttribute('class', 'collapse')
+        divFourthColap.setAttribute('aria-labelledby', 'headingOne')
+        divFourthColap.setAttribute('data-parent', '#accordionExample')
+        divFourthColap.innerText = 'Ghi chú: ' + GhiChu
+
+        let divFourthSecond = document.createElement('div')
+        divFourthSecond.setAttribute('class', 'comment-footer m-t-10')
+        let spanFive = document.createElement('span') //
+        spanFive.setAttribute('class', 'text-muted float-right')
+        // let timestapmCurrent = toTimestamp(dcurrent)
+        // let timestapmCurrent = moment()
+        // console.log(moment(ThoiGianRaDoi).fromNow())
+        //console.log(moment.unix(ThoiGianRaDoi))
+        //let timeCaculate = Date.parse(timestapmCurrent.format()) - parseInt(ThoiGianRaDoi) * 1000
+        let duration = moment(ThoiGianRaDoi).fromNow()
+        let checkDay = duration.split(' ')
+        // checkDay[1] === 'giờ' ? duration : duration = moment(ThoiGianRaDoi).format('dddd, MMMM-Do-YYYY')
+        checkDay[1] === 'giờ' ? duration : checkDay[1] === 'phút' ? duration : duration = moment(ThoiGianRaDoi).format('dddd, MMMM-Do-YYYY')
+        spanFive.innerHTML = duration
+        let spanFiveSecond = document.createElement('span') //
+        let ilumiSpan = ''
+        let status = ''
+        TrangThai ? ilumiSpan = 'badge badge-pill badge-success float-left' : ilumiSpan = 'badge badge-pill badge-danger float-left'
+        TrangThai ? status = 'Đã Trả lời' : status = 'Chưa trả lời'
+        spanFiveSecond.setAttribute('class', ilumiSpan)
+        spanFiveSecond.style.fontSize = '12px'
+        spanFiveSecond.innerText = status
+
+        // Append
+        divFourthSecond.appendChild(spanFive)
+        divFourthSecond.appendChild(spanFiveSecond)
+
+        divboundThirdSecond.appendChild(h6fourth)
+        divboundThirdSecond.appendChild(bFourth)
+        divboundThirdSecond.appendChild(divFourthColap)
+        divboundThirdSecond.appendChild(divFourthSecond)
+
+        divboundSecond.appendChild(divboundThird)
+        divboundSecond.appendChild(divboundThirdSecond)
+
+        aboundFirst.appendChild(divboundSecond)
+
+        main_box.appendChild(aboundFirst)
+        checkAjax &&
+            $('#' + id_Collapse).on('shown.bs.collapse', () => {
+                    setTimeout(doingModified, 2000)
+                    function doingModified() {
+                        // console.log(id_Collapse)
+                        let MANO = parseInt(id_Collapse.split('_')[1])
+                        $.ajax({
+                            method: "GET",
+                            url: '@Url.Action("modifiedNotifi", "API")' + '?MANO=' + MANO
+                        })
+                }
+
+            })
+    }
+</script>

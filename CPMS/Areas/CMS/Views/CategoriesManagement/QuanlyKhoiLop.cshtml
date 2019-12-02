@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewBag.Title = "QuanlyKhoiLop";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+
+<div class="page-wrapper" ng-controller="KhoilopController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Quản Lý Khối Lớp</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lí chung</li>
+                            <li class="breadcrumb-item" aria-current="page">Quản lý danh mục</li>
+                            <li class="breadcrumb-item active" aria-current="page">QL khối lớp</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <div class="table-responsive">
+                    <button class="btn btn-success" style="position:inherit;" data-toggle="modal" data-target="#modalKhoilop">Thêm khối lớp</button>
+                    <br />
+                    <br />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align: middle; text-align:center">STT</th>
+                                <th style="vertical-align: middle; text-align:center">Tên khối</th>
+                                <th style="vertical-align: middle; text-align:center">Năm bắt đầu - kết thúc</th>
+                                <th style="vertical-align: middle; text-align:center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="khoi in khoilops">
+                                <th style="vertical-align: middle; text-align:center">{{$index+1}}</th>
+                                <td style="vertical-align: middle; text-align:center">{{khoi.TenKhoi}}</td>
+                                <td style="vertical-align: middle; text-align:center">{{khoi.NamBD}} - {{khoi.NamKT}}</td>
+                                <td style="vertical-align: middle; text-align:center">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#editKhoilop" ng-click="getKhoilop(khoi)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                    @*<a href="javascript:void(0)" ng-click="deleteKhoilop(khoi,$index)"><img src="~/images/IconBin3.png" style="width:35px; "></a>*@
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+    </div>
+    
+    @*form them khoi lop*@
+    <div class="modal fade" id="modalKhoilop" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm khối lớp</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Tên khối lớp</label>
+                    <input type="text" class="form-control" ng-model="them.TenKhoi" />
+                    <br />
+                    <label style="font-style:italic">Năm bắt đầu</label>
+                    <input type="text" class="form-control" ng-model="them.NamBD" />
+                    <br />
+                    <label style="font-style:italic">Năm kết thúc</label>
+                    <input type="text" class="form-control" ng-model="them.NamKT" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addKhoilop(them)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*form chinh sua khoi lop*@
+    <div class="modal fade" id="editKhoilop" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Chỉnh sửa khối lớp</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Tên khối lớp</label>
+                    <input type="text" class="form-control" ng-model="sua.TenKhoi" />
+                    <br />
+                    <label style="font-style:italic">Năm bắt đầu</label>
+                    <input type="text" class="form-control" ng-model="sua.NamBD" />
+                    <br />
+                    <label style="font-style:italic">Năm kết thúc</label>
+                    <input type="text" class="form-control" ng-model="sua.NamKT" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="editKhoilop(sua)">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLKhoilop/KhoilopModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLKhoilop/KhoilopController.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/QLKhoilop/KhoilopService.js"></script>

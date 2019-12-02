@@ -1,0 +1,196 @@
+﻿
+@{
+                /**/
+
+                ViewBag.Title = "QuanlyKhoiKT";
+                Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<div class="page-wrapper" ng-controller="KhoiKTController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Quản Lý Khối Kiến Thức</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lí chung</li>
+                            <li class="breadcrumb-item" aria-current="page">Quản lý danh mục</li>
+                            <li class="breadcrumb-item active" aria-current="page">QL Khối KT</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <div class="table-responsive">
+                    <a href="" style="font-size:18px;margin-left:20px;" data-toggle="modal" data-target="#modalKhoilop">Thêm Loại-KKT </a>
+                    <a href="" style="font-size:18px;margin-left:20px;" data-toggle="modal" data-target="#modalKhoilop2">Thêm Loại KT </a>
+                    <a href="" style="font-size:18px;margin-left:20px;" data-toggle="modal" data-target="#modalKhoilop3">Thêm KKT</a>
+                    <br />
+                    <br />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align: middle; text-align:center">STT</th>
+                                <th style="vertical-align: middle; text-align:center">Loại khối kiến thức</th>
+                                <th style="vertical-align: middle; text-align:center">Tên khối kiến thức</th>
+                                <th style="vertical-align: middle; text-align:center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="khoi in KHOIKT">
+                                <th style="vertical-align: middle; text-align:center">{{$index+1}}</th>
+                                <td style="vertical-align: middle; text-align:center" ng-if="khoi.MaQH == null">{{khoi.Mota}}</td>
+                                <td style="vertical-align: middle; text-align:center" ng-if="khoi.MaQH == null"></td>
+                                <td style="vertical-align: middle; text-align:center" ng-if="khoi.MaQH != null">{{khoi.TenLoai}}</td>
+                                <td style="vertical-align: middle; text-align:center" ng-if="khoi.MaQH != null">{{khoi.Mota}}</td>
+                                <td style="vertical-align: middle; text-align:center">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#editKhoilop" ng-click="getKhoiKT(khoi)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                    @*<a href="javascript:void(0)" ng-click="deleteKhoiKT(khoi,$index)"><img src="~/images/IconBin3.png" style="width:35px; "></a>*@
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+    </div>
+
+    @*form them khoi kien thuc*@
+    <div class="modal fade" id="modalKhoilop" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm khối kiến thức</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    @*<label style="font-style:italic">Chọn loại kiến thức</label>
+                            <select class="form-control" style="width:450px"ng-model="them.MaQH">
+                                <option ng-repeat="loai in LoaiKT" value="{{loai.MaQH}}">{{loai.Mota}}</option>
+                        </select>*@
+                    <label style="font-style:italic">Loại kiến thức</label>
+                    <input type="text" class="form-control" ng-model="Tenloai" />
+                    <br />
+                    <label style="font-style:italic">Tên khối kiến thức</label>
+                    <input type="text" class="form-control" ng-model="them.Mota" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addKhoiKT(them, Tenloai)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*form them khoi kien thuc*@
+    <div class="modal fade" id="modalKhoilop2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm khối kiến thức</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Tên loại kiến thức</label>
+                    <input type="text" class="form-control" ng-model="them.Mota" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addLoai(them)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*form them khoi kien thuc*@
+    <div class="modal fade" id="modalKhoilop3" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Thêm khối kiến thức</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Chọn loại kiến thức</label>
+            <select class="form-control" style="width:450px"ng-model="them.MaQH">
+                <option ng-repeat="loai in LoaiKT" value="{{loai.MaQH}}">{{loai.Mota}}</option>
+        </select>
+                    <br />
+                    <label style="font-style:italic">Tên khối kiến thức</label>
+                    <input type="text" class="form-control" ng-model="them.Mota" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addKKT(them,them.MaQH)">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*form chinh sua khoi kien thuc*@
+    <div class="modal fade" id="editKhoilop" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d51c29; color:white">
+                    <h4 class="modal-title">Chỉnh sửa khối kiến thức</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div ng-if="sua.MaQH == null">
+                        <label style="font-style:italic">Loại kiến thức</label>
+                        <input type="text" class="form-control" ng-model="sua.Mota" />
+                        <br />
+                    </div>
+                    <div ng-if="sua.MaQH != null">
+                        <label style="font-style:italic">Chọn loại kiến thức</label>
+                            <select class="form-control" style="width:450px"ng-model="sua.MaQH">
+                                <option ng-repeat="loai in LoaiKT" value="{{loai.MaQH}}">{{loai.Mota}}</option>
+                        </select>
+                        <br />
+                        <label style="font-style:italic">Tên khối kiến thức</label>
+                        <input type="text" class="form-control" ng-model="sua.Mota" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="editKhoiKT(sua)">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/KhoiKT/KhoiKTModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/KhoiKT/KhoiKTController.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/KhoiKT/KhoiKTService.js"></script>
+

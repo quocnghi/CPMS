@@ -1,0 +1,128 @@
+﻿
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+
+<div class="page-wrapper" ng-controller="EmailTemplateController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Email Template</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item" aria-current="page">Quản lí chung</li>
+                            <li class="breadcrumb-item" aria-current="page">Quản lý danh mục</li>
+                            <li class="breadcrumb-item active" aria-current="page">Biểu mẫu email</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Container fluid  -->
+    <!-- ============================================================== -->
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Start Page Content -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title m-b-0" style="float:left">Danh sách biểu mẫu mail</h4>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addEmailModal" style="float:right" ng-click="add()">Thêm biểu mẫu</button>
+                    </div>
+                    <div class="comment-widgets scrollable">
+                        <!-- Comment Row -->
+                        <div class="d-flex flex-row comment-row m-t-0" ng-repeat="e in emails">
+                            <div class="comment-text w-100">
+                                <h6 class="font-medium" ng-bind="e.Chude"></h6>
+                                <span class="m-b-15 d-block" ng-bind-html="e.Noidung"></span>
+                                <div class="comment-footer">
+                                    <button type="button" class="btn btn-cyan btn-sm" data-toggle="modal" data-target="#addEmailModal" ng-click="edit(e)">Chỉnh sửa</button>
+                                    <button type="button" class="btn btn-danger btn-sm" ng-click="delete(e.MaET, $index)">Xoá</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End PAge Content -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Right sidebar -->
+        <!-- ============================================================== -->
+        <!-- .right-sidebar -->
+        <!-- ============================================================== -->
+        <!-- End Right sidebar -->
+        <!-- ============================================================== -->
+    </div>
+    @*form them bieu mau mail*@
+    <div class="modal fade" id="addEmailModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{Action}} biểu mẫu Email</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label style="font-style:italic">Tiêu đề</label>
+                    <input id="mahienthi" maxlength="100" name="mahienthi" type="text" class="form-control" placeholder="Tiêu đề" ng-model="email.Chude" />
+                    <br />
+                    <label style="font-style:italic">Nội dung</label>
+                    <textarea class="form-control" style="height:250px" ng-model="email.Noidung" id="Noidung"></textarea>
+                    <br />
+                    <h8 style="color:red" >Chú ý: Những chử có định dạng "{abc}" không được chỉnh sửa </h8>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" ng-show="show" class="btn btn-success" data-dismiss="modal" ng-click="addEmail(email)">Thêm</button>
+                    <button type="button" ng-hide="show" class="btn btn-success" data-dismiss="modal" ng-click="editEmail(email)">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Container fluid  -->
+    <!-- ============================================================== -->
+</div>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/ckeditor.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/samples/js/sample.js"></script>
+<script>
+    CKEDITOR.replace('Noidung');
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/EmailTemplate/EmailTemplateModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/EmailTemplate/EmailTemplateService.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/EmailTemplate/EmailTemplateController.js"></script>

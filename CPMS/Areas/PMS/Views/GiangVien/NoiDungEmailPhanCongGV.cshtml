@@ -1,0 +1,281 @@
+﻿@using Microsoft.AspNet.Identity
+@model Capstone.Models.sf_EmailTemplate
+@{
+    ViewBag.Title = "Gửi Email";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Gửi Email</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Phân công Giảng viên</li>
+                        <li class="breadcrumb-item" aria-current="page">Thời gian giảng dạy dự kiến</li>
+                        <li class="breadcrumb-item" aria-current="page">Kế hoạch phân công Giảng viên</li>
+                        <li class="breadcrumb-item active" aria-current="page">Gửi Email</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Popup - Themes -->
+<div class="modal fade" id="Modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận gửi Email cho những Giảng viên đã được chọn?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDong">Hủy</button>
+                <button type="button" class="btn btn-success" id="idBtnXacNhan">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title">Nội dung Email dự kiến sẽ được gửi</h4>
+                        <h5 class="card-subtitle">Ngành: @ViewBag.TenNganh</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form class="form-horizontal">
+                    <div class="card-body">
+                        @*<h4 class="card-title">Personal Info</h4>*@
+                        <div class="form-group row">
+                            <label for="fname" class="col-sm-3 text-right control-label col-form-label">Tiêu đề</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="fname" value="@Model.Chude" placeholder="@Model.Chude" disabled="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="lname" class="col-sm-3 text-right control-label col-form-label">Người gửi</label>
+                            <div class="col-sm-9">
+                                @*Người gửi: Tên Trưởng khoa - Lấy từ tài khoản hiện tại*@
+                                @*<input type="text" id="disabledTextInput" class="form-control" value="@User.Identity.GetUserName()" placeholder="vanlangsender@gmail.com" disabled="">*@
+                                <input type="text" id="disabledTextInput" class="form-control" value="Hệ thống gửi mail tự động ĐH Văn Lang" placeholder="vanlangsender@gmail.com" disabled="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="lname" class="col-sm-3 text-right control-label col-form-label">Người nhận</label>
+                            <div class="col-sm-9">
+                                @*<input type="password" class="form-control" id="lname" placeholder="Password Here">*@
+                                <select id="idSelectGV" class="js-example-placeholder-multiplea js-states form-control" data-select2-id="4" multiple="multiple"></select>
+                            </div>
+                        </div>
+                        @*<div class="form-group row">
+                                <label for="email1" class="col-sm-3 text-right control-label col-form-label">Company</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="email1" placeholder="Company Name Here">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="cono1" class="col-sm-3 text-right control-label col-form-label">Contact No</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="cono1" placeholder="Contact No Here">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="cono1" class="col-sm-3 text-right control-label col-form-label">Message</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>*@
+                    </div>
+                    @*<div class="border-top">
+                            <div class="card-body">
+                                <button type="button" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>*@
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    @*<h5 class="card-title">Form Elements</h5>*@
+                    <div class="form-group row">
+                        <label class="col-md-3 m-t-5">Nội dung Email</label>
+                        <div class="col-md-9">
+                            @*<input type="text" class="form-control" placeholder="Người gửi" disabled="">*@
+                            <div class="form-control" style="background-color: #e9ecef;" disabled="">
+                                <span>Thầy/Cô $tenGV thân mến,</span><br />
+                                <br />
+                                <span>Thầy/Cô nhận được lời mời giảng dạy môn học $tenMH, $tenMH thuộc ngành học $tenNganh trong Học kỳ $soHK, Năm học $namHoc. Để chấp nhận lời mời giảng dạy hoặc từ chối, cũng như biết thêm thông tin chi tiết, thân mời Thầy/Cô truy cập vào đường dẫn bên dưới.</span><br />
+                                <br />
+                                <div class="d-flex justify-content-center"><a href="javascript:void(0)" class="btn btn-info">Chương trình giảng dạy</a></div>
+                                <br />
+                                <span>Cám ơn Thầy/Cô.</span><br />
+                                <br />
+                                <span>Trân trọng,</span><br />
+                                <span>Khoa $tenKhoa</span><br />
+                                <br />
+                                <span>Đây là Email được gửi tự động từ Hệ thống quản lý chương trình Giảng dạy, thuộc Đại học Văn Lang. Vui lòng không trả lời.</span>
+
+                            </div>
+                            @*@Html.Raw(Model.Noidung)*@
+                        </div>
+                        @*<label for="fname" class="col-sm-3 text-right control-label col-form-label">Tiêu đề</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="fname" placeholder="Tiêu đề Email">
+                            </div>*@
+                    </div>
+                </div>
+                <div class="border-top">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end">
+                            <a href="javascript:void(0)" class="btn btn-warning m-r-10" id="btnBack">Quay lại</a>
+                            <a href="javascript:void(0)" class="btn btn-success" id="btnAssignTeacher" data-toggle="modal" data-target="#Modal2">Gửi Email</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loaderEmail" style="display: none;"></div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".closebtn").click(function () {
+            $(".buyerpopup").hide();
+        });
+        $("#btncancel").click(function () {
+            $(".buyerpopup").hide();
+        });
+
+
+    });
+    $(document).keydown(function (e) {
+        if (document.getElementsByClassName("buyerpopup")) {
+            if (e.keyCode == 27) {
+                $(".buyerpopup").hide();
+            }
+            if (e.keyCode == 13) {
+                alert("Aloha!");
+            }
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    document.querySelector("#layout-father").classList.add("active");
+    document.querySelector("#layout-ul").classList.add("in");
+    document.querySelector("#list-lecturer").classList.add("active");
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let notifiPhanCong = $.connection.notification
+
+        $("#btnBack").click(function () {
+            window.history.back();
+        });
+
+        //list giáo viên gửi đi
+        var listGiaoVienChuaGuiMail
+
+        //Danh sách tất cả giáo viên
+        var danhsachtatcagiaovien = []
+        $.getJSON("@Url.Action("LayTatCaGiangVien", "API")", data => {
+            danhsachtatcagiaovien = data
+
+
+
+            //tạo ra group tất cả giáo viên cho select
+            let optgroupgvtatca = document.createElement("optgroup")
+            optgroupgvtatca.setAttribute("label", "Tất cả giảng viên")
+
+
+            let opt = document.createElement("option")
+            optgroupgvtatca.appendChild(opt)
+            for (let i = 0; i < danhsachtatcagiaovien.length; i++) {
+                let opt = document.createElement("option")
+                opt.setAttribute("value", danhsachtatcagiaovien[i].id)
+                opt.setAttribute("title", "0")
+                opt.innerText = danhsachtatcagiaovien[i].name
+                optgroupgvtatca.appendChild(opt)
+            }
+            document.getElementById("idSelectGV").appendChild(optgroupgvtatca)
+
+            //list giáo viên gửi đi
+            listGiaoVienChuaGuiMail = @Html.Raw(ViewBag.listGiaoVienChuaGuiMail);
+            console.log(listGiaoVienChuaGuiMail)
+
+            let listgvadd = [];
+            for (let i = 0; i < listGiaoVienChuaGuiMail.length; i++) {
+                for (let j = 0; j < listGiaoVienChuaGuiMail[i].listgv.length;j++){
+                    listgvadd.push(listGiaoVienChuaGuiMail[i].listgv[j].magv)
+                }
+            }
+            $('.js-example-placeholder-multiplea').select2();
+            //$('.js-example-placeholder-multiplea').prop("disabled", false);
+
+
+            $("#idSelectGV").val(listgvadd)
+            $("#idSelectGV").trigger("change")
+
+            $("#idSelectGV").on("select2:opening", function (e) {
+                e.preventDefault();
+            })
+
+            $("#idSelectGV").on("select2:unselect", function (e) {
+                console.log(e)
+                let magv = e.params.data.id;
+                for (let i = 0; i < listGiaoVienChuaGuiMail.length; i++) {
+                    for (let j = 0; j < listGiaoVienChuaGuiMail[i].listgv.length; j++) {
+                        if (magv == listGiaoVienChuaGuiMail[i].listgv[j].magv) {
+                            listGiaoVienChuaGuiMail[i].listgv = listGiaoVienChuaGuiMail[i].listgv.filter(x => x.magv != magv);
+                            break;
+                        }
+                    }
+                }
+
+            })
+
+
+        })
+
+        $("#idBtnXacNhan").on("click", function () {
+            document.getElementById('btnDong').click();
+            let countGVGuiMail = $("#idSelectGV").val().length
+            if (countGVGuiMail != 0) {
+                document.getElementById('loaderEmail').style.display = "block"
+                let form_data = { namHoc: "@ViewBag.NamHoc", hocKy: "@ViewBag.HocKy", listGiaoVienChuaGuiMail: JSON.stringify(listGiaoVienChuaGuiMail), tenNganh: "@ViewBag.TenNganh"}
+                $.ajax({
+                    url: "@Url.Action("GuiMailChoCacGiaoVien", "API")",
+                    type: "POST",
+                    data: form_data,
+                    traditional: true
+                }).done(function (response) {
+                    if (response == "Success") {
+                        toastr.success('@CommonRS.Resources.VI.mes_DaGuiMail', 'Thành công!');
+                        document.getElementById('loaderEmail').style.display = "none"
+                    } else {
+                        toastr.error('@CommonRS.Resources.VI.mes_KhongGuiMail', 'Lỗi!');
+                    }
+                });
+            } else {
+                toastr.error("@CommonRS.Resources.VI.mes_KhongCoGVGuiMail", "Lỗi!");
+            }
+        })
+    });
+</script>
+

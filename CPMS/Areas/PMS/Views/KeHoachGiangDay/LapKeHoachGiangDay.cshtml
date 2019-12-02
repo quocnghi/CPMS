@@ -1,0 +1,629 @@
+﻿
+@{
+    ViewBag.Title = "Lập kế hoạch giảng dạy";
+}
+
+
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Lập kế hoạch giảng dạy</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("XemKeHoachGiangDay", "KeHoachGiangDay")">Xem kế hoạch giảng dạy</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Lập kế hoạch giảng dạy</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0 row">
+                @*<div class="col-md-6">
+                        <h4 class="card-title">Môn học dự kiến trong kế hoạch giảng dạy</h4>
+                        <h5 class="card-subtitle">Khóa học: K21</h5>
+                    </div>*@
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="card-title" style="font-weight: 600; text-align: center;">Chương trình đào tạo</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group required-field">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Khóa học">Khóa học:</label>
+                            <select id="idKhoaHocCtdtKH" class="select2 form-control custom-select fieldkhoihoc" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group required-field">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Học kỳ">Học kỳ:</label>
+                            <select id="idHocKyCtdtKH" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4 class="card-title" style="font-weight: 600; text-align: center;">Kế hoạch giảng dạy dự kiến</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group required-field">
+                            <label for="Năm học">Năm học:</label>
+                            <input type="text" class="form-control year-inputmask" id="idnamhoc" placeholder="Nhập Năm học">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group required-field">
+                            <label for="Năm học">Học kỳ giảng dạy:</label>
+                            <select class="select2 form-control custom-select" id="idkhgdhk" style="width: 100%; height:36px;">
+                                <option></option>
+                                <option value="1">Học kỳ 1</option>
+                                <option value="2">Học kỳ 2</option>
+                                <option value="3">Học kỳ 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 required-field">
+                        <label for="Năm học">Ngày Bắt đầu học kỳ:</label>
+                        <input type="date" id="ngaybatdau" class="form-control">
+                    </div>
+                    <div class="col-md-6 required-field">
+                        <label for="Năm học">Ngày Kết thúc học kỳ:</label>
+                        <input type="date" id="ngayketthuc" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group required-field m-t-15">
+                            <label for="Khóa học">Khóa học:</label>
+                            <select id="idKhoaHocAdd" class="select2 form-control custom-select fieldkhoihoc" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 required-field">
+                        <div class="form-group required-field m-t-15">
+                            <label for="Năm học">Hạn Cập nhật đề cương:</label>
+                            <input type="date" id="ngaycn" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <button id="idbtnchontatca" class="btn btn-success btn-sm text-right btncustom" style="float: right; visibility: hidden;">Chọn tất cả</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="list-group" id="" role="tablist">
+                    <a class="list-group-item liHead">DANH SÁCH MÔN HỌC TRONG CHƯƠNG TRÌNH ĐÀO TẠO</a>
+                    <a class="list-group-item">
+                        <input type="text" class="form-control" id="idtimmonhoc1" placeholder="Tìm môn học">
+                    </a>
+                    <div id='listMeo'>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="list-group" id="listMeo2" role="tablist">
+                    <a class="list-group-item liHead">MÔN HỌC ĐƯỢC CHỌN CHO KẾ HOẠCH GIẢNG DẠY DỰ KIẾN</a>
+                    <a class="list-group-item">
+                        <input type="text" class="form-control" id="idtimmonhoc2" placeholder="Tìm môn học">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row m-t-20">
+            <div class="col-md-12" style="text-align: right;">
+                <a href="@Url.Action("XemKeHoachGiangDay","KeHoachGiangDay")" class="btn btn-warning m-r-10">Quay lại</a>
+                <button id="btnsubmit" class="btn btn-success">Lập kế hoạch giảng dạy</button>
+            </div>
+        </div>
+    </div>
+    <div id="snackbar">Some text some message..</div>
+</div>
+
+<script type="text/javascript">
+        const IconRight = document.querySelector("#IconRight");
+        const IconDown = document.querySelector("#IconDown");
+        const li_list = document.getElementById("li_list");
+        const count = 1
+</script>
+<script type="text/javascript">
+    $(".select2").select2();
+    $(document).ready(function () {
+            $("#IconDown").toggle();
+            $(".sidebar-item").click(function () {
+                $("#IconRight").toggle();
+                $("#IconDown").toggle();
+            });
+
+            $(".btneditdate").click(function () {
+                $(".buyerpopup").show();
+            });
+            $(".closebtn").click(function () {
+                $(".buyerpopup").hide();
+            });
+            $("#btncancel").click(function () {
+                $(".buyerpopup").hide();
+            });
+            $('.Default').trigger("click");
+            // $('.js-example-basic-single').select2();
+
+            $('#idKhoaHocCtdtKH').on('select2:unselecting', function (e) {
+                $('#idHocKyCtdtKH').empty()
+                document.getElementById("idbtnchontatca").style.visibility = "hidden";
+            })
+
+            $('#idHocKyCtdtKH').on('select2:unselecting', function (e) {
+                document.getElementById("idbtnchontatca").style.visibility = "hidden";
+            })
+
+        //Set năm học cho Học kỳ kết thúc và bắt đầu
+        $('#ngaybatdau').focus(function () {
+            var namHoc = $("#idnamhoc").val();
+            var nam = namHoc.split("-");
+            document.getElementById('ngaybatdau').setAttribute("min", nam[0] + "-01-" + "01")
+            document.getElementById('ngaybatdau').setAttribute("max", nam[1] + "-12-" + "31")
+        });
+
+        $('#ngayketthuc').focus(function () {
+            var namHoc = $("#idnamhoc").val();
+            var nam = namHoc.split("-");
+            document.getElementById('ngayketthuc').setAttribute("min", nam[0] + "-01-" + "01")
+            document.getElementById('ngayketthuc').setAttribute("max", nam[1] + "-12-" + "31")
+        });
+        $('#ngaycn').focus(function () {
+            var namHoc = $("#idnamhoc").val();
+            var nam = namHoc.split("-");
+            document.getElementById('ngaycn').setAttribute("min", nam[0] + "-01-" + "01")
+            document.getElementById('ngaycn').setAttribute("max", nam[1] + "-12-" + "31")
+        });
+
+            //Ajax các khối học
+
+            //biến chứa id khoá học khi thay đổi select khoá học
+            var idKhoaHocCtdtKH;
+            //biến chứa học kỳ khi thay đổi select học kỳ
+            var idHocKyCtdtKH;
+
+            //lấy mã ngành
+            var maNganh = @Url.RequestContext.RouteData.Values["id"];
+
+                //Lấy tất cả các khối lớp kế hoạch khi bắt đầu load trang
+                $.getJSON("@Url.Action("LayTatCaKhoiLopKeHoach", "KeHoachGiangDay")" + "?MaNganh=" + maNganh, function (result) {
+                    for (let i = 0; i < result.length; i++) {
+                        var data = {
+                            id: result[i]["MaKhoi"],
+                            text: result[i]["TenKhoi"]
+                        };
+
+                        var newOption = new Option(data.text, data.id, false, false);
+                        $('#idKhoaHocCtdtKH').append(newOption).trigger('change');
+
+                    }
+
+                //Lấy tất cả các khối lớp load ra cho thực thi
+                    $.getJSON("@Url.Action("LayTatCaKhoiLop", "KeHoachGiangDay")" + "?MaNganh=" + maNganh, function (result) {
+                        for (let i = 0; i < result.length; i++) {
+                            var data = {
+                                id: result[i]["MaKhoi"],
+                                text: result[i]["TenKhoi"]
+                            };
+
+                            var newOption = new Option(data.text, data.id, false, false);
+                            $('#idKhoaHocAdd').append(newOption).trigger('change');
+
+                        }
+                    })
+
+
+                    //Mặc định placeholder cho select 2
+                    $(".fieldkhoihoc").select2({
+                        placeholder: "Chọn khóa học",
+                        allowClear: true
+                    })
+                    $("#idHocKyCtdtKH").select2({
+                        placeholder: "Chọn học kỳ",
+                        allowClear: true
+                    })
+                    $("#idkhgdhk").select2({
+                        placeholder: "Chọn học kỳ",
+                        allowClear: true
+                    })
+
+            });
+
+            //Ajax các Học Kỳ theo Khoá học
+            //Mỗi khi thay đổi khoá học ctdt kế hoạch thực hiện ajax cho học kỳ
+            $("#idKhoaHocCtdtKH").on('select2:select', function (e) {
+                idKhoaHocCtdtKH = $(this).val();
+                $.getJSON("@Url.Action("TimHocKyCTDTKeHoach", "KeHoachGiangDay")" + "?MaKhoi=" + idKhoaHocCtdtKH, function (result) {
+                    $('#idHocKyCtdtKH').empty();
+                    var data = {
+                        id: "",
+                        text: ""
+                    };
+                    var newOption = new Option(data.text, data.id, false, false);
+                    $('#idHocKyCtdtKH').append(newOption).trigger('change');
+
+                    for (let i = 0; i < result.length; i++) {
+                        var data = {
+                            id: result[i],
+                            text: result[i]
+                        };
+
+                        var newOption = new Option("Học kỳ " + data.text, data.id, false, false);
+                        $('#idHocKyCtdtKH').append(newOption).trigger('change');
+                    }
+
+                })
+
+            })
+
+            //load lại danh sách chương trình đào tạo
+            $("#idKhoaHocAdd").on("select2:select", function (e) {
+                $("#idHocKyCtdtKH").trigger("select2:select")
+            })
+
+
+
+            //Script list danh sách môn học
+            let jsona = []
+
+            let arrMain = []
+
+            let listMeo = document.getElementById('listMeo')
+            let listMeo2 = document.getElementById('listMeo2')
+
+        function getListandClear(jsona) {
+            ClearNode()
+            jsona.map(item => {
+                let {
+                    id,
+                    name
+                } = item
+                let button = document.createElement('button')
+                button.setAttribute('class', 'list-group-item list-group-item-action')
+                button.setAttribute('data-toggle', 'list')
+                button.setAttribute('id', id)
+                button.addEventListener('click', AddOne)
+                button.innerText = name
+                listMeo.appendChild(button)
+            })
+
+        }
+        getListandClear(jsona)
+
+        function ClearNode() {
+            while (listMeo.firstChild) {
+                listMeo.removeChild(listMeo.firstChild)
+            }
+        }
+
+            function AddOne(e) {
+                //Check xem khối lớp hiện tại đã có trong danh sách các môn học được hiển thị chưa
+                let khoiLopHienTai = $("#idKhoaHocAdd").select2('data')[0]["text"]
+                let iskhoilopdaco = arrMain.some(e => e.lop == khoiLopHienTai)
+
+                if (khoiLopHienTai == 0) {
+                    toastr.error("@ResourcePM.Resources.VI.mes_ChuaChonKH", "Lỗi!");
+                    return;
+                }
+
+                //Lấy ra môn được click và delete đi
+                let id = e.target.id
+                let item = jsona.filter(item => item.id == id)
+                jsona.map((item, index) => {
+                    if (item.id == id) {
+                        delete jsona[index]
+                    }
+                })
+
+
+
+                var dsmh = []
+                dsmh.push(...item)
+
+                if (iskhoilopdaco) {
+                    //nếu khối lớp đã có trong danh sách hiển thị
+                    //tìm ra khối lớp và append danh sách môn học
+                    arrMain.map(item => {
+                        if (item.lop == khoiLopHienTai) {
+                            item.danhsachmonhoc.push(...dsmh)
+                        }
+                    })
+                } else {
+                    //nếu khối lớp chưa có trong danh sách hiển thị append div để
+                    //thể hiện môn học, và chứa danh sách môn học
+                    let div = document.createElement('div')
+                    div.setAttribute('class', 'list-group')
+                    div.setAttribute('role', 'tablist')
+                    div.setAttribute('id', 'parentdiv' + khoiLopHienTai)
+
+                    let a = document.createElement('a')
+                    a.setAttribute('class', 'list-group-item liHead')
+                    a.innerText = khoiLopHienTai
+                    div.appendChild(a)
+
+                    let divchild = document.createElement('div')
+                    divchild.setAttribute('id', 'khgd' + khoiLopHienTai)
+                    div.appendChild(divchild)
+
+                    listMeo2.appendChild(div);
+
+                    //push khối lớp và danh sách môn học mới vào array
+                    var khoilopvadanhsachmonhoc = { lop: khoiLopHienTai, danhsachmonhoc: dsmh }
+                    arrMain.push(khoilopvadanhsachmonhoc)
+                }
+
+
+
+                //Reload lại danh sách in ra cho kế hoạch giảng dạy
+
+                 let button = document.createElement('button')
+                 button.setAttribute('class', 'list-group-item list-group-item-action')
+                 button.setAttribute('data-toggle', 'list')
+                 button.setAttribute('id', item[0].id)
+                 button.addEventListener('click', RemoveOne)
+                 button.innerText = item[0].name
+                $("#khgd" + khoiLopHienTai).append(button);
+
+
+                console.log(arrMain)
+
+                getListandClear(jsona)
+
+        }
+
+        //Hàm xoá đi các môn đã chọn bên kế hoạch giảng dạy
+        function RemoveOne(e) {
+            let btn = e.target;
+
+            //lấy tên khối lớp hiện tại
+            let parent = e.target.parentNode;
+            let tenkhoilophientai = parent.id.slice(4, 8)
+
+            let id = e.target.id
+            jsona.push({
+                id: id,
+                name: e.target.innerText
+            })
+            getListandClear(jsona)
+
+            //delete môn học trong array
+            arrMain.map((item, index) => {
+
+                if (item.lop == tenkhoilophientai) {
+                    item.danhsachmonhoc.map((item2,index2) => {
+                        if (item2.id == id) {
+                            delete item.danhsachmonhoc[index2]
+                            item.danhsachmonhoc = item.danhsachmonhoc.filter(x => x != null)
+                            btn.parentNode.removeChild(btn)
+                        }
+                    })
+
+                    //khi phần từ trong mảng không còn môn học nào trong danh sách môn học
+                    if (item.danhsachmonhoc.length == 0) {
+                        parent.parentNode.parentNode.removeChild(parent.parentNode)
+                        console.log(item.danhsachmonhoc.length)
+                    }
+
+                }
+            })
+
+            arrMain = arrMain.filter(x => {
+                return x.danhsachmonhoc.length != 0
+            })
+      }
+
+        function compare(a, b) {
+            if (a.name < b.name)
+                    return -1;
+            if (a.name > b.name)
+                    return 1;
+                return 0;
+        }
+
+        $("#idHocKyCtdtKH").on('select2:select', function (e) {
+                jsona = []
+                idHocKyCtdtKH = $(this).val()
+                var tenKhoaHienTai = $("#idKhoaHocCtdtKH").select2('data')[0]["text"]
+                $.getJSON("@Url.Action("TimMonHocTheoHocKy", "KeHoachGiangDay")" + "?MaKhoi=" + idKhoaHocCtdtKH + "&HocKy=" + idHocKyCtdtKH, function (result) {
+                    let tenKhoaDangChon = $("#idKhoaHocAdd").select2('data')[0]["text"]
+                    for (let i = 0; i < arrMain.length; i++) {
+                        if (arrMain[i].lop == tenKhoaDangChon) {
+                            for (let j = 0; j < arrMain[i].danhsachmonhoc.length; j++) {
+                                result = result.filter(x => x.MaKHDT != arrMain[i].danhsachmonhoc[j].id)
+                            }
+                            break
+                        }
+                    }
+
+                    for (let i = 0; i < result.length; i++) {
+                        jsona.push({ id: result[i]["MaKHDT"], name: tenKhoaHienTai+"-"+result[i]["TenHP"] })
+                    }
+                    getListandClear(jsona)
+                    document.getElementById("idbtnchontatca").style.visibility = "visible";
+                })
+
+
+            })
+
+        $("#idbtnchontatca").on("click", function (e) {
+            //var valueCourse = document.getElementById("idKhoaHocAdd").val();
+            //console.log(document.getElementById("idKhoaHocAdd").select2("val"));
+            var va = $("#idKhoaHocAdd").select2('val');
+            console.log("" + va);
+            if (va > 0) {
+                let leng = listMeo.childElementCount
+                for (let i = 0; i < leng; i++) {
+                    listMeo.children[0].click()
+                }
+            } else {
+                toastr.error("@ResourcePM.Resources.VI.mes_ChuaChonKH", "Lỗi!");
+            }
+
+            });
+
+            //Nút submit
+        $("#btnsubmit").on("click", function (e) {
+            //Validation năm học và các trường thông tin khác trước khi submit form
+            var yearInput = $("#idnamhoc").val();
+            var year = yearInput.split("-");
+            var startDate = document.getElementById("ngaybatdau").value;
+            var endDate = document.getElementById("ngayketthuc").value;
+
+            var stDate = new Date(startDate)
+            var stY = stDate.getFullYear();
+            var enDate = new Date(endDate);
+            var enY = enDate.getFullYear();
+            var ngaycn = $("#ngaycn").val();
+            if (ngaycn != "") {
+                if ((stY == year[0] || stY == year[1]) && (enY == year[0] || enY == year[1])) {
+                    if (Date.parse(endDate) <= Date.parse(startDate)) {
+                        toastr.error("@ResourcePM.Resources.VI.mes_NgayKTLonHonBD", "Lỗi!")
+                        //document.getElementById("ngayketthuc").value = "";
+                    } else {
+                        //console.log("" + $("#idkhgdhk").val());
+                        //$("#idkhgdhk").select2('data')[0]["text"]
+                        var form_data = { ngaycn: $("#ngaycn").val(), danhsachmonhoc: JSON.stringify(arrMain), hocky: $("#idkhgdhk").val(), maHN: maNganh, namHoc: $("#idnamhoc").val(), ngayBatDau: $("#ngaybatdau").val(), ngayKetThuc: $("#ngayketthuc").val() }
+                        if (form_data.ngaycn != "" && form_data.ngayBatDau != "" && form_data.ngayKetThuc != "" && arrMain.length != 0 && form_data.hocky != "" && form_data.maHN != "" && form_data.namHoc != "") {
+                            //console.log(form_data);
+                            if (parseInt(year[1]) - parseInt(year[0]) == 1) {
+                                $.ajax({
+                                    url: "@Url.Action("KiemTraKeHoachGiangDay", "KeHoachGiangDay")",
+                                    type: "post",
+                                    data: form_data,
+                                    traditional: true
+                                }).done(function (response) { //
+                                    if (response == "") {
+                                        $.ajax({
+                                            url: "@Url.Action("LuuKeHoachGiangDay", "KeHoachGiangDay")",
+                                            type: "post",
+                                            data: form_data,
+                                            traditional: true
+                                        }).done(function (response) { //
+                                            if (response == "Success") {
+                                                document.getElementById('btnsubmit').style.display = "none"
+                                                toastr.options.onHidden = function () {
+                                                    window.location.href = '@Url.Action("XemKeHoachGiangDay", "KeHoachGiangDay")';
+                                                }
+                                                toastr.success('@ResourcePM.Resources.VI.mes_KHDTDaCo', 'Thành công!', { timeOut: 3000 });
+                                            } else {
+                                                toastr.error('@ResourcePM.Resources.VI.mes_KhongTheTao', 'Thất bại!');
+                                            }
+                                        });
+                                    } else {
+                                        //tNotifi(response);
+                                        toastr.error(response, "Lỗi!");
+                                    }
+                                });
+                            } else {
+                                toastr.error('@ResourcePM.Resources.VI.mes_NamHocTangDan', 'Lỗi!');
+                            }
+                        } else {
+                            //tNotifi("chưa chọn khoá học, mã khối, năm học hay thông tin học kỳ");
+                            toastr.error('@ResourcePM.Resources.VI.mes_KhongDuocDeTrong', 'Lỗi!');
+                        }
+                    }
+                } else {
+                    toastr.error('@ResourcePM.Resources.VI.mes_NgayBDNgayKTTrungVoiNam', 'Lỗi!');
+                }
+            } else {
+                toastr.error('@ResourcePM.Resources.VI.mes_HanNopDCTrong', 'Lỗi!');
+            }
+
+         })
+
+            function sapXepSoSanh(a, b, key) {
+                let str = key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+                let ida = a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(str)
+                let idb = b.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(str)
+
+
+
+                if (ida != -1 && idb != -1) {
+                    if (ida < idb)
+                        return -1
+                    else
+                        return 1
+                } else {
+                    if (ida != -1) {
+                        return -1
+                    } else {
+                        return 1
+                    }
+                }
+            }
+
+            $("#idtimmonhoc1").on("change", function () {
+                //search list khi nhập json
+                jsona.sort((a, b) => sapXepSoSanh(a.name, b.name, $(this).val()))
+                getListandClear(jsona)
+            })
+
+            $("#idtimmonhoc2").on("change", function () {
+                //search list khi nhập arrMain
+                //đi từng thành phần trong array main
+                for (let i = 0; i < arrMain.length; i++) {
+                    //clear hết child node trong div chứa các môn học
+                    $("#khgd" + arrMain[i].lop).empty();
+                    console.log(arrMain[i])
+                    //sort lại danh sách môn học trong từng phần tử của mảng arrMain
+                    arrMain[i].danhsachmonhoc.sort((a, b) => sapXepSoSanh(a.name, b.name, $(this).val()))
+
+
+                    for (let j = 0; j < arrMain[i].danhsachmonhoc.length; j++) {
+
+                        //Reload lại danh sách in ra cho kế hoạch giảng dạy
+
+                        let button = document.createElement('button')
+                        button.setAttribute('class', 'list-group-item list-group-item-action')
+                        button.setAttribute('data-toggle', 'list')
+                        button.setAttribute('id', arrMain[i].danhsachmonhoc[j].id)
+                        button.addEventListener('click', RemoveOne)
+                        button.innerText = arrMain[i].danhsachmonhoc[j].name
+                        $("#khgd" + arrMain[i].lop).append(button);
+                    }
+
+                }
+            })
+
+            function tNotifi(message) {
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                x.innerText = message
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            }
+
+
+    });
+</script>
+<script type="text/javascript">
+    document.querySelector("#layout-father").classList.add("active");
+    document.querySelector("#layout-ul").classList.add("in");
+    document.querySelector("#list-subject").classList.add("active");
+</script>

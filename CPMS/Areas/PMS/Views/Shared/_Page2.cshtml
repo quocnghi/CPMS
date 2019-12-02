@@ -1,0 +1,852 @@
+﻿<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">1. Ma trận đánh giá Kết quả học tập mong đợi (KQHTMĐ) của học phần</h5>
+</div>
+<div class="card" style="overflow-x: auto;">
+    <table class="table table-hover table-bordered bg-table-mhgd-p2-t1 m-t-0 m-b-5" id="tableDanhGiaKQHT">
+        <thead class="thead_ct" id="tableDanhGiaKQHT-Head">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">KQHTMD</th>
+                <th rowspan="2">Trọng số</th>
+                <th rowspan="2">Mô tả phương pháp đánh giá</th>
+                <th rowspan="2">Tùy chọn</th>
+            </tr>
+        </thead>
+        <tbody id='tableDanhGiaKQHT-Body'></tbody>
+    </table>
+    <a id="aP2T1" href="javascript:void(0)" data-toggle="modal" data-target="#mP2T1">Thêm phương pháp đánh giá</a>
+    <div class="modal fade" id="mP2T1" tabindex="-1" role="dialog" aria-labelledby="hP2T1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hP2T1">Thêm phương pháp đánh giá</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Chọn kết quả học tập mong đợi:</label>
+                                <select id="chonNhieu1P2T1" class="js-example-placeholder-multiple js-states form-control" tabindex="-1" multiple="multiple" style="height: 36px; width: 100%;"></select>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group required-field">
+                                <label>Mô tả phương pháp đánh giá:</label>
+                                <textarea class="form-control" rows="5" placeholder="Nhập mô tả" id="moTaTPDG"></textarea>
+                                <div class="invalid-feedback">
+                                    Không được để trống hoặc trùng với mô tả kết quả học tập đã có sẵn
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Trọng số</label>
+                                <div class="input-group">
+                                    <input onkeyup="checkIsBiggerThanHundred(this)" type="number" class="required form-control" id="trongSo" placeholder="Nhập trọng số" min="1" max="100" aria-label="Recipient 's username" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Không được để trống, Nhỏ hơn 100
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success" id="btnThemP2T1">Thêm</button>
+                    <button type="button" class="btn btn-success" id="btnLuuP2T1" style="display: none;">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover table-bordered bg-table-mhgd-p2-t1 m-t-0 m-b-5" id="tableCCDG">
+        <thead class="thead_ct" id="tableCCDG-Head">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">KQHTMĐ</th>
+                <th rowspan="2">Công cụ đánh giá</th>
+                <th rowspan="2">Thời điểm đánh giá</th>
+                <th rowspan="2">Tùy chọn</th>
+            </tr>
+        </thead>
+        <tbody id='tableCCDG-Body'></tbody>
+    </table>
+    <a id="aP2T3" href="javascript:void(0)" data-toggle="modal" data-target="#mP2T3">Thêm công cụ đánh giá và thời điểm đánh giá</a>
+    <div class="modal fade" id="mP2T3" tabindex="-1" role="dialog" aria-labelledby="hP2T3" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hP2T3">Thêm công cụ đánh giá và thời điểm đánh giá</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group required-field">
+                                <label>Chọn kết quả học tập mong đợi:</label>
+                                <select id="chonMotP2T3" class="form-control custom-select" style="width: 100%; height:36px;"></select>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group required-field">
+                                <label>Công cụ đánh giá:</label>
+                                <textarea class="form-control" rows="5" placeholder="Nhập công cụ đánh giá" id="ccDanhGia"></textarea>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group required-field">
+                                <label>Thời điểm đánh giá</label>
+                                <textarea class="form-control" rows="5" placeholder="Nhập thời điểm đánh giá" id="tdDanhGia"></textarea>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success" id="btnThemP2T3">Thêm</button>
+                    <button type="button" class="btn btn-success" id="btnLuuP2T3" style="display: none;">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="xacNhanXoaTableBa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Xác nhận xóa công cụ và thời điểm đánh giá?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0)" class="btn btn-secondary" data-dismiss="modal">Hủy</a>
+                    <a href="javascript:void(0)" class="btn btn-success" onclick="deleteAfterConfirm(3)" data-dismiss="modal">Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="xacNhanXoaTableHai" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận xóa phương pháp đánh giá?
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0)" class="btn btn-secondary" data-dismiss="modal">Hủy</a>
+                <a href="javascript:void(0)" class="btn btn-success" onclick="deleteAfterConfirmB()" data-dismiss="modal">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">2. Bảng đánh giá KQHTMĐ của học phần (quy đổi Bảng 1 về 3 cột điểm theo quy định của Phòng Đào Tạo)</h5>
+</div>
+<div class="card">
+    <table class="table table-hover table-bordered bg-table-mhgd-p2-t2 m-t-0 m-b-5" id="table-header">
+        <thead class="thead_ct" id="tableP2T2-Head">
+            <tr>
+                <th rowspan="2">STT</th>
+                <th rowspan="2">Phương pháp đánh giá</th>
+                <th rowspan="2">Trọng số</th>
+                <th rowspan="2">Phương pháp đánh giá</th>
+            </tr>
+        </thead>
+        <tbody id='tableP2T2-Body'></tbody>
+    </table>
+    <a id="aP2T2" href="javascript:void(0)" data-toggle="modal" data-target="#mP2T2">Quy đổi trọng số</a>
+    <div class="modal fade" id="mP2T2" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Quy đổi trọng số</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group required-field">
+                                <label>Chọn thành phần quy đổi:</label>
+                                <select id="c-qdts" class="select2-c-qdts form-control custom-select" style="width: 100%; height:36px;">
+                                    <option></option>
+                                    <option value="0">Chuyên cần</option>
+                                    <option value="1">Giữa kỳ</option>
+                                    <option value="2">Cuối kỳ</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group required-field">
+                                <label>Chọn thành phần:</label>
+                                <select id="chonNhieu3P2T2" class="js-example-placeholder-multiple js-states form-control" tabindex="-1" multiple="multiple" style="height: 36px; width: 100%;">
+                                    <option></option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tổng trọng số tạm tính:</label>
+                                <div class="input-group">
+                                    <input id="trongsoP2T2" type="number" class="form-control" placeholder="Nhập tổng trọng số" min="1" max="100" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Không được để trống và tổng trọng số không được lớn hơn 100%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success" id="btnLuuP2T2">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">3. Nội dung giảng dạy</h5>
+    <a class="btn btn-info m-t-10" href="javascript:void(0)" onclick="addAccordition()">Thêm nội dung</a>
+</div>
+<div class="card m-b-0" id="table-content">
+    <div class="accordion" id="testAccordition">
+    </div>
+</div>
+<div class="modal fade" id="xacNhanXoaNoiDung" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận xóa phương pháp đánh giá?
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0)" class="btn btn-secondary" data-dismiss="modal">Hủy</a>
+                <a href="javascript:void(0)" class="btn btn-success" onclick="deleteAfterConfirm(2)" data-dismiss="modal">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var accorditionArea = document.getElementById('testAccordition')
+    $(document).ready(function () {
+        $(".select2-cdr-ctdt").select2({
+            placeholder: "Chọn tiêu chí đánh giá",
+            allowClear: true
+        })
+        $(".select2-ckq-htmd").select2({
+            placeholder: "Chọn kết quả học tập mong đợi",
+            allowClear: true
+        })
+        $(".select2-c-qdts").select2({
+            placeholder: "Chọn thành phần quy đổi",
+            allowClear: true,
+            dropdownParent: $("#mP2T2")
+        })
+        $(".select2-kqhtmd").select2({
+            placeholder: "Chọn kết quả học tập mong đợi",
+            allowClear: true,
+            dropdownParent: $("#mP2T3")
+        })
+        $(".select2-c-tp").select2({
+            placeholder: "Chọn thành phần",
+            allowClear: true
+        })
+        $(".js-example-placeholder-multiple").select2()
+        renderTableP2T1()
+        document.getElementById('aP2T1').addEventListener('click', function () {
+            setTimeout(() => {
+                $("#chonNhieu1P2T1").select2({
+                    placeholder: "Chọn kết quả học tập mong đợi",
+                    dropdownParent: $("#mP2T1"),
+                })
+            }, 200)
+            document.getElementById('hP2T1').innerHTML = "Thêm phương pháp đánh giá"
+            document.getElementById('btnThemP2T1').style.display = "block"
+            document.getElementById('btnLuuP2T1').style.display = "none"
+        })
+
+        document.getElementById('aP2T3').addEventListener('click', function () {
+            document.getElementById('btnLuuP2T3').style.display = 'none'
+            document.getElementById('btnThemP2T3').style.display = 'block'
+            document.getElementById('hP2T3').innerHTML = "Thêm công cụ và thời điểm đánh giá"
+            document.getElementById('chonMotP2T3').innerHTML = '<option></option>'
+            for (let item of listCDRHP) {
+                let isHave = false
+                for (let ccdg in listRowCCDG) {
+                    if (listRowCCDG[ccdg].cdr.id == item.MaCELO) {
+                        isHave = true
+                        break
+                    }
+                }
+
+                if (!isHave) {
+                    var newOption = new Option(item.MaHT, item.MaCELO, false, false);
+                    $('#chonMotP2T3').append(newOption).trigger('change');
+                }
+            }
+            setTimeout(() => {
+                $("#chonMotP2T3").select2({
+                    placeholder: "Chọn kết quả học tập mong đợi",
+                    allowClear: true,
+                    dropdownParent: $("#mP2T3")
+                })
+            }, 500)
+        })
+
+        document.getElementById('aP2T2').addEventListener('click', function () {
+            setTimeout(() => {
+                $("#chonNhieu3P2T2").select2({
+                    placeholder: "Chọn thành phần",
+                    dropdownParent: $("#mP2T2"),
+                })
+            }, 200)
+            document.getElementById('chonNhieu3P2T2').innerHTML = ''
+            for (let item in listRowKQHTMDHP) {
+                if ($('#chonNhieu3P2T2').find("option[value='" + listRowKQHTMDHP[item].mota + "']").length) {
+                    //$('#chonNhieu3P2T2').val(listRowKQHTMDHP[item].mota).trigger('change');
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(listRowKQHTMDHP[item].mota, listRowKQHTMDHP[item].mota, false, false);
+                    // Append it to the select
+                    $('#chonNhieu3P2T2').append(newOption).trigger('change');
+                }
+            }
+            let trongSo = document.getElementById('trongSo')
+            trongSo.addEventListener("keyup", (e) => {
+                let { value } = e.target
+                value = value.replace(/[^0-9]/gi, '')
+                trongSo.value = parseInt(value) ? parseInt(value) : 0
+                trongSo.setAttribute('value', parseInt(value) ? parseInt(value) : 0)
+            })
+            // console.log(listRowKQHTMDHP)
+
+            $("#c-qdts").val(null).trigger('change')
+            $("#trongsoP2T2").val("0").trigger('change')
+        })
+    });
+
+    //Chứa danh sách nội dung
+    var listNoiDung = []
+    //Chứa id của nội dung
+    var listContent = []
+    var listPhanLoai = ["Lý thuyết", "Bài tập lý luận", "Thực hành kỹ năng", "Đồ án"]
+
+    let count = 1;
+
+    function addAccorditionFromList(noidung) {
+        let t = new Date()
+        let tParse = t.getMinutes() + '-' + t.getMilliseconds() + '-' + count
+        listContent.push(tParse)
+        //noidung.idNoiDung = tParse
+        //Header of Accordition area
+        let divFather = document.createElement('div');
+        divFather.setAttribute('class', 'card card-custom m-b-10');
+        divFather.setAttribute('id', 'card-id-' + tParse)
+        let divCardHeader = document.createElement('div');
+        divCardHeader.setAttribute('class', 'card-header p-t-0 p-b-0 p-l-0 p-r-10');
+        let tagH = document.createElement('h5');
+        tagH.setAttribute('class', 'mb-0');
+        let divButton = document.createElement('button');
+        divButton.setAttribute('class', 'btn btn-link collapsed p-l-10')
+        divButton.setAttribute('data-toggle', 'collapse')
+        divButton.setAttribute('data-target', '#collapse-' + tParse);
+        divButton.setAttribute('aria-expanded', 'false');
+        divButton.setAttribute('aria-controls', 'collapse-' + tParse);
+        divButton.innerHTML = noidung.noiDungNgan
+        divButton.setAttribute('id', 'title-' + tParse)
+        divButton.setAttribute('onclick', 'loadKQHTMD(\'' + tParse + '\')')
+        let btnDel = document.createElement('button')
+        btnDel.setAttribute('class', 'btn btnDelSession')
+        btnDel.setAttribute('onclick', 'deleteNoiDung(\'' + tParse + '\')')
+        btnDel.setAttribute('href', 'javascript:void(0)')
+        btnDel.setAttribute('data-toggle', 'modal')
+        btnDel.setAttribute('data-target', '#xacNhanXoaNoiDung')
+        btnDel.innerHTML = 'X'
+
+        tagH.appendChild(divButton)
+        tagH.appendChild(btnDel)
+        divCardHeader.appendChild(tagH)
+        divFather.appendChild(divCardHeader)
+
+        //Body of Accordition
+        let collapseArea = document.createElement('div');
+        collapseArea.setAttribute('id', 'collapse-' + tParse);
+        collapseArea.setAttribute('class', 'm-l-10 m-r-10 collapse');
+        collapseArea.setAttribute('aria-labelledby', 'headingOne');
+        collapseArea.setAttribute('data-parent', '#testAccordition');
+        let collapseRow = document.createElement('row');
+        collapseRow.setAttribute('class', 'input-group')
+        collapseRow.setAttribute('id', 'rowNumNoiDung-' + tParse)
+        let collapseCol9 = document.createElement('div')
+        collapseCol9.setAttribute('class', 'col-md-6 p-l-0 p-t-10')
+        let collapColForm = document.createElement('div')
+        collapColForm.setAttribute('class', 'form-group required-field')
+        let collapColLabel = document.createElement('label')
+        collapColLabel.innerHTML = "A. Nội dung ngắn:"
+        let collapTA = document.createElement('input')
+        collapTA.setAttribute('class', 'required form-control')
+        collapTA.setAttribute('id', 'tennoidung-' + tParse)
+        collapTA.setAttribute('placeholder', 'Nhập nội dung ngắn')
+        collapTA.setAttribute('oninput', 'changeTitle(\'' + tParse + '\',' + count + ')')
+        collapTA.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        let collapTANoiDungFB = document.createElement("div")
+        collapTANoiDungFB.setAttribute('class', 'invalid-feedback')
+        collapTANoiDungFB.innerHTML = "Không được để trống hoặc trùng với tên nội dung đã có"
+        collapColForm.appendChild(collapColLabel)
+        collapColForm.appendChild(collapTA)
+        collapColForm.appendChild(collapTANoiDungFB)
+        collapseCol9.appendChild(collapColForm)
+
+        let collapCol3One = document.createElement('div')
+        collapCol3One.setAttribute('class', 'col-md-3 p-l-0 p-t-10')
+        let collapCol3OneForm = document.createElement('div')
+        collapCol3OneForm.setAttribute('class', 'form-group required-field')
+        let collapCol3OneLabel = document.createElement('label')
+        collapCol3OneLabel.innerHTML = "B. Phân loại:"
+        let collapCol3OneSelect = document.createElement('select')
+        collapCol3OneSelect.setAttribute('class', 'form-control custom-select')
+        collapCol3OneSelect.setAttribute('style', 'width: 100%; height:36px;')
+        collapCol3OneSelect.setAttribute('id', 'phanloai-' + tParse)
+        collapCol3OneSelect.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        let collapCol3OneSelectOpt = document.createElement('option')
+        collapCol3OneSelect.appendChild(collapCol3OneSelectOpt)
+        for (let item of listPhanLoai) {
+            let collapCol3SelectOpt = document.createElement('option')
+            collapCol3SelectOpt.setAttribute('value', item)
+            collapCol3SelectOpt.innerHTML = item
+            collapCol3OneSelect.appendChild(collapCol3SelectOpt)
+        }
+        let collapCol3OneSelectFB = document.createElement("div")
+        collapCol3OneSelectFB.setAttribute('class', 'invalid-feedback')
+        collapCol3OneSelectFB.innerHTML = "Không được để trống"
+        collapCol3OneForm.appendChild(collapCol3OneLabel)
+        collapCol3OneForm.appendChild(collapCol3OneSelect)
+        collapCol3OneForm.appendChild(collapCol3OneSelectFB)
+        collapCol3One.appendChild(collapCol3OneForm)
+
+        let collapCol3 = document.createElement('div')
+        collapCol3.setAttribute('class', 'col-md-6 p-l-0')
+        let collapCol3Form = document.createElement('div')
+        collapCol3Form.setAttribute('class', 'form-group required-field')
+        let collapCol3Label = document.createElement('label')
+        collapCol3Label.innerHTML = "C. Kết quả học tập mong đợi tương ứng:"
+        let collapCol3Select = document.createElement('select')
+        collapCol3Select.setAttribute('class', 'js-example-placeholder-multiple js-states form-control')
+        collapCol3Select.setAttribute('multiple', 'multiple')
+        collapCol3Select.setAttribute('style', 'width: 100%; height:36px;')
+        collapCol3Select.setAttribute('id', 'kqht-' + tParse)
+        collapCol3Select.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        for (let item of listCDR) {
+            let collapCol3SelectOpt = document.createElement('option')
+            collapCol3SelectOpt.setAttribute('value', item.MaCELO)
+            collapCol3SelectOpt.innerHTML = item.MaHT
+            collapCol3Select.appendChild(collapCol3SelectOpt)
+        }
+        let collapCol3SelectFB = document.createElement("div")
+        collapCol3SelectFB.setAttribute('class', 'invalid-feedback')
+        collapCol3SelectFB.innerHTML = "Không được để trống"
+        collapCol3Form.appendChild(collapCol3Label)
+        collapCol3Form.appendChild(collapCol3Select)
+        collapCol3Form.appendChild(collapCol3SelectFB)
+        collapCol3.appendChild(collapCol3Form)
+
+        let collapseCol9B = document.createElement('div')
+        collapseCol9B.setAttribute('class', 'col-md-12 p-l-0')
+        let collapseCol9BForm = document.createElement('div')
+        collapseCol9BForm.setAttribute('class', 'form-group')
+        let collapseCol9BLabel = document.createElement('label')
+        collapseCol9BLabel.innerHTML = "D. Nội dung chi tiết:"
+        let collapseCol9TA = document.createElement('textarea')
+        collapseCol9TA.setAttribute('class', 'form-control')
+        collapseCol9TA.setAttribute('rows', '5')
+        collapseCol9TA.setAttribute('placeholder', 'Nhập nội dung chi tiết')
+        collapseCol9TA.setAttribute('id', 'noidung-' + tParse)
+        collapseCol9TA.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        collapseCol9BForm.appendChild(collapseCol9BLabel)
+        collapseCol9BForm.appendChild(collapseCol9TA)
+        collapseCol9B.appendChild(collapseCol9BForm)
+
+        collapseRow.appendChild(collapseCol9)
+        collapseRow.appendChild(collapCol3One)
+        collapseRow.appendChild(collapCol3)
+        collapseRow.appendChild(collapseCol9B)
+
+        collapseArea.appendChild(collapseRow)
+
+        divFather.appendChild(collapseArea)
+        accorditionArea.appendChild(divFather)
+
+        $("#rowNumNoiDung-" + tParse).ready(function () {
+            $("#kqht-" + tParse).select2({
+                allowClear: true
+            });
+            $("#phanloai-" + tParse).select2({
+                allowClear: true
+            });
+            $("#phanloai-" + tParse).val(noidung.phanLoai).trigger('change')
+            let listKQHT = []
+            for (let item of noidung.kqht) {
+                listKQHT.push(item.id)
+            }
+            $("#kqht-" + tParse).val(listKQHT).trigger('change');
+            noidung.idNoiDung = tParse
+            $("#tennoidung-" + tParse).val(noidung.noiDungNgan)
+            $("#noidung-" + tParse).val(noidung.noiDung)
+        })
+
+        //Học kỳ mới
+        //renderTableHeader('tableHead-' + count)
+        //renderBodyTable('body-dcmh-tbm-' + count, data, nameKhoa)
+
+        //Học kỳ cũ
+        //renderTableHeaderWithoutStatus('tableHead-' + count)
+        //renderTableWithoutStatus('body-dcmh-tbm-' + count, data, nameKhoa)
+        count++
+    }
+
+    function addAccordition() {
+        let t = new Date()
+        let tParse = t.getMinutes() + '-' + t.getMilliseconds()
+        let newContentID = tParse
+        listContent.push(newContentID)
+        let newNoiDung = {
+            id: 0,
+            idNoiDung: tParse,
+            noiDungNgan: "",
+            phanLoai: [],
+            kqht: [],
+            noiDung: ""
+        }
+        listNoiDung.push(newNoiDung)
+        //Header of Accordition area
+        let divFather = document.createElement('div');
+        divFather.setAttribute('class', 'card card-custom m-b-10');
+        divFather.setAttribute('id', 'card-id-' + tParse)
+        let divCardHeader = document.createElement('div');
+        divCardHeader.setAttribute('class', 'card-header p-0');
+        let tagH = document.createElement('h5');
+        tagH.setAttribute('class', 'mb-0');
+        let divButton = document.createElement('button');
+        divButton.setAttribute('class', 'btn btn-link collapsed p-l-10')
+        divButton.setAttribute('data-toggle', 'collapse')
+        divButton.setAttribute('data-target', '#collapse-' + tParse);
+        divButton.setAttribute('aria-expanded', 'false');
+        divButton.setAttribute('aria-controls', 'collapse-' + tParse);
+        divButton.innerHTML = 'Tên nội dung ' + count;
+        divButton.setAttribute('id', 'title-' + tParse)
+        divButton.setAttribute('onclick', 'loadKQHTMD(\'' + tParse + '\')')
+        let btnDel = document.createElement('button')
+        btnDel.setAttribute('class', 'btn btnDelSession')
+        btnDel.setAttribute('onclick', 'deleteNoiDung(\'' + tParse + '\')')
+        btnDel.setAttribute('href', 'javascript:void(0)')
+        btnDel.setAttribute('data-toggle', 'modal')
+        btnDel.setAttribute('data-target', '#xacNhanXoaNoiDung')
+        btnDel.innerHTML = 'X'
+
+        tagH.appendChild(divButton)
+        tagH.appendChild(btnDel)
+        divCardHeader.appendChild(tagH)
+        divFather.appendChild(divCardHeader)
+
+        //Body of Accordition
+        let collapseArea = document.createElement('div');
+        collapseArea.setAttribute('id', 'collapse-' + tParse);
+        collapseArea.setAttribute('class', 'm-l-10 m-r-10 collapse');
+        collapseArea.setAttribute('aria-labelledby', 'headingOne');
+        collapseArea.setAttribute('data-parent', '#testAccordition');
+        let collapseRow = document.createElement('row');
+        collapseRow.setAttribute('class', 'input-group')
+        collapseRow.setAttribute('id', 'rowNumNoiDung-' + tParse)
+        let collapseCol9 = document.createElement('div')
+        collapseCol9.setAttribute('class', 'col-md-6 p-l-0 p-t-10')
+        let collapColForm = document.createElement('div')
+        collapColForm.setAttribute('class', 'form-group required-field')
+        let collapColLabel = document.createElement('label')
+        collapColLabel.innerHTML = "A. Nội dung ngắn:"
+        let collapTA = document.createElement('input')
+        collapTA.setAttribute('class', 'required form-control')
+        collapTA.setAttribute('id', 'tennoidung-' + tParse)
+        collapTA.setAttribute('placeholder', 'Nhập nội dung ngắn')
+        collapTA.setAttribute('oninput', 'changeTitle(\'' + tParse + '\',' + count + ')')
+        collapTA.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        collapTA.addEventListener('keyup', (e) => {
+            let { value, id } = e.target
+            let maxLength = 100
+            if (value.length > maxLength) {
+                e.target.value = value.substring(0, maxLength)
+            }
+        })
+
+        let collapTANoiDungFB = document.createElement("div")
+        collapTANoiDungFB.setAttribute('class', 'invalid-feedback')
+        collapTANoiDungFB.innerHTML = "Không được để trống hoặc trùng với tên nội dung đã có"
+        collapColForm.appendChild(collapColLabel)
+        collapColForm.appendChild(collapTA)
+        collapColForm.appendChild(collapTANoiDungFB)
+        collapseCol9.appendChild(collapColForm)
+
+        let collapCol3One = document.createElement('div')
+        collapCol3One.setAttribute('class', 'col-md-3 p-l-0 p-t-10')
+        let collapCol3OneForm = document.createElement('div')
+        collapCol3OneForm.setAttribute('class', 'form-group required-field')
+        let collapCol3OneLabel = document.createElement('label')
+        collapCol3OneLabel.innerHTML = "B. Phân loại:"
+        let collapCol3OneSelect = document.createElement('select')
+        collapCol3OneSelect.setAttribute('class', 'form-control custom-select')
+        collapCol3OneSelect.setAttribute('style', 'width: 100%; height:36px;')
+        collapCol3OneSelect.setAttribute('id', 'phanloai-' + tParse)
+        collapCol3OneSelect.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        let collapCol3OneSelectOpt = document.createElement('option')
+        collapCol3OneSelect.appendChild(collapCol3OneSelectOpt)
+        for (let item of listPhanLoai) {
+            let collapCol3SelectOpt = document.createElement('option')
+            collapCol3SelectOpt.setAttribute('value', item)
+            collapCol3SelectOpt.innerHTML = item
+            collapCol3OneSelect.appendChild(collapCol3SelectOpt)
+        }
+        let collapCol3OneSelectFB = document.createElement("div")
+        collapCol3OneSelectFB.setAttribute('class', 'invalid-feedback')
+        collapCol3OneSelectFB.innerHTML = "Không được để trống"
+        collapCol3OneForm.appendChild(collapCol3OneLabel)
+        collapCol3OneForm.appendChild(collapCol3OneSelect)
+        collapCol3OneForm.appendChild(collapCol3OneSelectFB)
+        collapCol3One.appendChild(collapCol3OneForm)
+
+        let collapCol3 = document.createElement('div')
+        collapCol3.setAttribute('class', 'col-md-6 p-l-0')
+        let collapCol3Form = document.createElement('div')
+        collapCol3Form.setAttribute('class', 'form-group required-field')
+        let collapCol3Label = document.createElement('label')
+        collapCol3Label.innerHTML = "C. Kết quả học tập mong đợi tương ứng:"
+        let collapCol3Select = document.createElement('select')
+        collapCol3Select.setAttribute('class', 'js-example-placeholder-multiple js-states form-control')
+        collapCol3Select.setAttribute('multiple', 'multiple')
+        collapCol3Select.setAttribute('style', 'width: 100%; height:36px;')
+        collapCol3Select.setAttribute('id', 'kqht-' + tParse)
+        collapCol3Select.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+        for (let item of listCDR) {
+            let collapCol3SelectOpt = document.createElement('option')
+            collapCol3SelectOpt.setAttribute('value', item.MaCELO)
+            collapCol3SelectOpt.innerHTML = item.MaHT
+            collapCol3Select.appendChild(collapCol3SelectOpt)
+        }
+        let collapCol3SelectFB = document.createElement("div")
+        collapCol3SelectFB.setAttribute('class', 'invalid-feedback')
+        collapCol3SelectFB.innerHTML = "Không được để trống"
+        collapCol3Form.appendChild(collapCol3Label)
+        collapCol3Form.appendChild(collapCol3Select)
+        collapCol3Form.appendChild(collapCol3SelectFB)
+        collapCol3.appendChild(collapCol3Form)
+
+        let collapseCol9B = document.createElement('div')
+        collapseCol9B.setAttribute('class', 'col-md-12 p-l-0')
+        let collapseCol9BForm = document.createElement('div')
+        collapseCol9BForm.setAttribute('class', 'form-group')
+        let collapseCol9BLabel = document.createElement('label')
+        collapseCol9BLabel.innerHTML = "D. Nội dung chi tiết:"
+        let collapseCol9TA = document.createElement('textarea')
+        collapseCol9TA.setAttribute('class', 'form-control')
+        collapseCol9TA.setAttribute('rows', '5')
+        collapseCol9TA.setAttribute('placeholder', 'Nhập nội dung chi tiết')
+        collapseCol9TA.setAttribute('id', 'noidung-' + tParse)
+        collapseCol9TA.setAttribute('onchange', 'themNoiDung(\'' + tParse + '\')')
+
+        collapseCol9BForm.appendChild(collapseCol9BLabel)
+        collapseCol9BForm.appendChild(collapseCol9TA)
+        collapseCol9B.appendChild(collapseCol9BForm)
+
+        collapseRow.appendChild(collapseCol9)
+        collapseRow.appendChild(collapCol3One)
+        collapseRow.appendChild(collapCol3)
+        collapseRow.appendChild(collapseCol9B)
+
+        collapseArea.appendChild(collapseRow)
+
+        divFather.appendChild(collapseArea)
+        accorditionArea.appendChild(divFather)
+
+        $("#rowNumNoiDung-" + tParse).ready(function () {
+            $("#kqht-" + tParse).select2({
+                allowClear: true
+            });
+            $("#phanloai-" + tParse).select2({
+                allowClear: true
+            });
+        })
+        count++
+    }
+
+    function changeTitle(inp, inpNum) {
+        let titleValueLength = document.getElementById('tennoidung-' + inp).value.length
+        let title = document.getElementById('tennoidung-' + inp).value
+        let maxLength = 100
+
+        if (titleValueLength == 0) {
+            document.getElementById('title-' + inp).innerHTML = "Tên nội dung " + inpNum
+        } else if (titleValueLength > maxLength) {
+            document.getElementById('title-' + inp).innerHTML = title.substring(0, maxLength)
+        } else if (titleValueLength < maxLength) {
+            document.getElementById('title-' + inp).innerHTML = title
+        }
+        else {
+            document.getElementById('title-' + inp).innerHTML = "Tên nội dung " + inpNum
+        }
+    }
+
+    let numContentDelete
+    function deleteNoiDung(inp) {
+        numContentDelete = inp
+    }
+
+    function renderNameContent(idComponent) {
+        idComponent.forEach((item, index) => {
+            if (index != 0) {
+                let btnSH = item.id
+                let targetElement = document.getElementById(btnSH).childNodes[0].childNodes[0].childNodes[0]
+                let targetElementName = targetElement.innerHTML
+                let newIndex = index
+                if (targetElementName.includes("Tên nội dung")) {
+                    targetElement.innerText = 'Tên nội dung ' + newIndex
+                }
+            }
+        })
+    }
+
+    function loadKQHTMD(inp) {
+        $("#rowNumNoiDung-" + inp).ready(function () {
+            $("#kqht-" + inp).select2({
+                placeholder: "Chọn kết quả học tập mong đợi tương ứng",
+                allowClear: true
+            });
+            $("#phanloai-" + inp).select2({
+                placeholder: "Chọn phân loại",
+                allowClear: true
+            });
+            for (let item of listCDR) {
+                if ($("#kqht-" + inp).find("option[value='" + item.MaCELO + "']").length) {
+                    //$("#kqht-" + inp).val(item.MaCELO).trigger('change');
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(item.MaHT, item.MaCELO, false, false);
+                    // Append it to the select
+                    $("#kqht-" + inp).append(newOption).trigger('change');
+                }
+            }
+        })
+    }
+
+    function themNoiDung(inp) {
+        let noiDungNgan = document.getElementById('tennoidung-' + inp).value
+        let phanLoai = $("#phanloai-" + inp).val()
+        let listKQHT = []
+        let kqht = $("#kqht-" + inp).select2('data')
+        for (let item of kqht) {
+            let newkqht = {
+                id: item.id,
+                text: item.text
+            }
+            listKQHT.push(newkqht)
+        }
+        let noiDung = document.getElementById('noidung-' + inp).value
+        let isNotDuplicateName = true
+        for (let it of listNoiDung) {
+            if (it.noiDungNgan == noiDungNgan && it.idNoiDung != inp) {
+                isNotDuplicateName = false
+                document.getElementById('tennoidung-' + inp).classList.add('is-invalid')
+                break
+            }
+        }
+        for (let item of listNoiDung) {
+            if (item.idNoiDung == inp && isNotDuplicateName) {
+                item.noiDungNgan = noiDungNgan
+                item.phanLoai = phanLoai
+                item.kqht = listKQHT
+                item.noiDung = noiDung
+                document.getElementById('tennoidung-' + inp).classList.remove('is-invalid')
+                break;
+            }
+        }
+    }
+
+    function kiemTraThongTinNoiDung() {
+        let countTrue = 0
+        let check = false
+        for (let item of listNoiDung) {
+            if (checkValue(item.noiDungNgan) && checkValue(item.phanLoai) && checkValue(item.kqht)) {
+                countTrue++
+                document.getElementById('card-id-' + item.idNoiDung).style.borderColor = "";
+                document.getElementById('title-' + item.idNoiDung).innerText = item.noiDungNgan
+            } else {
+                document.getElementById('card-id-' + item.idNoiDung).style.borderColor = "red";
+                let noiDung = document.getElementById('title-' + item.idNoiDung).innerHTML
+                if (!noiDung.includes("Nội dung không được để trống")) {
+                    document.getElementById('title-' + item.idNoiDung).innerHTML = document.getElementById('title-' + item.idNoiDung).innerHTML + ' - ' + '<span style="color: red;">Nội dung không được để trống</span>'
+                }
+            }
+            if (!checkValue(item.noiDungNgan)) {
+                document.getElementById('tennoidung-' + item.idNoiDung).classList.add('is-invalid')
+            } else {
+                document.getElementById('tennoidung-' + item.idNoiDung).classList.remove('is-invalid')
+            }
+            if (!checkValue(item.phanLoai)) {
+                document.getElementById('phanloai-' + item.idNoiDung).classList.add('is-invalid')
+            } else {
+                document.getElementById('phanloai-' + item.idNoiDung).classList.remove('is-invalid')
+            }
+            if (!checkValue(item.kqht)) {
+                document.getElementById('kqht-' + item.idNoiDung).classList.add('is-invalid')
+            } else {
+                document.getElementById('kqht-' + item.idNoiDung).classList.remove('is-invalid')
+            }
+        }
+        if (countTrue == listNoiDung.length) {
+            check = true
+        }
+        return check
+    }
+</script>

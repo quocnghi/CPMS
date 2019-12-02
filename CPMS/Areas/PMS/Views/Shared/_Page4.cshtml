@@ -1,0 +1,58 @@
+﻿<div class="card m-b-10">
+    <div class="card-body p-0">
+        <div class="row">
+            <div class="col-md-12" style="text-align: left;">
+                <a class="btn btn-info" href="javascript:void(0)" id="btnAddBuoiHoc" data-toggle="modal" data-target="#Modal1">Thêm buổi học</a>
+                <a class="btn btn-info" href="javascript:void(0)" id="miSelect4" onclick="javascript:void(0)" data-toggle="modal" data-target="#Modal4">Thêm buổi vào tuần</a>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="card text-right">
+    <button id="" class="btn btn-info" onclick="javascript:void(0)" data-toggle="modal" data-target="">Thêm buổi vào tuần</button>
+</div>*@
+@*Modal 4*@
+<div class="modal fade" id="Modal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm buổi vào tuần</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" id="rowTest">
+                    </div>
+                    <div class="form-group m-l-10">
+                        <a class="btn btn-sm btn-danger" id="btnDelRow" onclick="DeleteRow()" href="javascript:void(0)">Xóa tuần</a>
+                        <a class="btn btn-sm btn-info" id="btnAddRow" href="javascript:void(0)">Thêm tuần</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" onclick="confirAddSche()" data-dismiss="modal" class="btn btn-success">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="xacNhanXoaTableTrang4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận xóa hoạt động?
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0)" class="btn btn-secondary" data-dismiss="modal">Hủy</a>
+                <a href="javascript:void(0)" class="btn btn-success" onclick="deleteAfterConfirmP4()" id="xacNhanXoaItemP4" data-dismiss="modal">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="bodyCard">
+</div>

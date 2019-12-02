@@ -1,0 +1,92 @@
+﻿@model Capstone.Models.ManageLoginsViewModel
+@using Microsoft.Owin.Security
+@{
+    ViewBag.Title = "Quản lý tài khoản liên kết";
+}
+
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Quản lý tài khoản liên kết</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Cài đặt tài khoản</li>
+                        <li class="breadcrumb-item active" aria-current="page">Quản lý tài khoản liên kết</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-4 bg_content">
+        @{
+            var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+            if (loginProviders.Count() == 0)
+            {
+                <div>
+                    <p>
+                        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
+                        for details on setting up this ASP.NET application to support logging in via external services.
+                    </p>
+                </div>
+            }
+            else
+            {
+                if (Model.CurrentLogins.Count > 0)
+                {
+                    <h4>Tài khoản đã liên kết</h4>
+                    <table class="table">
+                        <tbody>
+                            @foreach (var account in Model.CurrentLogins)
+                            {
+                                <tr>
+                                    <td class="p-l-0"><h5>@account.LoginProvider</h5></td>
+                                    <td class="p-r-0 text-right">
+                                        @if (ViewBag.ShowRemoveButton)
+                                        {
+                                            using (Html.BeginForm("RemoveLogin", "Manage"))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <div>
+                                                    @Html.Hidden("loginProvider", account.LoginProvider)
+                                                    @Html.Hidden("providerKey", account.ProviderKey)
+                                                    <input type="submit" class="btn btn-default" value="Xóa liên kết" title="Xóa liên kết @account.LoginProvider khỏi tài khoản của bạn" />
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @: &nbsp;
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                if (Model.OtherLogins.Count > 0)
+                {
+                    <h4>Liên kết tài khoản</h4>
+                    using (Html.BeginForm("LinkLogin", "Manage"))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div id="socialLoginList">
+                            <p>
+                                @foreach (AuthenticationDescription p in Model.OtherLogins)
+                                {
+                                    <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Đăng nhập bằng tài khoản @p.Caption của bạn">@p.AuthenticationType</button>
+                                }
+                            </p>
+                        </div>
+                    }
+                }
+            }
+        }
+    </div>
+</div>

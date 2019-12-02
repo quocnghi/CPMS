@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="page-wrapper">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Bảng điều khiển</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Bảng điều khiển</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Container fluid  -->
+    <!-- ============================================================== -->
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Sales Cards  -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <!-- Column -->
+            <div class="col-md-6 col-lg-6 col-xlg-6">
+                <div class="card card-hover">
+                    <a href="@Url.Action("Index","Home", new { area = "CMS" })">
+                        <div class="box bg-danger text-center">
+                            <h1 class="font-light text-white"><i class="mdi mdi-receipt"></i></h1>
+                            <h6 class="text-white">Curriculum Management System</h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- Column -->
+            <div class="col-md-6 col-lg-6 col-xlg-6">
+                <div class="card card-hover">
+                    <a href="@Url.Action("Index","Home", new { area = "PMS" })">
+                        <div class="box bg-info text-center">
+                            <h1 class="font-light text-white"><i class="mdi mdi-relative-scale"></i></h1>
+                            <h6 class="text-white">Program Management System</h6>
+                        </div>
+                    </a>
+                </div>
+            </div>        
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Container fluid  -->
+    <!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Page wrapper  -->
+<!-- ============================================================== -->

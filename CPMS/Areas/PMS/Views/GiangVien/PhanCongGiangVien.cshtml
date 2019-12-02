@@ -1,0 +1,1264 @@
+﻿@using Capstone.Models
+@model List<sc_HeNganh>
+
+@{
+    ViewBag.Title = "Phân công Giảng viên";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Phân công Giảng viên</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Phân công Giảng viên</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title">Phân công Giảng viên trong từng Học kỳ</h4>
+                        @*<h5 class="card-subtitle">Ngành: aaaa</h5>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 p-0">
+            <div class="card m-b-10">
+                <!-- <div class="treelistChinhqui"> -->
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Hệ học">Hệ đào tạo:</label>
+                            <select id="xkhdt_system" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                                @foreach (sc_HeNganh item in Model)
+                                {
+                                    <option value="@item.MaHN">@item.Mota</option>
+                                }
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Ngành học">Ngành đào tạo:</label>
+                            <select id="xkhdt_branch" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Năm học">Năm học:</label>
+                            <select id="xkhdt_year" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <!-- <div class="col-md-9"> -->
+                            <label for="Học kỳ">Học kỳ:</label>
+                            <select id="xkhdt_semester" class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option></option>
+                            </select>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+            </div>
+        </div>
+        <div class="card m-b-0" id="table-content" style="overflow-x: auto;">
+            <table class="table table-hover table-bordered bg_table_gv m-t-0" id="table-header">
+                <thead class="thead_ct" id="tableHead"></thead>
+                <tbody id='ct_body'></tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-end m-t-10">
+            @*<a id="idBtnLuu" href="javascript:void(0)" class="btn btn-success" style="display: none;">Lưu</a>*@
+            <a id="idBtnTiepTheo" href="javascript:void(0)" class="btn btn-success" style="display: none;">Tiếp theo</a>
+        </div>
+    </div>
+</div>
+<!-- Confirm Popup - Themes -->
+<div class="modal fade" id="Modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông báo xác nhận</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận xoá giảng viên?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDong">Đóng</button>
+                <button type="button" class="btn btn-success" id="idBtnXacNhan">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fix trangthaidecuong Popup - Themes -->
+<div class="modal fade" id="Modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thay đổi trạng thái giảng viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select id="idTrangThaiDecuonggv" style="width:100%">
+                    <option value="1">Đồng ý</option>
+                    <option value="2">Từ chối</option>
+                    <option value="0">Mặc định</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDong2">Đóng</button>
+                <button type="button" class="btn btn-success" id="idBtnXacNhan2">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* Modal chú thích *@
+@*<a href="javascript:void(0)" id="showPopup" data-toggle="modal" data-target="#modalChuThich">Bảng chú thích màu sắc Giảng viên</a>*@
+<div class="modal fade" id="modalChuThich" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chú thích màu sắc Giảng viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Mô tả màu sắc:</label><br />
+                            <a href="javascript:void(0)" class="btn btn-dark m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;">Tên Giảng Viên</a><span>Chưa gửi Email, được chỉnh sửa đề cương</span><br />
+                            <a href="javascript:void(0)" class="btn btn-info m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;">Tên Giảng Viên</a><span>Chưa gửi Email</span><br />
+                            <a href="javascript:void(0)" class="btn btn-primary m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;background-color:#886f6f;border-color:#886f6f">Tên Giảng Viên</a><span>Đã gửi Email, được chỉnh sửa đề cương</span><br />
+                            <a href="javascript:void(0)" class="btn btn-primary m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;">Tên Giảng Viên</a><span>Đã gửi Email</span><br />
+                            <a href="javascript:void(0)" class="btn btn-success m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;">Tên Giảng Viên</a><span>Đã đồng ý giảng dạy, được chỉnh sửa đề cương</span><br />
+                            <a href="javascript:void(0)" class="btn btn-warning m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;">Tên Giảng Viên</a><span>Đã đồng ý giảng dạy</span><br />
+                            <a href="javascript:void(0)" class="btn btn-danger m-b-10 m-r-10" style="border-radius: 4px; height: 27px; line-height: 15px;">Tên Giảng Viên</a><span>Đã từ chối giảng dạy</span><br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="loader" style="display: none;"></div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.js-example-placeholder-multiple').select2({
+            placeholder: "Chọn Giảng viên"
+        });
+        $('.js-example-placeholder-multiple').tooltip({
+            label: function () {
+                return $(this).next().attr("label");
+            },
+        });
+
+
+    });
+</script>
+<script type="text/javascript">
+    $(".select2").select2();
+    function showModal() {
+        $('#modalChuThich').modal('toggle');
+    }
+    $(document).ready(function () {
+        /**
+        * variable param for save
+        */
+        let pr_system, pr_branch, pr_category, pr_year, pr_semester
+        let ltMainSub = [] // Save all list subject
+
+        //Tìm body table
+        var bodyTable = document.getElementById("ct_body")
+
+        //Header of Table
+        var tableHeader = document.getElementById("tableHead");
+
+        var daLuu = false;
+
+        /**
+         *  Get Semester for View
+         *  It's solid Thuc Thi
+         */
+        var listSemeserIC = [
+            {
+                id: 'hk_1',
+                name: 'Học kỳ 1'
+            },
+            {
+                id: 'hk_2',
+                name: 'Học kỳ 2'
+            },
+            {
+                id: 'hk_3',
+                name: 'Học kỳ 3'
+            }
+        ]
+
+
+        /**
+         *  list chứa các giáo viên đã add cho KHDT
+         *  cấu trúc{khdt: "",gvduocpc = "", listgv:[{trangthai:,magv:,lydo:}]}
+         */
+        var listAddGiaoVien = []
+        /**
+         *  Danh sách tất cả giáo viên
+         *
+         */
+        var danhsachtatcagiaovien = [];
+        $.getJSON("@Url.Action("LayTatCaGiangVien", "API")", data => {
+            danhsachtatcagiaovien = data;
+        })
+
+        var danhsachtatcagiaoviencohuu = [];
+        $.getJSON("@Url.Action("LayTatCaGiangVienCoHuu", "API")", data => {
+            danhsachtatcagiaoviencohuu = data;
+        })
+
+        var danhsachtatcagiaovienthinhgiang = [];
+        $.getJSON("@Url.Action("LayTatCaGiangVienThinhGiang", "API")", data => {
+            danhsachtatcagiaovienthinhgiang = data;
+        })
+
+        var danhsachoptiongroup = ["gvtatca","gvcohuu","gvthinhgiang"]
+
+        $('.Default').trigger("click");
+        $('.js-example-basic-single').select2();
+        $('#xkhdt_system').select2({
+            placeholder: "Chọn Hệ",
+            allowClear: true
+        })
+        $('#xkhdt_system').val('').trigger('change');
+        $('#xkhdt_branch').select2({
+            placeholder: "Chọn Ngành học",
+            allowClear: true
+        })
+        $('#xkhdt_branch').val('').trigger('change');
+        $('#xkhdt_year').select2({
+            placeholder: "Chọn Năm học",
+            allowClear: true
+        })
+        $('#xkhdt_year').val('').trigger('change');
+        $('#xkhdt_semester').select2({
+            placeholder: "Chọn Học kỳ",
+            allowClear: true
+        })
+
+        $('#idTrangThaiDecuonggv').select2();
+
+        $('#xkhdt_semester').val('').trigger('change');
+
+        $('#xkhdt_system').on('select2:unselecting', function (e) {
+            $('#xkhdt_branch').empty()
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            document.getElementById('idBtnTiepTheo').style.display = "none"
+            deleteTable()
+        })
+        $('#xkhdt_branch').on('select2:unselecting', function (e) {
+            $('#xkhdt_year').empty()
+            $('#xkhdt_semester').empty()
+            document.getElementById('idBtnTiepTheo').style.display = "none"
+            deleteTable()
+        })
+        $('#xkhdt_year').on('select2:unselecting', function (e) {
+            $('#xkhdt_semester').empty()
+            document.getElementById('idBtnTiepTheo').style.display = "none"
+            deleteTable()
+        })
+        
+
+        //$("#xkhdt_semester").on('select2:change', function (e) {
+        //    if ($(this).val() == "") {
+        //        bodyTable.innerHTML = "";
+        //    }
+        //})
+
+        // Getting data from URL
+        var mahe = "@Request.QueryString["mahe"]"
+        var manganh = "@Request.QueryString["manganh"]"
+        var namhoc = "@Request.QueryString["namhoc"]"
+        var hocky = "@Request.QueryString["hocky"]"
+
+        //window.history.pushState("", "", "/GiangVien/PhanCongGiangVien/")
+
+        // Running function auto fill combobox
+        autoFill(mahe, manganh, namhoc, hocky)
+
+        // If data of url is not null, combobox will be filled data which is got from URL
+        function autoFill(mahe, manganh, namhoc, hocky) {
+            if (mahe != "" && manganh != "" && namhoc != "" && hocky != "") {
+                $('#xkhdt_system').val(mahe).trigger('change');
+                appendOptionToBranch(mahe);
+            }
+        }
+
+        $('#xkhdt_system').on('select2:select', (e) => {
+            let id_system = e.params.data.id;
+            $('#xkhdt_branch').empty();
+            $('#xkhdt_year').empty();
+            $('#xkhdt_semester').empty();
+            document.getElementById('idBtnTiepTheo').style.display = "none"
+            deleteTable()
+            appendOptionToBranchB(id_system)
+        });
+
+        // Loading list majors from db with data which got from URL
+        function appendOptionToBranch(id) {
+            $.getJSON('@Url.Action("GetListBranch", "API")' + '?id_system=' + id, data => {
+                for (let item of data) {
+                    // var newOption = new Option(item.name, item._id, false, false)
+                    if ($('#xkhdt_branch').find("option[value='" + item._id + "']").length) {
+                        $('#xkhdt_branch').val(item._id).trigger('change')
+                    } else {
+                        if (mahe != "" && manganh != "" && namhoc != "" && hocky != "" && item._id == parseInt(manganh)) {
+                            var newOption = new Option(item.name, item._id, false, true);
+                            $('#xkhdt_branch').append(newOption).trigger('change')
+                            appendOptionToYear(manganh)
+                        } else {
+                            // Create a DOM Option and pre-select by default
+                            var newOption = new Option(item.name, item._id, false, false);
+                            // Append it to the select
+                            $('#xkhdt_branch').append(newOption).trigger('change')
+                        }
+                    }
+                }
+            });
+        }
+
+        // Loading list majors from db with data when user click on
+        function appendOptionToBranchB(id) {
+            $.getJSON('@Url.Action("GetListBranch", "API")/?id_system=' + id, data => {
+                for (let item of data) {
+                    // var newOption = new Option(item.name, item._id, false, false)
+                    if ($('#xkhdt_branch').find("option[value='" + item._id + "']").length) {
+                        $('#xkhdt_branch').val(item._id).trigger('change')
+                    } else {
+                            // Create a DOM Option and pre-select by default
+                            var newOption = new Option(item.name, item._id, false, false);
+                            // Append it to the select
+                            $('#xkhdt_branch').append(newOption).trigger('change')
+                    }
+                }
+                /**
+                 * Add option null for display select placeholder
+                 */
+                // Create a DOM Option and pre-select by default
+                var optionNull = new Option('', '', true, true);
+                //// Append it to the select
+                $('#xkhdt_branch').append(optionNull).trigger('change')
+                $('#xkhdt_branch').select2('open');
+            });
+        }
+
+            /**
+             *   and Semester
+             */
+        $('#xkhdt_branch').on('select2:select', (e) => {
+
+            let mahn = e.params.data.id
+            $('#xkhdt_semester').empty()
+            $('#xkhdt_year').empty()
+            document.getElementById('idBtnTiepTheo').style.display = 'none'
+            deleteTable()
+
+            appendOptionToYearB(mahn)
+        });
+
+        // Loading list years from db with data which got from URL
+        function appendOptionToYear(id) {
+            $.getJSON('@Url.Action("GetListYearNew", "API")' + '?mahn=' + id, (data) => {
+                if (data.length != 0) {
+                    for (let item of data) {
+                        if (item.namhoc == namhoc) {
+                            // Create a DOM Option and pre-select by default
+                            let newOption = new Option(item.namhoc, item.namhoc, false, true);
+                            // Append it to the select
+                            $('#xkhdt_year').append(newOption).trigger('change')
+                            appendOptionToSemester(listSemeserIC)
+                        } else {
+                            // Create a DOM Option and pre-select by default
+                            let newOption = new Option(item.namhoc, item.namhoc, false, false);
+                            // Append it to the select
+                            $('#xkhdt_year').append(newOption).trigger('change')
+                        }
+                    }
+                    /**
+                     * Add option null for display select placeholder
+                     */
+                    if (mahe == "" && manganh == "" && namhoc == "" && hocky == "") {
+                        // Create a DOM Option and pre-select by default
+                        let optionNull = new Option('', '', true, true)
+                        // Append it to the select
+                        $('#xkhdt_year').append(optionNull).trigger('change')
+                    }
+                } else {
+                    //tNotifi('Year empty...! Please choose other field <3')
+                    toastr.warning('@CommonRS.Resources.VI.mes_KhongCoHK', 'Lưu ý!');
+                }
+
+            });
+        }
+
+        // Loading list years from db with data when user click on
+        function appendOptionToYearB(id) {
+            $.getJSON('@Url.Action("GetListYearNew", "API")?mahn=' + id, (data) => {
+                if (data.length != 0) {
+                    for (let item of data) {
+                            // Create a DOM Option and pre-select by default
+                            let newOption = new Option(item.namhoc, item.namhoc, false, false);
+                            // Append it to the select
+                            $('#xkhdt_year').append(newOption).trigger('change')
+
+                    }
+                    /**
+                     * Add option null for display select placeholder
+                     */
+                        // Create a DOM Option and pre-select by default
+                        let optionNull = new Option('', '', true, true)
+                        // Append it to the select
+                    $('#xkhdt_year').append(optionNull).trigger('change')
+                    $('#xkhdt_year').select2('open');
+                } else {
+                    //tNotifi('Year empty...! Please choose other field <3')
+                    toastr.warning('@CommonRS.Resources.VI.mes_KhongCoHK', 'Lưu ý!');
+                }
+
+            });
+        }
+
+            /**
+             *  Handler get id year
+             *  Get List Year
+             */
+        $('#xkhdt_year').on('select2:select', (e) => {
+            pr_year = e.params.data.id
+            $('#xkhdt_semester').empty()
+            document.getElementById('idBtnTiepTheo').style.display = 'none'
+            let semester = listSemeserIC
+            deleteTable()
+
+            pr_branch = $("#xkhdt_branch").val()
+            pr_year = $("#xkhdt_year").val()
+
+            //Null option to placeholder
+            let optionNull = new Option('', '', true, true)
+            $('#xkhdt_semester').append(optionNull).trigger('change')
+
+            let url = '@Url.Action("GetGrSemester", "API")' + '?mahn=' + pr_branch + '&year=' + pr_year
+            $.getJSON(url, data => {
+                for (let item of data) {
+                    let id = 'hk_' + item.hocky
+                    let name = 'Học kỳ ' + item.hocky
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(name, id, false, false);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+                }
+                $('#xkhdt_semester').select2('open');
+            })
+        });
+
+        // Loading list semesters with data which got from URL
+        function appendOptionToSemester(semester) {
+            for (let item of semester) {
+                if (item.id == hocky) {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(item.name, item.id, false, true);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+                    createTableWithData($("#xkhdt_branch").val(), $("#xkhdt_year").val(), hocky.split('_')[1]);
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    var newOption = new Option(item.name, item.id, false, false);
+                    // Append it to the select
+                    $('#xkhdt_semester').append(newOption).trigger('change')
+                }
+            }
+        }
+
+            //Action select semester
+        $('#xkhdt_semester').on('select2:select', (e) => {
+            //document.getElementById('idBtnLuu').style.display = "none"
+            //document.getElementById('idBtnTiepTheo').style.display = "none"
+
+            pr_semester = e.params.data.id.split('_')[1]
+            pr_branch = $("#xkhdt_branch").val()
+            pr_year = $("#xkhdt_year").val();
+            deleteTable()
+
+            $('#xkhdt_semester').prop("disabled", true); //Disable
+
+            createTableWithData(pr_branch, pr_year, pr_semester);
+        });
+
+        //Lấy danh sách giáo viên đã được phân công giảng dạy theo từng KHDT trong db
+        function createTableWithData(idbranch, idyear, idsemester) {
+            $.getJSON("@Url.Action("LayDanhSachGiaoVienDuocPhanCong", "API")" + "?maNganh=" + idbranch + "&namHoc=" + idyear + "&hocKy=" + idsemester, data => {
+                listAddGiaoVien = data
+                console.log(listAddGiaoVien)
+
+                let url = '@Url.Action("LayDanhSachKHDTPhanCong", "API")' + '?maNganh=' + idbranch
+                    + '&namHoc=' + idyear + '&hocKy=' + idsemester
+                $.getJSON(url, data => {
+                    if (data.length == 0) {
+                        //tNotifi('Year empty...! Please choose other field <3')
+                        toastr.warning('@CommonRS.Resources.VI.mes_KhongCoHK', 'Lưu ý!');
+                        $('#xkhdt_semester').prop("disabled", false) //Disable
+                    } else {
+                        document.getElementById('idBtnTiepTheo').style.display = "block"
+                        renderTableHeader()
+                        for (let index = 0; index < data.length; index++) {
+                            RenderTable(data[index], index + 1)
+
+                            //Copy Solopdukien from data to listAddGiaoVien
+                            if (data[index].SolopDuKien != null) {
+                                let isHaveInList = false;
+                                for (let j = 0; j < listAddGiaoVien.length; j++) {
+                                    if (data[index].MaKHDT == listAddGiaoVien[j].khdt) {
+                                        isHaveInList = true;
+                                        break;
+                                    }
+                                }
+                                if (!isHaveInList) {
+                                    listAddGiaoVien.push({ khdt: data[index].MaKHDT, listgv: [], solopdukien: data[index].SolopDuKien })
+                                }
+                            }
+                        }
+                        //document.getElementById("idBtnLuu").style.display = "block";
+                        $('#xkhdt_semester').prop("disabled", false) //Disable
+
+                        $(".sogiodk").ready(function () {
+                            $(".sogiodk").keyup(function (e) {
+                                let sogiovalue = e.target.value;
+                                let newsogiovalue = sogiovalue.replace("-", "");
+                                e.target.value = newsogiovalue;
+
+                            })
+
+                        })
+                        $(".sogiodk").focusout(function (e) {
+                            let fieldInput = e.target;
+                            let makhdt = fieldInput.getAttribute("data-id");
+                            let giatri = fieldInput.value;
+                            giatri = (giatri == "") ? 0 : giatri;
+                            let isFound = false;
+                            //Gán giá trị solopdukien vào listAddGiaoVien
+                            for (let i in listAddGiaoVien) {
+                                if (makhdt == listAddGiaoVien[i].khdt) {
+                                    listAddGiaoVien[i].solopdukien = giatri;
+                                    isFound = true;
+                                }
+                            }
+
+                            //Nếu list khdt ko tồn tại thì tạo mới
+                            if (!isFound) {
+                                listAddGiaoVien.push({ khdt: makhdt, listgv: [], solopdukien: giatri })
+                            }
+
+                            //Trường hợp khi field = ""
+                            if (giatri == 0) {
+                                fieldInput.value = 0;
+                            }
+
+                            console.log(listAddGiaoVien)
+
+                        })
+                    }
+
+                });
+            });
+        }
+
+        //Render table header
+        function renderTableHeader() {
+            tableHeader.innerHTML = '<tr>'
+                + '<th rowspan="2">STT</th>'
+                + '<th rowspan="2">Khóa</th>'
+                + '<th rowspan="2" style="width: 350px">Tên môn học</th>'
+                + '<th colspan="5">Số giờ</th>'
+                + '<th rowspan="2">Số lớp dự kiến</th>'
+                + '<th rowspan="2">Tên Giảng viên <i class="fal fa-info-circle" class="m-l-5" id="showModal" onclick="showModal()" data-toggle="tooltip" data-placement="top" data-original-title="Bảng chú thích màu sắc Giảng viên"'
+                + 'style="color: yellow; cursor: pointer;"></i></th>'
+                + '</tr>'
+                + '<tr>'
+                + '<td>TS</td>'
+                + '<td>LT</td>'
+                + '<td>TH/BT</td>'
+                + '<td>DA</td>'
+                + '<td>TT</td>'
+                + '</tr>'
+
+            $('#showModal').tooltip().mouseover();
+            setTimeout(function () { $('#showModal').tooltip('hide'); }, 9000);
+        }
+
+        //Delete table header
+        function deleteTable() {
+            bodyTable.innerHTML = "";
+            tableHeader.innerHTML = "";
+            //document.getElementById("idBtnLuu").style.display = "none";
+        }
+
+
+            //render ra table
+        function RenderTable(obj, index) {
+                //tạo dòng
+                let row = document.createElement("tr")
+                row.setAttribute("id", "rowNum" + index)
+                let ts = parseInt(obj.GioLT) + parseInt(obj.GioTH) + parseInt(obj.GioDa) + parseInt(obj.GioTT)
+
+                let sldk = (obj.SolopDuKien == undefined) ? "0" : obj.SolopDuKien
+                //Từng cột
+                let col1 = document.createElement("td")
+                col1.innerText = index
+                let col2 = document.createElement("td")
+                col2.innerText = obj.TenKhoi
+                let col3 = document.createElement("td")
+                col3.innerText = obj.TenMH
+                let col4 = document.createElement("td")
+                col4.innerText = ts
+                let col5 = document.createElement("td")
+                col5.innerText = obj.GioLT
+                let col6 = document.createElement("td")
+                col6.innerText = obj.GioTH
+                let col7 = document.createElement("td")
+                col7.innerText = obj.GioDa
+                let col8 = document.createElement("td")
+                col8.innerText = obj.GioTT
+            let col9 = document.createElement("td")
+            col9.innerHTML = "<input class='sogiodk' id='sogiodk_" + obj.MaKHDT + "' data-id='" + obj.MaKHDT + "' type='number' value = '" + sldk + "'>"
+
+                let col10 = document.createElement("td")
+
+
+                //Tạo ra select để chọn giáo viên
+                let select = document.createElement("select")
+                select.setAttribute("class", "js-example-placeholder-multiple js-states form-control")
+                select.setAttribute("multiple", "multiple")
+                select.setAttribute("style", "width: 300px")
+                select.setAttribute("id", "khdt_"+obj.MaKHDT)
+
+                //Check xem tình trạng có hiệu lực lưu tạm hay lưu trữ
+            if (obj.TrangthaiKH == "@CommonRS.Resources.Variables.TrangthaiKH_LuuTru" || obj.TrangthaiKH == "@CommonRS.Resources.Variables.TrangthaiKH_ThucThi") {
+                    select.disabled = true;
+                }
+
+
+                //tạo ra group tất cả giáo viên cho select
+                let optgroupgvtatca = document.createElement("optgroup")
+                optgroupgvtatca.setAttribute("label", "Tất cả giảng viên")
+
+                for (let i = 0; i < danhsachtatcagiaovien.length; i++) {
+                    let opt = document.createElement("option")
+                    opt.setAttribute("value", "gvtatca_"+danhsachtatcagiaovien[i].id)
+                    opt.setAttribute("label","0")
+                    opt.innerText = danhsachtatcagiaovien[i].name
+                    optgroupgvtatca.appendChild(opt)
+                }
+
+
+                //tạo ra group tất cả giáo viên cho select
+                let optgroupgvtatcacohuu = document.createElement("optgroup")
+                optgroupgvtatcacohuu.setAttribute("label", "Giảng viên cơ hữu")
+
+                for (let i = 0; i < danhsachtatcagiaoviencohuu.length; i++) {
+                    let opt = document.createElement("option")
+                    opt.setAttribute("value", "gvcohuu_"+danhsachtatcagiaoviencohuu[i].id)
+                    opt.setAttribute("label","0")
+                    opt.innerText = danhsachtatcagiaoviencohuu[i].name
+                    optgroupgvtatcacohuu.appendChild(opt)
+                }
+
+
+                //tạo ra group tất cả giáo viên thinh giang cho select
+                let optgroupgvtatcathinhgiang = document.createElement("optgroup")
+                optgroupgvtatcathinhgiang.setAttribute("label", "Giảng viên thỉnh giảng")
+
+                for (let i = 0; i < danhsachtatcagiaovienthinhgiang.length; i++) {
+                    let opt = document.createElement("option")
+                    opt.setAttribute("value", "gvthinhgiang_" +danhsachtatcagiaovienthinhgiang[i].id)
+                    opt.setAttribute("label","0")
+                    opt.innerText = danhsachtatcagiaovienthinhgiang[i].name
+                    optgroupgvtatcathinhgiang.appendChild(opt)
+                }
+
+                let optgroupgvtatcagoiy = document.createElement("optgroup")
+                optgroupgvtatcagoiy.setAttribute("label", "Giảng viên gợi ý")
+                //lấy về giáo viên gợi ý theo mã kế hoạch đào tạo
+                let danhsachtatcagiaoviengoiy = [];
+                $.getJSON("@Url.Action("LayGiaoVienGoiY", "API")?maKHDT=" + obj.MaKHDT, data2 => {
+                    danhsachtatcagiaoviengoiy = data2;
+                    //console.log(obj.MaKHDT,data2)
+                    //tạo ra group tất cả giáo viên gợi ý
+
+                    for (let i = 0; i < danhsachtatcagiaoviengoiy.length; i++) {
+                        let opt = document.createElement("option")
+                        opt.setAttribute("value", "gvgoiy_" +danhsachtatcagiaoviengoiy[i].id)
+                        opt.setAttribute("label","0")
+                        opt.innerText = danhsachtatcagiaoviengoiy[i].name
+                        optgroupgvtatcagoiy.appendChild(opt)
+                    }
+
+                })
+
+
+
+
+                select.appendChild(optgroupgvtatcacohuu)
+                select.appendChild(optgroupgvtatcathinhgiang)
+                select.appendChild(optgroupgvtatcagoiy)
+                select.appendChild(optgroupgvtatca)
+                col10.appendChild(select)
+
+                row.appendChild(col1)
+                row.appendChild(col2)
+                row.appendChild(col3)
+                row.appendChild(col4)
+                row.appendChild(col5)
+                row.appendChild(col6)
+                row.appendChild(col7)
+                row.appendChild(col8)
+                row.appendChild(col9)
+                row.appendChild(col10)
+
+
+                bodyTable.appendChild(row)
+
+
+                $('#khdt_' + obj.MaKHDT).ready(function () {
+
+                    $('#khdt_'+obj.MaKHDT).select2({
+                        placeholder: "Chọn Giảng viên",
+                        templateSelection: formatColor,
+                        templateResult: formatColorResult
+                    })
+                    //$('#khdt_' + obj.MaKHDT).tooltip({
+
+                    //    tooltipClass: "uitooltip"
+                    //})
+                    //$('#khdt_' + obj.MaKHDT).tooltip({
+                    //    title: function () {
+                    //        return $(this).prev().attr("title");
+                    //    },
+                    //    placement: "auto"
+                    //});
+
+
+                    $('#khdt_' + obj.MaKHDT).on('select2:select', (e) => {
+
+                            daLuu = false
+                            //nếu mảng chưa có gì add thằng vào
+                        if (listAddGiaoVien.length == 0) {
+                            listAddGiaoVien.push({ khdt: obj.MaKHDT, listgv: [{ trangthai: e.params.data.element.label, magv: e.params.data.id.split('_')[1] }] })
+                            } else {
+                                //nếu mảng đã có duyệt đầu mảng đến cuối
+                                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                                    //nếu đã tồn tại mã KHDT trong listAddGiaoVien. chỉ add thêm id giáo viên vào
+                                    if (listAddGiaoVien[i].khdt == obj.MaKHDT) {
+                                        listAddGiaoVien[i].listgv.push({ trangthai: e.params.data.element.label, magv: e.params.data.id.split('_')[1] })
+                                        break
+                                    }
+                                    //nếu chưa tồn tại KHDT tạo 1 Obj cho listAddGiaoVien. Obj chứa mã KHDT và Listgv
+                                    if (i == listAddGiaoVien.length - 1) {
+                                        listAddGiaoVien.push({ khdt: obj.MaKHDT, listgv: [{ trangthai: e.params.data.element.label, magv: e.params.data.id.split('_')[1] }] })
+                                        break
+                                    }
+                                }
+                        }
+
+
+
+
+                        //Remove order in select2
+                        var arrayopt = $('#khdt_' + obj.MaKHDT).find("option[value*='" + e.params.data.id.split('_')[1] + "']")
+                        //console.log("arrayopt", arrayopt)
+                        for (let i = 0; i < arrayopt.length; i++) {
+                            var $parentNode = $(arrayopt[i].parentNode)
+                            var $element = $(arrayopt[i])
+                            //console.log($element)
+                            $element.detach()
+                            $parentNode.append($element)
+                            $('#khdt_' + obj.MaKHDT).trigger("change")
+                        }
+                        $parentNode1 = $(e.params.data.element.parentNode)
+                        $parentNode1.detach()
+                        //console.log($parentNode1)
+                        $('#khdt_' + obj.MaKHDT).append($parentNode1)
+                        $('#khdt_' + obj.MaKHDT).trigger("change")
+
+                        console.log("select",listAddGiaoVien)
+                    })
+
+
+
+                    //xảy ra trước khi unselect
+                    $('#khdt_' + obj.MaKHDT).on('select2:unselecting', (e) => {
+                        e.preventDefault()
+                        console.log('unsed')
+                        $(this).data('state', 'unselected');
+                        //$('#khdt_' + obj.MaKHDT).select2("close")
+                        $("#Modal2").modal()
+                        $("#idBtnXacNhan").on("click", function () {
+                            let giaTriHienTai = $('#khdt_' + obj.MaKHDT).val()
+                            daLuu = false
+                            for (let i = 0; i < listAddGiaoVien.length; i++) {
+                                if (listAddGiaoVien[i].khdt == obj.MaKHDT) {
+                                    listAddGiaoVien[i].listgv = listAddGiaoVien[i].listgv.filter(x => !e.params.args.data.id.includes(x.magv))
+                                    listAddGiaoVien[i].listgv = listAddGiaoVien[i].listgv.filter(x => x.magv != null)
+
+                                    //Nếu làm unselect multiple
+                                    let giaTriMoi = giaTriHienTai.filter(x => !x.includes(e.params.args.data.id.split("_")[1]))
+                                    //console.log('#khdt_' + obj.MaKHDT)
+                                    //console.log("giaTriMoi", giaTriMoi)
+                                    $('#khdt_' + obj.MaKHDT).val([]).trigger("change")
+                                    $('#khdt_' + obj.MaKHDT).val(giaTriMoi).trigger("change")
+                                    $('#btnDong').trigger("click")
+                                    break
+                                }
+                            }
+                        })
+                        $('#khdt_' + obj.MaKHDT).on("select2:opening", function (eve) {
+                            eve.preventDefault()
+                            $('#khdt_' + obj.MaKHDT).unbind("select2:opening")
+                        })
+                    })
+
+
+                    //Áp dụng cho những select có giá trị mới load từ db khi click lần đầu tiên vào dropdown
+                    $('#khdt_' + obj.MaKHDT).on('select2:selecting', (e) => {
+                        let giaTriHienTai = $('#khdt_' + obj.MaKHDT).val()
+                        for (let i = 0; i < giaTriHienTai.length; i++) {
+                            //console.log("giaTriHienTai[i]", giaTriHienTai[i])
+                            //console.log("e.params.data.id.split()[1])", e.params.args.data.id.split("_")[1])
+                            if (giaTriHienTai[i].includes(e.params.args.data.id.split("_")[1])) {
+                                e.preventDefault()
+                            }
+                        }
+
+
+                    })
+
+
+                    //xảy ra khi dropdown select xuống
+                    $('#khdt_' + obj.MaKHDT).on('select2:open', (e) => {
+                        let giaTriHienTaiKHDT = $('#khdt_' + obj.MaKHDT).val()
+                        for (let i = 0; i < giaTriHienTaiKHDT.length; i++) {
+
+                            let giatriid = giaTriHienTaiKHDT[i].split("_")[1]
+                            let listLi = $("li[id*='" + giatriid + "']")
+
+                            for (let j = 0; j < listLi.length; j++) {
+                                $("#" + listLi[j].id).ready(function () {
+                                    $("#" + listLi[j].id).attr("aria-selected", "true")
+                                })
+                            }
+                        }
+                    })
+
+                    //set các option mặc định từ dữ liệu trong db
+                    for (let i = 0; i < listAddGiaoVien.length; i++) {
+                        if (listAddGiaoVien[i].khdt == obj.MaKHDT) {
+                            let listgvadd = []
+                            for (let j = 0; j < listAddGiaoVien[i].listgv.length; j++) {
+                                listgvadd.push("gvtatca_" + listAddGiaoVien[i].listgv[j].magv)
+                                //set trạng thái vào label của option
+                                var arrayopt = $('#khdt_' + obj.MaKHDT).find("option[value*='" + listAddGiaoVien[i].listgv[j].magv + "']")
+
+                                for (let t = 0; t < arrayopt.length; t++) {
+                                    arrayopt[t].label = listAddGiaoVien[i].listgv[j].trangthai
+                                    if (listAddGiaoVien[i].listgv[j].lydo != null) {
+                                        arrayopt[t].title = "Lý do từ chối giảng dạy: " + listAddGiaoVien[i].listgv[j].lydo
+                                    }
+                                }
+                            }
+
+                            $('#khdt_' + obj.MaKHDT).val(listgvadd)
+                            $('#khdt_' + obj.MaKHDT).trigger("change")
+                            //console.log(listgvadd)
+                            //console.log(listAddGiaoVien)
+                        }
+                    }
+
+                })
+
+            }
+
+            // animation notification wanring
+            function tNotifi(message) {
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                x.innerText = message
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            }
+
+
+
+        
+
+
+        $("#idBtnTiepTheo").on("click", function () {
+            if (listAddGiaoVien.length != 0) {
+                console.log(listAddGiaoVien)
+                document.getElementById("loader").style.display = "block";
+                let form_data = { listAddGiaoVien: JSON.stringify(listAddGiaoVien) }
+                $.ajax({
+                    url: "@Url.Action("LuuDanhSachGiaoVienPhanCong", "API")",
+                    type: "post",
+                    data: form_data,
+                    traditional: true
+                }).done(function (response) {
+                    if (response == "done") {
+                        toastr.success('@CommonRS.Resources.VI.mes_LuuThanhCong', 'Thành công!');
+                        document.getElementById("idBtnTiepTheo").style.display = "block";
+                        daLuu = true
+
+                        setTimeout(function () {
+                            //Link page
+                            if (daLuu) {
+                            var isHaveGVStatusNotSendMail = false;
+                            for (let i = 0; i < listAddGiaoVien.length; i++) {
+                                for (let j = 0; j < listAddGiaoVien[i].listgv.length; j++) {
+                                    if (listAddGiaoVien[i].listgv[j].trangthai == "0") {
+                                        isHaveGVStatusNotSendMail = true;
+                                        //break 2 for
+                                        i = listAddGiaoVien.length;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (isHaveGVStatusNotSendMail) {
+                                pr_semester = $("#xkhdt_semester").val().split('_')[1]
+                                pr_branch = $("#xkhdt_branch").val()
+                                pr_year = $("#xkhdt_year").val();
+                                pr_system = $("#xkhdt_system").val();
+
+                                var form = document.createElement("form")
+                                form.setAttribute("action", "@Url.Action("XemTruocPhanCongGiangVien", "GiangVien")")
+                                form.setAttribute("method", "POST")
+
+                                var input1 = document.createElement("input")
+                                input1.setAttribute("name", "MaNganh")
+                                input1.setAttribute("value", pr_branch)
+
+                                var input2 = document.createElement("input")
+                                input2.setAttribute("name", "NamHoc")
+                                input2.setAttribute("value", pr_year)
+
+                                var input3 = document.createElement("input")
+                                input3.setAttribute("name", "HocKy")
+                                input3.setAttribute("value", pr_semester)
+
+                                var input4 = document.createElement("input")
+                                input4.setAttribute("name", "HeHoc")
+                                input4.setAttribute("value", pr_system)
+
+                                form.appendChild(input1)
+                                form.appendChild(input2)
+                                form.appendChild(input3)
+                                form.appendChild(input4)
+
+                                document.body.appendChild(form);
+
+                                form.submit()
+
+                            } else {
+                                 toastr.error('@CommonRS.Resources.VI.mes_KhongCoGV', 'Lỗi!');
+                            }
+
+                        } else {
+                            toastr.error('@CommonRS.Resources.VI.mes_LuuTruocKhiChuyen', 'Lỗi!');
+                        }
+
+                        }, 1000)
+
+                    } else {
+                        toastr.error('@CommonRS.Resources.VI.mes_KhongLuuDuoc', 'Lỗi!');
+                    }
+                    })
+                document.getElementById("loader").style.display = "none"
+            } else {
+                toastr.warning('@CommonRS.Resources.VI.mes_KhongCoGiThayDoi', 'Lưu ý!');
+            }
+        })
+        function fCallBack(first, second) {
+            first();
+            return second();
+        }
+        function formatColor(state) {
+            var stateLabel
+            if (!state.id) { return state.text; }
+            var idkhdt = state.element.parentNode.parentNode.id.split("_")[1]
+            var $state
+            if (state.element.label == "2") {
+                stateLabel = "2"
+                $state = $(
+                    '<span style="background-color:#da542e">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                );
+            } else if (state.element.label == "1") {
+                let checkLabel = false;
+                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                    if (idkhdt == listAddGiaoVien[i].khdt) {
+                        if (listAddGiaoVien[i].listgv.length != 0) {
+                            if (listAddGiaoVien[i].listgv[0].magv == state.id.split("_")[1]) {
+                                stateLabel = "1"
+                                $state = $(
+                                    '<span style="background-color:#28b779; color: white">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                                );
+                                checkLabel = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!checkLabel) {
+                    stateLabel = "1+"
+                    $state = $(
+                        '<span style="background-color:#ffb848">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                    );
+                }
+            } else if (state.element.label == "3") {
+                let checkLabel = false
+                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                    if (idkhdt == listAddGiaoVien[i].khdt) {
+                        if (listAddGiaoVien[i].listgv.length != 0) {
+                            if (listAddGiaoVien[i].listgv[0].magv == state.id.split("_")[1]) {
+                                $state = $(
+                                    '<span style="background-color:#886f6f; color: white;">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                                );
+                                stateLabel = "3+";
+                                checkLabel = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!checkLabel) {
+                    stateLabel = "3"
+                    $state = $(
+                        '<span style="background-color:#4c32e9;color: white;">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                    );
+                }
+            }else {
+                let checkLabel = false
+                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                    if (idkhdt == listAddGiaoVien[i].khdt) {
+                        if (listAddGiaoVien[i].listgv.length != 0) {
+                            if (listAddGiaoVien[i].listgv[0].magv == state.id.split("_")[1]) {
+                                $state = $(
+                                    '<span style="background-color:#343a40; color: white;">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                                );
+                                stateLabel = "0+";
+                                checkLabel = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!checkLabel) {
+                    stateLabel = "0"
+                    $state = $(
+                        '<span style="color: white;">' + state.text + '</span> <i title="Sửa trạng thái" class="icons m-r-10 mdi mdi-table-edit"></i>'
+                    );
+                }
+            }
+            $state.ready(function (e) {
+                if (stateLabel == "2") {
+                    //Từ chối giảng dạy
+                    $state[0].parentNode.style.background = '#da542e'
+                    $state[0].parentNode.children[0].style = 'background-color: #da542e; color: white'
+                } else if (stateLabel == "1") {
+                    //Đồng ý giảng dạy - Có quyền chỉnh sửa đề cương chi tiết
+                    $state[0].parentNode.style.background = '#28b779'
+                    $state[0].parentNode.children[0].style = 'background-color: #28b779; color: white'
+                } else if (stateLabel == "1+") {
+                    //Đồng ý giảng dạy - Nhưng k có quyền chỉnh sửa đề cương chi tiết
+                    $state[0].parentNode.style.background = '#ffb848'
+                    $state[0].parentNode.children[0].style = 'background-color: #ffb848;'
+                } else if (stateLabel == "0+") {
+                    //Chưa gửi mail- Có quyền chỉnh sửa đề cương chi tiết
+                    $state[0].parentNode.style.background = '#343a40'
+                    $state[0].parentNode.children[0].style = 'background-color: #343a40; color: white'
+                } else if (stateLabel == "3+") {
+                    //đã gửi mail - Có quyền chỉnh sửa đề cương chi tiết
+                    $state[0].parentNode.style.background = '#886f6f'
+                    $state[0].parentNode.children[0].style = 'background-color: #886f6f; color: white'
+                }else if (stateLabel == "3") {
+                    //đã gửi mail - K quyền chỉnh sửa đề cương chi tiết
+                    $state[0].parentNode.style.background = '#4c32e9'
+                    $state[0].parentNode.children[0].style = 'background-color: #4c32e9; color: white'
+                }
+                else {
+                    //Chưa gửi mail - K có quyền chỉnh sửa đề cương chi tiết
+                }
+
+
+                $state.parent().find($("i")).click(function (e) {
+                    let selectId = state._resultId.split('-')[1];
+                    let trangThaiGV = (stateLabel == "0+") ? 0 : (stateLabel == "1+") ? 1 : stateLabel
+                    $("#" + selectId).on("select2:opening", function (e) {
+                        e.preventDefault()
+                        $("#" + selectId).unbind("select2:opening")
+                    })
+                    $("#idTrangThaiDecuonggv").val(trangThaiGV).trigger('change')
+                    $("#Modal3").modal()
+                    $("#idBtnXacNhan2")[0].setAttribute("data-id", selectId)
+                    $("#idBtnXacNhan2")[0].setAttribute("data-id-magv", state.id)
+                })
+
+            })
+            return $state;
+        }
+
+        function formatColorResult(state) {
+            if (!state.id) { return state.text; }
+            //console.log("state",state)
+            var idkhdt = state.element.parentNode.parentNode.id.split("_")[1]
+            if (state.element.label == "2") {
+                stateLabel = "2"
+                $state = $(
+                    '<option class="fw-7" style="color:#da542e">' + state.text + '</option>'
+                );
+            } else if (state.element.label == "1") {
+                let checkLabel = false;
+                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                    if (idkhdt == listAddGiaoVien[i].khdt) {
+                        if (listAddGiaoVien[i].listgv.length != 0) {
+                            if (listAddGiaoVien[i].listgv[0].magv == state.id.split("_")[1]) {
+                                $state = $(
+                                    '<option class="fw-7" style="color:green">' + state.text + '</option>'
+                                );
+                                checkLabel = true;
+                                break;
+                            }
+                        }
+
+
+                    }
+                }
+                if (!checkLabel) {
+                    $state = $(
+                        '<option class="fw-7" style="color:#ffb848">' + state.text + '</option>'
+                    );
+                }
+            } else if (state.element.label == "3") {
+                let checkLabel = false;
+                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                    if (idkhdt == listAddGiaoVien[i].khdt) {
+                        if (listAddGiaoVien[i].listgv.length != 0) {
+                            if (listAddGiaoVien[i].listgv[0].magv == state.id.split("_")[1]) {
+                                $state = $(
+                                    '<option class="fw-7" style="color:#886f6f">' + state.text + '</option>'
+                                );
+                                checkLabel = true;
+                                break;
+                            }
+                        }
+
+
+                    }
+                }
+                if (!checkLabel) {
+                    $state = $(
+                        '<option class="fw-7" style="color:#4c32e9">' + state.text + '</option>'
+                    );
+                }
+            } else {
+                let checkLabel = false
+                for (let i = 0; i < listAddGiaoVien.length; i++) {
+                    if (idkhdt == listAddGiaoVien[i].khdt) {
+                        if (listAddGiaoVien[i].listgv.length != 0) {
+                            if (listAddGiaoVien[i].listgv[0].magv == state.id.split("_")[1]) {
+                                $state = $(
+                                    '<option class="fw-7" style="color:#343a40">' + state.text + '</option>'
+                                );
+                                checkLabel = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!checkLabel) {
+                    $state = $(
+                        '<option">' + state.text + '</option>'
+                    );
+                }
+            }
+            //temp1.element.parentNode.parentNode.id.split("_")[1]
+
+            return $state;
+        }
+
+        $("#idBtnXacNhan2").click(function (e) {
+            let maKhdt = $("#idBtnXacNhan2")[0].getAttribute("data-id").split('_')[1];
+            let magv = $("#idBtnXacNhan2")[0].getAttribute("data-id-magv").split('_')[1];
+            let newtrangthai = $("#idTrangThaiDecuonggv").val();
+
+            let arrayopt = $('#khdt_' + maKhdt).find("option[value*='" + magv + "']")
+
+            for (let t = 0; t < arrayopt.length; t++) {
+                arrayopt[t].label = newtrangthai;
+            }
+
+            for (let i = 0; i < listAddGiaoVien.length; i++) {
+                if (listAddGiaoVien[i].khdt == maKhdt) {
+                    for (let j = 0; j < listAddGiaoVien[i].listgv.length; j++) {
+                        if (listAddGiaoVien[i].listgv[j].magv == magv) {
+                            listAddGiaoVien[i].listgv[j].trangthai = newtrangthai;
+                        }
+                    }
+                }
+            }
+            console.log("listAddGiaoVien " + maKhdt, listAddGiaoVien)
+
+            $("#khdt_" + maKhdt).trigger('change');
+
+            $('#Modal3').modal('hide');
+        })
+
+
+    });
+    document.querySelector("#layout-father").classList.add("active");
+    document.querySelector("#layout-ul").classList.add("in");
+    document.querySelector("#list-lecturer").classList.add("active");
+</script>
+
+

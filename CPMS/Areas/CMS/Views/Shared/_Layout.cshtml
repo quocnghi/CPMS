@@ -1,0 +1,345 @@
+﻿@using Capstone.Models
+@{
+    fit_misDBEntities db = new fit_misDBEntities();
+    List<sf_Notification> noTice = null;
+    HttpCookie ck = Request.Cookies["Id"];
+    var userid = ck.Value;
+    string Name = "";
+    string usid = "";
+    try
+    {
+
+        if (db.AspNetUsers.Find(userid).m_Nhanvien.Ho + " " + db.AspNetUsers.Find(userid).m_Nhanvien.Ten != null)
+        {
+            Name = db.AspNetUsers.Find(userid).m_Nhanvien.Ho + " " + db.AspNetUsers.Find(userid).m_Nhanvien.Ten;
+        }
+        else
+        {
+            Name = db.AspNetUsers.Find(userid).UserName;
+        }
+        userid = db.AspNetUsers.Find(userid).Id;
+        if (userid != null)
+        {
+            noTice = db.sf_Notification.Where(s => s.NguoiNhan == userid && s.DaXem == false).OrderByDescending(s => s.Ngaytao).ToList();
+        }
+    }
+    catch (Exception e)
+    {
+
+    }
+
+}
+<html lang="en">
+<head>
+    <base href="/location/" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Areas/CMS/Content/Curriculum/assets/images/favicon.ico">
+    <title>Curriculum Management System</title>
+    <!-- Custom CSS -->
+    <link href="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Areas/CMS/Content/Curriculum/assets/libs/flot/css/float-chart.css" rel="stylesheet">
+    <link href="~/Areas/CMS/Content/Curriculum/assets/libs/jquery-steps/jquery.steps.css" rel="stylesheet">
+    <link href="~/Areas/CMS/Content/Curriculum/assets/libs/jquery-steps/steps.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="~/Areas/CMS/Content/Curriculum/dist/css/style.min.css" rel="stylesheet">
+    <!-- All Jquery -->
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/select2/dist/css/select2.min.css">
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/select2/dist/js/select2.full.min.js"></script>
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/select2/dist/js/select2.min.js"></script>
+    <script src="~/Areas/CMS/Content/Curriculum/angular/angular.min.js"></script>
+    <script src="~/Areas/CMS/Content/Curriculum/angular/angular-sanitize.js"></script>
+    <style>
+        .notification {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            position: relative;
+            display: inline-block;
+            border-radius: 2px;
+        }
+
+            .notification .badge {
+                position: absolute;
+                top: -1px;
+                right: -1px;
+                margin-top: 3px;
+                margin-right: 1px;
+                padding: 5px 10px;
+                border-radius: 50%;
+                background-color: dodgerblue;
+                color: white;
+            }
+    </style>
+</head>
+<body ng-app="CurriculumApp">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" class="mini-sidebar">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar" data-navbarbg="skin5">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+                    <!-- This is for the sidebar toggle which is visible on mobile only -->
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                    <!-- ============================================================== -->
+                    <!-- Logo -->
+                    <!-- ============================================================== -->
+                    <a class="navbar-brand" href="@Url.Action("Index","Home")" style="padding-left: 11px">
+                        <!-- Logo icon -->
+                        <b class="logo-icon p-l-10">
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="~/Areas/CMS/Content/Curriculum/assets/images/Logo-vlu-icon.png" alt="homepage" class="light-logo" />
+                        </b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span class="logo-text">
+                            <!-- dark Logo text -->
+                            <img src="~/Areas/CMS/Content/Curriculum/assets/images/Logo-vlu-text.png" style="padding-left: 20px" alt="homepage" class="light-logo" />
+
+                        </span>
+                        <!-- Logo icon -->
+                        <!-- <b class="logo-icon"> -->
+                        <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                        <!-- Dark Logo icon -->
+                        <!-- <img src="../../assets/images/logo-text.png" alt="homepage" class="light-logo" /> -->
+                        <!-- </b> -->
+                        <!--End Logo icon -->
+                    </a>
+                    <!-- ============================================================== -->
+                    <!-- End Logo -->
+                    <!-- ============================================================== -->
+                    <!-- ============================================================== -->
+                    <!-- Toggle which is visible on mobile only -->
+                    <!-- ============================================================== -->
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-left mr-auto">
+                        <li class="nav-item d-none d-md-block"><a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar"><i class="mdi mdi-menu font-24"></i></a></li>
+                        <!-- ============================================================== -->
+
+                    </ul>
+                    <!-- ============================================================== -->
+                    <!-- Right side toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-right">
+                        <!-- ============================================================== -->
+                        <!-- Comment -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark notification" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top:5px">
+                                <i class="mdi mdi-bell font-24"></i>
+                                @if (noTice != null)
+                                {
+                                    if (noTice.Count > 0)
+                                    {
+                                        <span class="badge">@noTice.Count</span>
+                                    }
+                                }
+
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                @if (noTice != null)
+                                {
+                                    if (noTice.Count > 0)
+                                    {
+                                        foreach (var item in noTice)
+                                        {
+                                            <a class="dropdown-item" href="@Url.Action("HopThuDenGV","Mail", new { area = "CMS" })">@item.Chude</a>
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                    }
+                                }
+
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- End Comment -->
+                        <!-- ============================================================== -->
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 18PX"><img src="~/Areas/CMS/Content/Curriculum/assets/images/Logo-vlu-icon.png" alt="user" class="rounded-circle" width="31"></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <a class="dropdown-item" href="javascript:void(0)"><b>@Name</b></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/CMS/QuanLyUsers/Thongtin/@usid"><i class="ti-user m-r-5 m-l-5"></i> Thông tin cá nhân</a>
+                                @*<a class="dropdown-item" href="javascript:void(0)"><i class="ti-email m-r-5 m-l-5"></i> Inbox</a>*@
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-settings m-r-5 m-l-5"></i> Cài đặt tài khoản</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("NhatkyHoatdong","LogHistory", new { area = "CMS" })"><i class="far fa-list-alt"></i> Nhật ký hoạt động</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("LogOff","Account", new { area = "CMS" })"><i class="fa fa-power-off m-r-5 m-l-5"></i> Đăng xuất</a>
+
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <aside class="left-sidebar" data-sidebarbg="skin5">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav" class="p-t-30">
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Index","Home")" aria-expanded="false"><i class="fas fa-home"></i><span class="hide-menu">Trang Chủ</span></a></li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-graduation-cap"></i><span class="hide-menu">Quản Lý CTDT</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                                <li class="sidebar-item"><a href="@Url.Action("List","CTDTKhung", new { area = "CMS" })" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Danh sách CTDT Khung </span></a></li>
+                                <li class="sidebar-item"><a href="@Url.Action("Index","CTDTKeHoach", new { area = "CMS" })" class="sidebar-link"><i class="fas fa-indent"></i><span class="hide-menu">Danh sách CTDT Kế hoạch</span></a></li>
+                                <li class="sidebar-item"><a href="@Url.Action("DSMaTran","MaTran", new { area = "CMS" })" class="sidebar-link"><i class="fas fa-cog"></i><span class="hide-menu"> Ma Trận Quan Hệ </span></a></li>
+                                <li class="sidebar-item"><a href="@Url.Action("CtdtList","CourseSyllabus", new { area = "CMS" })" class="sidebar-link"><i class="fas fa-address-book"></i><span class="hide-menu"> Học Phần Phân Công </span></a></li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item">
+                            <a id="layout-father" class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-calendar"></i><span class="hide-menu m-l-5">Kế hoạch Giảng dạy </span></a>
+                            <ul id="layout-ul" aria-expanded="false" class="collapse first-level">
+                                <li class="sidebar-item p-l-10"><a href="@Url.Action("XemKeHoachGiangDay", "KeHoachGiangDay", new { area = "PMS" })" id="list-subject" class="sidebar-link"><i class="fas fa-book"></i><span class="hide-menu">Xem kế hoạch giảng dạy</span></a></li>
+                                @if (User.IsInRole("Trưởng bộ môn"))
+                                {
+                                    <li class="sidebar-item p-l-10"><a href="@Url.Action("PhanCongGiangVien", "GiangVien", new { area = "PMS" })" id="list-lecturer" class="sidebar-link"><i class="fas fa-users"></i><span class="hide-menu"> Phân công Giảng viên </span></a></li>
+                                    <li class="sidebar-item p-l-10"><a href="@Url.Action("DeCuongMonHoc", "DeCuongMonHoc", new { area = "PMS" })" id="list-course-syllabus" class="sidebar-link"><i class="fas fa-list-alt"></i><span class="hide-menu">Đề cương môn học</span></a></li>
+
+                                }
+                                <li class="sidebar-item p-l-10"><a href="@Url.Action("MonHocGiangDay", "DeCuongMonHoc", new { area = "PMS" })" id="list-course" class="sidebar-link"><i class="fas fa-clipboard"></i><span class="hide-menu">Môn học giảng dạy</span></a></li>
+                                <li class="sidebar-item p-l-10"><a href="@Url.Action("MonHocGiangDay", "DeCuongMonHoc", new { area = "PMS" })" id="list-course" class="sidebar-link"><i class="fas fa-clipboard"></i><span class="hide-menu">Thời khoá biểu</span></a></li>
+                                <li class="sidebar-item p-l-10"><a href="@Url.Action("MonHocGiangDay", "DeCuongMonHoc", new { area = "PMS" })" id="list-course" class="sidebar-link"><i class="fas fa-clipboard"></i><span class="hide-menu">Triển khai chi tiết học phần</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("HopThuDenGV", "Mail", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-envelope"></i><span class="hide-menu">Hộp Thư</span></a></li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-users"></i><span class="hide-menu">Quản lý tài khoản</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                                <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Config", "ConfigManagement", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-user-cog"></i><span class="hide-menu">Phân quyền tài khoản</span></a></li>
+                                <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Config", "ConfigManagement", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-link"></i><span class="hide-menu">Liên kết thông tin nhân viên</span></a></li>
+                            </ul>
+                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cog"></i><span class="hide-menu">Quản Lý Chung</span></a>
+                                <ul aria-expanded="false" class="collapse  first-level">
+                                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("DsTaikhoan", "QuanLyUsers", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-users"></i><span class="hide-menu">Quản lý nhân viên</span></a></li>
+                                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("DsVaiTro", "QuanLyUsers", new { area = "CMS" })" aria-expanded="false"><i class=" fas fa-street-view"></i><span class="hide-menu">Quản lý người dùng</span></a></li>
+                                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Config", "ConfigManagement", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-ribbon"></i><span class="hide-menu">Quản lý cấu hình</span></a></li>
+                                    <li class="sidebar-item">
+                                        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-folder"></i><span class="hide-menu">Quản Lý Danh Mục</span></a>
+                                        <ul aria-expanded="false" class="collapse  first-level">
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyHeNganh", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý hệ ngành</span></a></li>
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyKhoiLop", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý khối lớp </span></a></li>
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyKhoa", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khoa</span></a></li>
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyKhoiKT", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khối kiến thức</span></a></li>
+
+                                            @*<li class="sidebar-item"><a href="@Url.Action("CautrucPhienban","CategoriesManagement")" class="sidebar-link"><span class="hide-menu"> Quản lý cấu trúc phiên bản </span></a></li>*@
+                                            <li class="sidebar-item"><a href="@Url.Action("Index", "EmailTemplate", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý biểu mẫu mail </span></a></li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else if (User.IsInRole("Trưởng ban soạn thảo"))
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cog"></i><span class="hide-menu">Quản Lý Chung</span></a>
+                                <ul aria-expanded="false" class="collapse  first-level">
+                                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="@Url.Action("Config", "ConfigManagement", new { area = "CMS" })" aria-expanded="false"><i class="fas fa-ribbon"></i><span class="hide-menu">Quản lý cấu hình</span></a></li>
+                                    <li class="sidebar-item">
+                                        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-folder"></i><span class="hide-menu">Quản Lý Danh Mục</span></a>
+                                        <ul aria-expanded="false" class="collapse  first-level">
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyHeNganh", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý hệ ngành</span></a></li>
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyKhoiLop", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu">Quản lý khối lớp </span></a></li>
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyKhoa", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khoa</span></a></li>
+                                            <li class="sidebar-item"><a href="@Url.Action("QuanlyKhoiKT", "CategoriesManagement", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý khối kiến thức</span></a></li>
+
+                                            @*<li class="sidebar-item"><a href="@Url.Action("CautrucPhienban","CategoriesManagement")" class="sidebar-link"><span class="hide-menu"> Quản lý cấu trúc phiên bản </span></a></li>*@
+                                            <li class="sidebar-item"><a href="@Url.Action("Index", "EmailTemplate", new { area = "CMS" })" class="sidebar-link"><span class="hide-menu"> Quản lý biểu mẫu mail </span></a></li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        @RenderBody()
+    </div>
+
+    <script>
+        var origOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (method, url) {
+            url = '@Url.Content("~")' + url;
+            return origOpen.apply(this, arguments);
+        }
+    </script>
+
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/sparkline/sparkline.js"></script>
+    <!--Wave Effects -->
+    <script src="~/Areas/CMS/Content/Curriculum/dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="~/Areas/CMS/Content/Curriculum/dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="~/Areas/CMS/Content/Curriculum/dist/js/custom.min.js"></script>
+    <!--This page JavaScript -->
+    <!-- <script src="../../dist/js/pages/dashboards/dashboard1.js"></script> -->
+    <!-- Charts js Files -->
+    @*<script src="~/Content/Curriculum/assets/libs/flot/excanvas.js"></script>*@
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/flot/jquery.flot.js"></script>
+    @*<script src="~/Content/Curriculum/assets/libs/flot/jquery.flot.pie.js"></script>
+        <script src="~/Content/Curriculum/assets/libs/flot/jquery.flot.time.js"></script>
+        <script src="~/Content/Curriculum/assets/libs/flot/jquery.flot.stack.js"></script>
+        <script src="~/Content/Curriculum/assets/libs/flot/jquery.flot.crosshair.js"></script>*@
+    <script src="~/Areas/CMS/Content/Curriculum/assets/libs/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+
+</body>
+</html>

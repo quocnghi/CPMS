@@ -1,0 +1,1079 @@
+﻿@model IEnumerable<Capstone.Areas.CMS.Models.CTDTData>
+
+@{
+    ViewBag.Title = "EditCTDTStep2";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+    int b;
+    //Rowspan ma trận CĐR vs Mục tiêu đào tạo cụ thể
+    int demkt1 = 0;
+    int demkt2 = 0;
+    int demkt3 = 0;
+    foreach (var item in Model.FirstOrDefault().mt_ctdt)
+    {
+        if (item.Phanloai.Equals("Về kiến thức"))
+        {
+            demkt1++;
+
+        }
+    }
+    foreach (var item in Model.FirstOrDefault().mt_ctdt)
+    {
+        if (item.Phanloai.Equals("Về phẩm chất"))
+        {
+            demkt2++;
+        }
+    }
+    foreach (var item in Model.FirstOrDefault().mt_ctdt)
+    {
+        if (item.Phanloai.Equals("Về kỹ năng"))
+        {
+            demkt3++;
+        }
+    }
+}
+<link href="~/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="~/Content/Curriculum/dist/css/TopButton.css">
+
+<style>
+    input {
+        border: 5px;
+    }
+</style>
+
+<div class="page-wrapper">
+
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Chỉnh Sửa Chương Trình Đào Tạo - Bước 2 </h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item">Quản lý CTDT</li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("List","CTDTKhung", new { area = "CMS" })">Danh sách CTDT khung</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa CTDT</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <h6 class="card-subtitle"></h6>
+                <form action="@Url.Action("EditCTDTStep2", "CTDTKhung", new { area = "CMS" })" method="post" class="m-t-40">
+                    <div>
+                        <h2 style="text-align:center">CHỈNH SỬA MỤC TIÊU ĐÀO TẠO VÀ KẾT QUẢ HỌC TẬP MONG ĐỢI</h2>
+                        <br />
+                        <hr />
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="hidden" name="ID" value="@Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT" />
+                                <label>Mục tiêu đào tạo chung </label>
+                                <textarea id="muctieudaotaochung" name="muctieudaotaochung" rows="5" class="form-control">@Model.FirstOrDefault().ctdt.FirstOrDefault().Muctieu</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <br />
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong>
+                                            <a href="#" data-toggle="modal" data-target="#addGoalsModal">Thêm mục tiêu đào tạo cụ thể</a>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <hr />
+                                @*Bảng mục tiêu đào tạo cụ thể*@
+                                <table id="bangmuctieu" class="table table-striped table-bordered" style="font-size:16px;">
+                                    <thead>
+                                        <tr style="text-align:center; background-color:firebrick; color:white">
+                                            <th width="25%">Phân loại</th>
+                                            <th style="vertical-align: middle; text-align:center">Nội dung mục tiêu đào tạo</th>
+                                            <th width="20%">Thao tác</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.FirstOrDefault().mt_ctdt)
+                                        {
+                                            <tr>
+
+                                                <td style="text-align:center;vertical-align: middle">@item.Phanloai.ToString()</td>
+                                                <td>@item.Mota</td>
+                                                <td style="vertical-align: middle; text-align:center">
+                                                    <a title="Chỉnh sửa" data-id="@item.MaMT" class="edit1" data-toggle="modal" data-target="#addGoalsModal2" href="javascript:void(0)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                                    <a title="Xóa" data-id="@item.MaMT" class="deletemt" onclick="javascript:return ShowMessagexoamtdtct();" href="javascript:void(0)"><img src="~/Areas/CMS/images/IconBin3.png" /></a>
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-6">
+                                <br />
+                                <strong>
+                                    <a href="#" data-toggle="modal" data-target="#addResultModal">Thêm kết quả học tập mong đợi</a>
+                                </strong>
+                                <hr />
+
+                                @*Bảng kết quả học tập mong đợi*@
+                                <table id="bangchuandaura" class="table table-striped table-bordered" style="font-size:16px;">
+                                    <thead>
+                                        <tr style="text-align:center ; background-color:firebrick; color:white">
+                                            <th tyle="vertical-align: middle; text-align:center" width="25%">Mã CDR CTDT</th>
+                                            <th style="vertical-align: middle; text-align:center">Nội dung CDR CTDT</th>
+                                            <th tyle="vertical-align: middle; text-align:center" width="20%">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable">
+                                        @foreach (var item in Model.FirstOrDefault().cdr_ctdt)
+                                        {
+                                            <tr>
+                                                <td style="text-align:center;vertical-align: middle">@item.MaHT</td>
+                                                <td>@item.Mota</td>
+                                                <td style="vertical-align: middle; text-align:center">
+                                                    <a title="Chỉnh sửa" data-id="@item.MaELO" class="edit" data-toggle="modal" data-target="#addResultModal1" href="javascript:void(0)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                                    <a title="Xóa" data-id="@item.MaELO" class="delete" onclick="javascript:return ShowMessagexoakqhtmd();" href="javascript:void(0)"><img src="~/Areas/CMS/images/IconBin3.png" /></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <a class="btn btn1mapping" style="border-color:firebrick"><img src="~/Areas/CMS/images/IconDown.png" style="width:18px" alt="Alternate Text" /> </a>
+                                <a class="btn btn2mapping" style="border-color:firebrick"><img src="~/Areas/CMS/images/IconUp.png" style="width:18px" alt="Alternate Text" /> </a>
+                                <label>Liên kết mục tiêu - Chuẩn đầu ra:</label>
+                            </div>
+                        </div>
+
+                        @*Mapping mục tiêu đào tạo cụ thể và kết quả học tập mong đợi*@
+                        <div class="row mapping">
+                            <div class="col-12">
+                                <hr />
+                                <table class="table table-striped table-bordered" style="font-size:16px;">
+                                    <tbody>
+                                        <tr style="text-align:center ; background-color:firebrick; color:white">
+                                            <th scope="col" colspan="2" rowspan="2" style="vertical-align: middle">Mục tiêu đào tạo cụ thể</th>
+                                            <th scope="col" colspan="20" style="vertical-align: middle">Kết quả học tập mong đợi</th>
+                                        </tr>
+                                        <tr>
+                                            @foreach (var item in Model.FirstOrDefault().cdr_ctdt)
+                                            {
+                                                <td style="vertical-align: middle;text-align:center ;">@item.MaHT</td>;
+                                            }
+                                        </tr>
+
+                                        @*Kiến thức*@
+                                        @foreach (var item in Model.FirstOrDefault().mt_ctdt)
+                                        {
+                                            if (item.Phanloai.Equals("Về kiến thức"))
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center;vertical-align: middle">Kiến thức</td>
+
+                                                    <td>@item.Mota</td>
+                                                    @*Hiện checkbox*@
+
+                                                    @foreach (var item2 in Model.FirstOrDefault().cdr_ctdt)
+                                                    {
+                                                        int maELO = item2.MaELO;
+                                                        var check = item.t_CDR_CTDT.Where(x => x.MaELO == maELO).ToList();
+
+                                                        if (check.Count > 0)
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="custom-control-input checkBoxCDR" style="margin:auto " id="@item.MaMT-@item2.MaELO" checked="checked" name="checkbox-stacked">
+                                                                <label class="custom-control-label" style="margin-left:48%" for="@item.MaMT-@item2.MaELO"></label>
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="custom-control-input checkBoxCDR" style="margin:auto " id="@item.MaMT-@item2.MaELO" name="checkbox-stacked">
+                                                                <label class="custom-control-label" style="margin-left:48%" for="@item.MaMT-@item2.MaELO"></label>
+                                                            </td>
+                                                        }
+
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+
+                                        @*Phẩm chất*@
+                                        @foreach (var item in Model.FirstOrDefault().mt_ctdt)
+                                        {
+                                            if (item.Phanloai.Equals("Về phẩm chất"))
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center;vertical-align: middle">Phẩm chất</td>
+                                                    <td>@item.Mota</td>
+                                                    @*Hiện checkbox*@
+                                                    @foreach (var item2 in Model.FirstOrDefault().cdr_ctdt)
+                                                    {
+                                                        int maELO = item2.MaELO;
+                                                        var check = item.t_CDR_CTDT.Where(x => x.MaELO == maELO).ToList();
+
+                                                        if (check.Count > 0)
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="custom-control-input checkBoxCDR" style="margin:auto " id="@item.MaMT-@item2.MaELO" checked="checked" name="checkbox-stacked">
+                                                                <label class="custom-control-label" style="margin-left:48%" for="@item.MaMT-@item2.MaELO"></label>
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="custom-control-input checkBoxCDR" style="margin:auto " id="@item.MaMT-@item2.MaELO" name="checkbox-stacked">
+                                                                <label class="custom-control-label" style="margin-left:48%" for="@item.MaMT-@item2.MaELO"></label>
+                                                            </td>
+                                                        }
+
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+
+                                        @*Kỹ năng*@
+                                        @foreach (var item in Model.FirstOrDefault().mt_ctdt)
+                                        {
+                                            if (item.Phanloai.Equals("Về kỹ năng"))
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center;vertical-align: middle">Kỹ năng</td>
+                                                    <td>@item.Mota</td>
+                                                    @*Hiện checkbox*@
+                                                    @foreach (var item2 in Model.FirstOrDefault().cdr_ctdt)
+                                                    {
+                                                        int maELO = item2.MaELO;
+                                                        var check = item.t_CDR_CTDT.Where(x => x.MaELO == maELO).ToList();
+
+                                                        if (check.Count > 0)
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="custom-control-input checkBoxCDR" style="margin:auto " id="@item.MaMT-@item2.MaELO" checked="checked" name="checkbox-stacked">
+                                                                <label class="custom-control-label" style="margin-left:48%" for="@item.MaMT-@item2.MaELO"></label>
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="custom-control-input checkBoxCDR" style="margin:auto " id="@item.MaMT-@item2.MaELO" name="checkbox-stacked">
+                                                                <label class="custom-control-label" style="margin-left:48%" for="@item.MaMT-@item2.MaELO"></label>
+                                                            </td>
+                                                        }
+
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row" style="margin-left:1%">
+                                <div class="col-3">
+                                    <button id="luumatranmtdtctvacdrctdt" type="button" class="btn btn-success" style="color:white">Lưu</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <input onclick="deleteItems()" id="step2edit" type="submit" class="btn" style="float:right;border-radius:25px; background-color:#b22222; color:white; border: 2px solid #ffffff;" href="@Url.Action("EditCTDTStep3","CTDTKhung", new { area = "CMS", id = Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT })" value="Tiếp tục" />
+                    <a class="btn" style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@Url.Action("EditCTDTStep1","CTDTKhung", new {area = "CMS", id = Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT })">Quay lại</a>
+                </form>
+                @*nut len dau trang*@
+                <div class='lentop'>
+                    <div>
+                        <img src='https://1.bp.blogspot.com/-k6sikOdzFXQ/VwqCKDosmEI/AAAAAAAAKxE/nLxLhkTIO6o3iE5ZWmtxo2bf4QHdzPQNQ/s1600/top.png' />
+                    </div>
+                </div>
+
+
+                @*form thêm kết quả học tập mong đợi*@
+                <div class="modal fade" id="addResultModal" tabindex="-1" role="dialog" aria-labelledby="edit  ResultModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#d51c29; color:white">
+                                <h5 class="modal-title" id="addResultModalLabel">Thêm kết quả mong đợi</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="margin-left:10px">
+                                    <input type="hidden" id="machuandauractdt">
+                                    @for (b = 1; b < 4; b++)
+                                    {
+                                        <div class="formkq-@b">
+                                            <hr />
+                                            <input type="hidden" id="maelo-@b" />
+                                            <label>Mã CDR CTDT </label>
+                                            <input type="text" id="maht-@b" maxlength="6" class="form-control" style="width:100%">
+                                            <br />
+                                            <label>Nội dung CDR CTDT </label>
+                                            <input type="text" id="noidung-@b" class="form-control" maxlength="500" style="width:100%">
+                                            <br />
+                                        </div>
+                                    }
+                                    @*list button*@
+                                    @*Them*@
+                                    <a title="Thêm" href="#" class="themKqht1" style="color:firebrick"><img src="~/Areas/CMS/images/IconAdd.png" style="width:30px;" /></a>
+                                    <a title="Thêm" href="#" class="themKqht2" style="color:firebrick"><img src="~/Areas/CMS/images/IconAdd.png" style="width:30px;" /></a>
+                                    @*Xoa*@
+                                    <a title="Xóa" href="#" class="xoaKqht1" style="color:firebrick"><img src="~/Areas/CMS/images/IconMinus.png" style="width:30px;" /></a>
+                                    <a title="Xóa" href="#" class="xoaKqht2" style="color:firebrick"><img src="~/Areas/CMS/images/IconMinus.png" style="width:30px;" /></a>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-success" onclick="javascript:return ShowMessageluukqhtmd();" id="btnluuketquamongdoi">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*form chỉnh sửa kết quả học tập mong đợi*@
+                <div class="modal fade" id="addResultModal1" tabindex="-1" role="dialog" aria-labelledby="edit ResultModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#d51c29; color:white">
+                                <h5 class="modal-title" id="addResultModalLabel">Chỉnh sửa kết quả học tập mong đợi</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="margin-left:10px">
+                                    @for (b = 1; b < 4; b++)
+                                    {
+                                        <div class="formkq-@b">
+                                            <hr />
+                                            <input type="hidden" id="maeloedit-@b" />
+                                            <label>Mã CDR CTDT </label>
+                                            <input type="text" id="mahtedit" class="form-control" maxlength="6" style="width:100%">
+                                            <br />
+                                            <label>Nội dung CDR CTDT </label>
+                                            <textarea id="motacdredit" class="form-control" maxlength="500" style="width:100%"></textarea>
+                                            <br />
+                                        </div>
+                                    }
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-success" onclick="javascript:return ShowMessagechinhsuakqhtmd();" id="btnluuchinhsua">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*form thêm mục tiêu đào tạo cụ thể*@
+                <div class="modal fade" id="addGoalsModal" tabindex="-1" role="dialog" aria-labelledby="edit  GoalsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#d51c29; color:white">
+                                <h5 class="modal-title" id="addGoalsModal">Thêm mục tiêu đào tạo cụ thể </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="margin-left:10px">
+                                    <input type="hidden" id="mamtdtct">
+                                    @for (int i = 1; i < 4; i++)
+                                    {
+                                        <div class="form-@i">
+                                            <hr />
+                                            <label for="td">Phân loại: </label>
+                                            <select class="select2 form-control custom-select" style="width:250px" id="phanloai-@i">
+                                                <option>Về kiến thức </option>
+                                                <option>Về phẩm chất</option>
+                                                <option>Về kỹ năng</option>
+                                            </select>
+                                            <br />
+                                            <br />
+                                            <textarea id="muctieucuthe-@i" name="muctieucuthe-@i" class="form-control" cols="4"></textarea>
+                                            <br />
+                                        </div>
+                                    }
+                                    <hr />
+                                    @*list button*@
+                                    @*Them*@
+                                    <a title="Thêm" href="#" class="them1" style="color:firebrick"><img src="~/Areas/CMS/images/IconAdd.png" style="width:30px;" /></a>
+                                    <a title="Thêm" href="#" class="them2" style="color:firebrick"><img src="~/Areas/CMS/images/IconAdd.png" style="width:30px;" /></a>
+
+
+                                    @*Xoa*@
+                                    <a title="Xóa" href="#" class="xoa2" style="color:firebrick"><img src="~/Areas/CMS/images/IconMinus.png" style="width:30px;" /></a>
+                                    <a title="Xóa" href="#" class="xoa3" style="color:firebrick"><img src="~/Areas/CMS/images/IconMinus.png" style="width:30px;" /></a>
+
+
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-success" onclick="javascript:return ShowMessagethemmtdtct();" id="themmuctieudaotao">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Form chỉnh sửa mục tiêu đào tạo cụ thể*@
+                <div class="modal fade" id="addGoalsModal2" tabindex="-1" role="dialog" aria-labelledby="edit  GoalsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#d51c29; color:white">
+                                <h5 class="modal-title" id="addGoalsModalModalLabel">Chỉnh sửa tiêu đào tạo cụ thể </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="margin-left:10px">
+                                    @for (int i = 1; i < 4; i++)
+                                    {
+                                        <div class="form-@i">
+                                            <hr />
+                                            <label for="td">Phân loại: </label>
+                                            <select class="form-control custom-select" style="width:100%" id="editphanloai">
+                                                <option value="Về kiến thức">Về kiến thức </option>
+                                                <option value="Về phẩm chất">Về phẩm chất</option>
+                                                <option value="Về kỹ năng">Về kỹ năng</option>
+                                            </select>
+                                            <br />
+                                            <br />
+                                            <textarea id="editmota" name="editmuctieucuthe-@i" class="form-control" cols="4"></textarea>
+                                            <br />
+                                        </div>
+                                    }
+                                    <hr />
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-success" onclick="javascript:return ShowMessagechinhsuamtdtct();" id="luuchinhsuamtdtct">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*End form*@
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/DataTables/datatables.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/ckeditor.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/ckeditor/samples/js/sample.js"></script>
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+@*JS localStorge Mục tiêu đào tạo chung*@
+<script>
+    if (localStorage.getItem("muctieudaotaochung") != null) {
+        document.getElementById("muctieudaotaochung").innerHTML = localStorage.getItem("muctieudaotaochung");
+    }
+    function deleteItems() {
+        localStorage.removeItem('muctieudaotaochung');
+    }
+</script>
+
+<script>
+    CKEDITOR.replace('muctieudaotaochung');
+</script>
+<script>
+    $('#zero_config').DataTable();
+</script>
+
+@*JS cho nút lưu kết quả học tập mong đợi*@
+<script>
+    //truyen json qua controller
+    document.getElementById("btnluuketquamongdoi").addEventListener("click", function (event) {
+        event.preventDefault();
+        //Get data
+        var mahienthi1 = $('#maht-1').val();
+        var mahienthi2 = $('#maht-2').val();
+        var mahienthi3 = $('#maht-3').val();
+
+        const noidung1 = $('#noidung-1').val();
+        const noidung2 = $('#noidung-2').val();
+        const noidung3 = $('#noidung-3').val();
+
+
+        //Json
+        const data = {
+
+            MaHT1: mahienthi1,
+            MaHT2: mahienthi2,
+            MaHT3: mahienthi3,
+
+            Mota1: noidung1,
+            Mota2: noidung2,
+            Mota3: noidung3,
+
+        };
+        console.log(data);
+        $.ajax({
+            async: true,
+            data: JSON.stringify(data),
+            type: 'POST',
+            url: '@Url.Action("Themkqhtmongdoiedit", "CTDTKhung", new { area = "CMS" })',
+            dataType: "json",
+            contentType: "application/json",
+            cache: false,
+            error: function (data) {
+                toastr.error(data.Message, '@CommonRS.Resources.ValidationMes.mes_ThemKhongThanhCongCDRCTDT');
+                location.reload();
+            },
+            success: function (json) {
+                if (json.Message == undefined) {
+                    toastr.error(json.Message, '@CommonRS.Resources.ValidationMes.mes_ThemKhongThanhCongCDRCTDT');
+                } else {
+                    localStorage.setItem("muctieudaotaochung", CKEDITOR.instances['muctieudaotaochung'].getData());
+                    location.reload();
+                    toastr.success(json.Message, '@CommonRS.Resources.ValidationMes.mes_ThemThanhCongCDRCTDT');
+                    $('#addGoalsModal').modal('hide');
+                    $("#zero_config tbody").empty();
+                    $("#zero_config tbody").append('<tr></tr>');
+                    $.each(json.data, function (i, item) {
+                        i++;
+                        $('#zero_config tr:last').after('<tr><td style="text-align:center">' + i + '</td><td style="text-align:center">' + item.MaHT + '</td><td style="text-align:center">' + item.Mota + '</td><td style="text-align:center"><a href="javascript:void(0)"><img src="/images/iconfinder_edit_216184.png" style="width:40px;"></a></td></tr>');
+                    });
+
+
+                }
+            }
+
+        });
+    });
+</script>
+
+@*Xóa kết quả học tập mong đợi*@
+<script>
+    var isOk = false;
+    function ShowMessagexoakqhtmd() {
+        var result = confirm('@CommonRS.Resources.ValidationMes.mes_ConfirmCDRCTDT');
+        if (result) {
+            isOk = true;
+            return true;
+
+        } else {
+            isOk = false;
+            return false;
+        }
+    }
+    $(document).ready(function () {
+        $('.delete').on('click', function (event) {
+            if (!isOk) {
+                return true;
+            }
+            event.preventDefault();
+            //Get data
+            var maelo = $(this).data("id");
+
+            //Json
+            const data = {
+                MaELO: maelo,
+            };
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("deleteKetquahtmd", "CTDTKhung", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    toastr.warning(data.Message, '@CommonRS.Resources.ValidationMes.mes_XoaLienKetCDR');
+                },
+                success: function (data) {
+                    localStorage.setItem('muctieudaotaochung', CKEDITOR.instances['muctieudaotaochung'].getData());
+                    location.reload();
+                    toastr.success(data.Message, '@CommonRS.Resources.ValidationMes.mes_XoaThanhCongCDRCTDT');
+                }
+            });
+        });
+    });
+</script>
+@*Chỉnh sửa kết quả học tập mong đợi*@
+<script>
+    //Lấy dữ liệu kết quả học tập mong đợi
+    $(document).ready(function () {
+        $('.edit').on('click', function (event) {
+            event.preventDefault();
+            var maelo = $(this).data("id");
+            //Json
+            const data = {
+                MaELO: maelo,
+            }
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("getDataKQHTMD", "CTDTKhung", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    toastr.error(data.Message, 'Thông báo');
+                },
+                success: function (data) {
+                    console.log(data.kqhtmd)
+                    $("#mahtedit").val(data.kqhtmd.MaHT);
+                    $("#motacdredit").val(data.kqhtmd.Mota);
+                    $("#machuandauractdt").val(data.kqhtmd.MaELO);
+                }
+            });
+        })
+    });
+    $(document).ready(function () {
+        $('#btnluuchinhsua').on('click', function (event) {
+            event.preventDefault();
+            var editmaelo = $('#machuandauractdt').val();
+            var editmota = $('#motacdredit').val();
+            var editmaht = $('#mahtedit').val();
+
+            //Json
+            const data = {
+                MaELO: editmaelo,
+                MaHT: editmaht,
+                Mota: editmota,
+            };
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("editKQHTMD", "CTDTKhung", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    toastr.error(data.Message, '@CommonRS.Resources.ValidationMes.mes_SuaKhongThanhCongCDRCTDT');
+                },
+                success: function (data) {
+                    localStorage.setItem("muctieudaotaochung", CKEDITOR.instances['muctieudaotaochung'].getData());
+                    location.reload();
+                    toastr.success(data.Message, '@CommonRS.Resources.ValidationMes.mes_SuaThanhCongCDRCTDT');
+                }
+            });
+        })
+    });
+</script>
+@*Xóa mục tiêu đào tạo cụ thể*@
+<script>
+    var isOk = false;
+    function ShowMessagexoamtdtct() {
+        var result = confirm("@CommonRS.Resources.ValidationMes.mes_ConfirmMTCTDT");
+        if (result) {
+            isOk = true;
+            return true;
+        } else {
+            isOk = false;
+            return false;
+        }
+    }
+    $(document).ready(function () {
+        $('.deletemt').on('click', function (event) {
+            if (!isOk) {
+                return true;
+            }
+            event.preventDefault();
+            //Get data
+            var mamuctieu = $(this).data("id");
+            //Json
+            const data = {
+                MaMT: mamuctieu,
+            };
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("deleteMuctieudtct", "CTDTKhung", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    toastr.warning(data.Message, '@CommonRS.Resources.ValidationMes.mes_XoaLienKetMucTieu');
+                },
+                success: function (data) {
+                    localStorage.setItem("muctieudaotaochung", CKEDITOR.instances['muctieudaotaochung'].getData());
+                    location.reload();
+                    toastr.success(data.Message, '@CommonRS.Resources.ValidationMes.mes_XoaMucTieuThanhCong');
+                }
+            });
+        });
+    });
+</script>
+@*Chỉnh sửa mục tiêu đào tạo cụ thể*@
+<script>
+    //Lấy dữ liệu mục tiêu đào tạo cụ thể
+    $(document).ready(function () {
+        $('.edit1').on('click', function (event) {
+            event.preventDefault();
+            var mamt = $(this).data("id");
+            //Json
+            const data = {
+                MaMT: mamt,
+            }
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("getDataMTDTCT", "CTDTKhung", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    toastr.error(data.Message, 'Thông báo');
+                },
+                success: function (data) {
+                    console.log(data.muctieu)
+                    $("#editphanloai").val(data.muctieu.Phanloai);
+                    $("#editmota").val(data.muctieu.Mota);
+                    $("#mamtdtct").val(data.muctieu.MaMT);
+                }
+            });
+        })
+    });
+
+    $(document).ready(function () {
+        $('#luuchinhsuamtdtct').on('click', function (event) {
+            event.preventDefault();
+            var mamt = $('#mamtdtct').val();
+            var editmota = $('#editmota').val();
+            var editphanloaimt = $('#editphanloai').val();
+
+            //Json
+            const data = {
+                MaMT: mamt,
+                Mota: editmota,
+                Phanloai: editphanloaimt,
+            };
+            console.log(data);
+            $.ajax({
+                async: true,
+                data: JSON.stringify(data),
+                type: 'POST',
+                url: '@Url.Action("editMTDTCT", "CTDTKhung", new { area = "CMS" })',
+                dataType: "json",
+                contentType: "application/json",
+                cache: false,
+                error: function (data) {
+                    toastr.error(data.Message, '@CommonRS.Resources.ValidationMes.mes_SuaKhongThanhCongMucTieu');
+                },
+                success: function (data) {
+                    localStorage.setItem("muctieudaotaochung", CKEDITOR.instances['muctieudaotaochung'].getData());
+                    location.reload();
+                    toastr.success(data.Message, '@CommonRS.Resources.ValidationMes.mes_SuaThanhCongMucTieu');
+                }
+            });
+        })
+    });
+</script>
+
+@*JS thêm mục tiêu đào tạo cụ thể*@
+<script>
+    //truyen json qua controller
+    document.getElementById("themmuctieudaotao").addEventListener("click", function (event) {
+        event.preventDefault();
+        //Get data
+        var muctieucuthe1 = $('#muctieucuthe-1').val();
+        var muctieucuthe2 = $('#muctieucuthe-2').val();
+        var muctieucuthe3 = $('#muctieucuthe-3').val();
+
+        const phanloai1 = $('#phanloai-1').val();
+        const phanloai2 = $('#phanloai-2').val();
+        const phanloai3 = $('#phanloai-3').val();
+
+
+        //Json
+        const data = {
+
+            Mota1: muctieucuthe1,
+            Mota2: muctieucuthe2,
+            Mota3: muctieucuthe3,
+
+            Phanloai1: phanloai1,
+            Phanloai2: phanloai2,
+            Phanloai3: phanloai3,
+
+        };
+        console.log(data);
+        $.ajax({
+            async: true,
+            data: JSON.stringify(data),
+            type: 'POST',
+            url: '@Url.Action("Themmtdtctedit", "CTDTKhung", new { area = "CMS" })',
+            dataType: "json",
+            contentType: "application/json",
+            cache: false,
+            error: function (data) {
+                toastr.error(data.Message, '@CommonRS.Resources.ValidationMes.mes_ThemKhongThanhCongMucTieu');
+
+                location.reload();
+            },
+            success: function (json) {
+                if (json.Message == undefined) {
+                    toastr.success(json.Message, '@CommonRS.Resources.ValidationMes.mes_ThemThanhCongMucTieu');
+                } else {
+                    localStorage.setItem("muctieudaotaochung", CKEDITOR.instances['muctieudaotaochung'].getData());
+                    location.reload();
+                    $('#addGoalsModal').modal('hide');
+                    $("#zero_config tbody").empty();
+                    $("#zero_config tbody").append('<tr></tr>');
+                    $.each(json.data, function (i, item) {
+                        i++;
+                        $('#zero_config tr:last').after('<tr><td style="text-align:center">' + i + '</td><td style="text-align:center">' + item.Phanloai + '</td><td style="text-align:center">' + item.Mota + '</td><td style="text-align:center"><a href="javascript:void(0)"><img src="/images/iconfinder_edit_216184.png" style="width:40px;"></a></td></tr>');
+                    });
+                }
+            }
+        });
+    });
+</script>
+<script>
+
+    $(".select2").select2();
+
+</script>
+
+
+<script src="~/Areas/CMS/Content/Curriculum/assets/extra-libs/DataTables/datatables.min.js"></script>
+<script>
+    /****************************************
+     *       Basic Table                   *
+     ****************************************/
+    $('#zero_config').DataTable();
+</script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+@*form them muc tieu cu the*@
+<script>
+    $(document).ready(function () {
+        $(".form-2").hide();
+        $(".form-3").hide();
+        $(".form-4").hide();
+
+
+        $(".them2").hide();
+        $(".them3").hide();
+        $(".them4").hide();
+
+
+        $(".xoa2").hide();
+        $(".xoa3").hide();
+        $(".xoa4").hide();
+
+
+        // Click button add
+        $(".them1").click(function () {
+            $(".form-2").show();
+            $(".them2").show();
+            $(".them1").hide();
+            $(".them3").hide();
+            $(".xoa2").show();
+
+        });
+        $(".them2").click(function () {
+            $(".form-3").show();
+            $(".them3").show();
+            $(".xoa3").show();
+            $(".xoa2").hide();
+            $(".them1").hide();
+            $(".them2").hide();
+
+        });
+        $(".them3").click(function () {
+            $(".form-4").show();
+            $(".them4").show();
+            $(".xoa4").show();
+            $(".xoa3").hide();
+            $(".them2").hide();
+            $(".them3").hide();
+
+        });
+
+
+        // Click minus button
+        $(".xoa2").click(function () {
+            $(".form-2").hide();
+            $(".them1").show();
+            $(".them2").hide();
+            $(".xoa2").hide();
+        });
+        $(".xoa3").click(function () {
+            $(".form-3").hide();
+            $(".xoa2").show();
+            $(".them2").show();
+            $(".them3").hide();
+            $(".xoa3").hide();
+        });
+        $(".xoa4").click(function () {
+            $(".form-4").hide();
+            $(".xoa3").show();
+            $(".them3").show();
+            $(".them4").hide();
+            $(".xoa4").hide();
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // form ketes quả học tập mong đợi
+        $(".formkq-2").hide();
+        $(".formkq-3").hide();
+
+        $(".themKqht2").hide();
+
+        $(".xoaKqht1").hide();
+        $(".xoaKqht2").hide();
+
+        // form kq hoctap
+        $(".themKqht1").click(function () {
+            $(".formkq-2").show('slow');
+            $(".themKqht2").show();
+            $(".themKqht1").hide();
+            $(".xoaKqht1").show();
+
+        });
+        $(".themKqht2").click(function () {
+            $(".formkq-3").show('slow');
+            $(".xoaKqht2").show();
+            $(".xoaKqht1").hide();
+            $(".themKqht1").hide();
+            $(".themKqht2").hide();
+
+        });
+        // xoa form kq học tập
+        $(".xoaKqht1").click(function () {
+            $(".formkq-2").hide('slow');
+            $(".themKqht1").show('slow');
+            $(".themKqht2").hide();
+            $(".xoaKqht1").hide();
+
+        });
+        $(".xoaKqht2").click(function () {
+            $(".formkq-3").hide('slow');
+            $(".themKqht2").show();
+            $(".themKqht3").hide();
+            $(".xoaKqht2").hide();
+            $(".xoaKqht1").show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".mapping").hide();
+        $(".btn2mapping").hide()
+        $(".btn1mapping").click(function () {
+            $(".mapping").show('slow');
+            $(".btn2mapping").show()
+            $(".btn1mapping").hide()
+        });
+        $(".btn2mapping").click(function () {
+            $(".mapping").hide('slow');
+            $(".btn1mapping").show();
+            $(".btn2mapping").hide();
+        });
+    });
+</script>
+
+@*JS lưu ma trận*@
+<script>
+        var arrMT = [@foreach(var item in Model.FirstOrDefault().cdr_ctdt)
+        {
+            foreach(var item1 in Model.FirstOrDefault().mt_ctdt)
+            {
+                string a = item1.MaMT + "-" + item.MaELO ;
+                @Html.Raw("'"+a+"',")
+            }
+        }];
+    console.log("arrMT", arrMT);
+
+    //var countcheckbox = document.querySelectorAll('input[type="checkbox"]:checked').length
+    //console.log(countcheckbox)
+    //if (countcheckbox > 0) {
+    //    issavestep2 = false;
+    //}
+
+    document.getElementById("luumatranmtdtctvacdrctdt").addEventListener("click", function (event) {
+        event.preventDefault();
+        console.log(event);
+        var sendList = []
+        for (var index in arrMT) {
+            var checkbxval = document.getElementById(arrMT[index]).checked
+            if (checkbxval) {
+                var maMT = arrMT[index].split("-")[0];
+                var maCDR = arrMT[index].split('-')[1];
+                var obj = { MaMT: maMT, MaELO: maCDR}
+                sendList.push(obj)
+                //issavestep2 = false;
+            }
+
+
+        }
+        $.ajax({
+            async: true,
+            data: JSON.stringify(sendList),
+            type: 'POST',
+            url: '/CMS/CTDTKhung/Ketquamatran',
+            dataType: "json",
+            contentType: "application/json",
+            cache: false,
+            error: function (data) {
+                toastr.error(data.Message, 'Thông báo');
+            },
+            success: function (data) {
+                if (data.Message == '') {
+                    toastr.warning(data.Message, '@CommonRS.Resources.ValidationMes.mes_DuLieuMaTranTrong');
+                } else {
+                    issavestep2 = true;
+                    toastr.success(data.msg, '@CommonRS.Resources.ValidationMes.mes_LuuMaTranBuoc2');
+                }
+
+            }
+        });
+    })
+</script>
+
+
+@*JS cho nút tiếp tục ở bước 2*@
+@*<script>
+        document.getElementById("step2edit").addEventListener("click", function (event) {
+            event.preventDefault();
+            console.log
+            if (issavestep2) {
+                    location.href = '@Url.Action("EditCTDTStep3", "CTDTKhung", new { area = "CMS" })'
+                } else {
+                    toastr.error("Lưu ma trận trước khi tiếp tục", "Lỗi")
+                }
+
+        });
+    </script>*@

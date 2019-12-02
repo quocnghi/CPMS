@@ -1,0 +1,635 @@
+﻿
+@{
+    ViewBag.Title = "Course";
+    Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+<link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
+
+<style>
+    .ui-datepicker-calendar {
+        display: none;
+    }
+
+    .ui-datepicker-month {
+        display: none;
+    }
+
+    .ui-datepicker-next, .ui-datepicker-prev {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+
+<div class="page-wrapper" ng-controller="DcctController">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Xây Dựng Đề Cương Chi Tiết Học Phần</h4>
+                @*<div class="ml-auto text-right">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang Chủ</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("CourseList", "CourseSyllabus")">DS Học Phần</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Xây Dựng ĐC HP</li>
+                            </ol>
+                        </nav>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body wizard-content">
+                <div class="tab-content row">
+                    <div class="container col-12 tab-pane active ">
+                        <h2 style="text-align:center">{{khdt.MaHP}} - {{khdt.TenHP}}</h2>
+                        <br />
+                        <h4>1.Thông Tin Chung Học Phần</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label>Học Kỳ</label>
+                                        <input type="text" min="1" max="30" id="" name="" class="form-control" ng-model="khdt.Hocky" />
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Số tín chỉ</label>
+                                        <input type="number" min="0" max="30" id="sotinchi" class="form-control sotinchi" disabled ng-model="khdt.SoTC">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Lý thuyết</label>
+                                        <input type="number" min="0" max="6" id="lythuyet" oninput="myFunction()" class="form-control" onkeyup="if (this.value > 6 ) this.value = 1; if (this.value == null) this.value = 0" ng-model="khdt.GioLT" />
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label>Thực hành</label>
+                                        <input type="number" min="0" max="20" id="thuchanh" oninput="myFunction()" class="form-control" onkeyup="if (this.value > 20 ) this.value = 1; if (this.value == null) this.value = 0" ng-model="khdt.GioTH" />
+
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Đồ án</label>
+                                        <input type="number" min="0" max="20" id="doan" oninput="myFunction()" class="form-control" onkeyup="if (this.value > 20 ) this.value = 1; if (this.value == null) this.value = 0 " ng-model="khdt.GioDA" />
+
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Thực tập</label>
+                                        <input type="number" min="0" max="10" id="thuctap" oninput="myFunction()" class="form-control" onkeyup="if (this.value > 6 ) this.value = 1;if (this.value == null) this.value = 0" ng-model="khdt.GioTT" />
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Học Phần tiên quyết</label>
+                                        <input type="text" disabled class="form-control" value="{{listtq[listtq.length - 1].TenMH.substr(0,listtq[listtq.length - 1].TenMH.length - 1)}}" />
+
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Học Phần học trước</label>
+                                        <input type="text" disabled class="form-control" value="{{listht[listht.length - 1].TenMH.substr(0,listht[listht.length - 1].TenMH.length - 1)}}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label>Loại kiến thức</label>
+                                        <select class="form-control">
+                                            <option ng-repeat="khdt in KKienThuc" value="{{khdt.MaKhoiKT}}">{{khdt.MotaKT}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label>Thang điểm</label>
+                                        <textarea disabled type="text" class="form-control" maxlength="100" rows="5" ng-model="khdt.Thangdiem"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+
+                                <label>Hình thức</label>
+                                <div class="row">
+                                    <div class="custom-control custom-radio col-lg-6" style="float:right">
+                                        <input type="radio" class="custom-control-input" id="bb" ng-checked="checkBB" name="rad" ng-model="BB" ng-click="changeBB()">
+                                        <label class="custom-control-label" for="bb">&nbsp; &nbsp; &nbsp; &nbsp; Bắt buộc</label>
+                                    </div>
+                                    <div class="custom-control custom-radio col-lg-6" style="float: left">
+                                        <input type="radio" class="custom-control-input" id="tc" ng-checked="checkTC" name="rad" ng-model="TC" ng-click="changeTC()">
+                                        <label class="custom-control-label" for="tc">&nbsp; &nbsp; &nbsp; &nbsp; Tự chọn</label>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:4%">
+                                    <div class="col-lg-12">
+                                        <label>Ngôn ngữ và tài liệu giảng dạy</label>
+                                        <textarea type="text" rows="5" class="form-control" ng-model="khdt.NgonnguGD"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <h4>2.Mục Tiêu - Kết Quả Học Tập Mong Đợi Học Phần </h4>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label style="margin-left:15px">Mục tiêu học phần</label>
+                                <textarea id="" name="" rows="5" class="form-control" ng-model="khdt.MuctieuHP"></textarea>
+                            </div>
+                            <div class="col-lg-6">
+                                <label style="margin-left:15px">Mô tả học phần</label>
+                                <textarea id="" name="" rows="5" class="form-control" ng-model="khdt.Mota"></textarea>
+                            </div>
+                        </div>
+                        <br />
+                        <a style="margin-left:15px" href="#" data-toggle="modal" data-target="#addCdr" ng-click="addKQHTMD()">Thêm kết quả học tập mong đợi học phần</a>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr style="text-align:center ; background-color:firebrick; color:white">
+                                        <th style="text-align:center; vertical-align: middle">STT </th>
+                                        <th style="text-align:center; vertical-align: middle">Phân loại </th>
+                                        <th style="text-align:center; vertical-align: middle">KQHT CTĐT</th>
+                                        <th style="text-align:center; vertical-align: middle">KQHT HP</th>
+                                        <th style="text-align:center; vertical-align: middle">Mô tả</th>
+                                        <th style="text-align:center; vertical-align: middle">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="cdrmonhoc in cdrmonhocs">
+                                        <td style="text-align:center; vertical-align: middle">{{$index + 1}}</td>
+                                        <td style="text-align:center; vertical-align: middle">{{cdrmonhoc.Phanloai}}</td>
+                                        <td style="text-align:center;vertical-align: middle ">{{cdrmonhoc.MaHT1[cdrmonhoc.MaHT1.length - 1].MaELO.substr(0, cdrmonhoc.MaHT1[cdrmonhoc.MaHT1.length - 1].MaELO.length - 1)}}</td>
+                                        <td style="text-align:center; vertical-align: middle">{{cdrmonhoc.MaHT}}</td>
+                                        <td style="text-align:center; vertical-align: middle">{{cdrmonhoc.Mota}}</td>
+                                        <td title="Chỉnh sửa" style="vertical-align: middle; text-align:center"><a href="javascript:void(0)" data-toggle="modal" data-target="#editCdr" ng-click="getCdr(cdrmonhoc)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a><a href=""><img src="~/Areas/CMS/images/IconBin3.png" style="width:35px; " ng-click="deleteCdr(cdrmonhoc,$index)"></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @*<a style="margin-left:15px ; font-style:italic" href="#" data-toggle="modal" data-target="#Matran">Xem ma trận đóng góp giữa CĐR HP với CĐR CTĐT</a>*@
+                        <br />
+                        <h4>Nội Dung Giảng Dạy</h4>
+                        <a style="margin-left:15px" href="#" data-toggle="modal" data-target="#Baihoc" ng-click="addNDGD()">Thêm nội dung giảng dạy</a>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr style="text-align:center ; background-color:firebrick; color:white">
+                                        <th style="text-align:center; vertical-align: middle">STT</th>
+                                        <th style="text-align:center; vertical-align: middle">Tên nội dung</th>
+                                        <th style="text-align:center; vertical-align: middle">KQHT HP</th>
+                                        <th style="text-align:center; vertical-align: middle">Phân loại</th>
+                                        <th style="text-align:center; vertical-align: middle">Nội dung</th>
+                                        <th style="text-align:center; vertical-align: middle">Thao Tác</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="nd in noidunggds">
+                                        <td style="text-align:center; vertical-align: middle">{{$index+1}}</td>
+                                        <td style="text-align:center; vertical-align: middle; width:250px">{{nd.TenHT}}</td>
+                                        <td style="text-align:center; vertical-align: middle">{{nd.Mota[nd.Mota.length - 1].MaHT.substr(0, nd.Mota[nd.Mota.length - 1].MaHT.length - 1)}}</td>
+                                        <td style="text-align:center; vertical-align: middle; width:100px">{{nd.Phanloai}}</td>
+                                        <td style="text-align:center; vertical-align: middle">{{nd.Noidung}}</td>
+                                        <td title="Xóa" style="vertical-align: middle; text-align:center"><a href="javascript:void(0)" data-toggle="modal" data-target="#Baihocedit" ng-click="getND(nd)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a><a href="" ng-click="deleteND(nd, $index)"><img src="~/Areas/CMS/images/IconBin3.png" style="width:35px; "></a></td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br />
+                        <h4>3.Phương Pháp </h4>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label style="margin-left:15px">Phương pháp giảng dạy</label>
+                                <textarea id="" name="" rows="5" class="form-control" ng-model="khdt.PPGD"></textarea>
+                            </div>
+                            <div class="col-lg-6">
+                                <label style="margin-left:15px">Phương pháp học tập</label>
+                                <textarea id="" name="" rows="5" class="form-control" ng-model="khdt.PPHT"></textarea>
+                            </div>
+                        </div>
+                        <br />
+                        <h4>4.Giáo Trình / Tài Liệu Học Tập</h4>
+                        <label style="margin-left:15px"><a href="" data-toggle="modal" data-target="#Thamkhao" ng-click="addTL()">Thêm Giáo trình / Tài liệu</a></label>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr style="text-align:center ; background-color:firebrick; color:white">
+                                        <th style="text-align:center; vertical-align: middle">STT</th>
+                                        <th style="text-align:center; vertical-align: middle">Loại tài liệu</th>
+                                        <th style="text-align:center; vertical-align: middle">Tên giáo trình / Tài liệu tham khảo / Đường dẫn</th>
+                                        <th style="text-align:center; vertical-align: middle">Tác giả / Nhà XB / Năm XB</th>
+                                        <th style="text-align:center; vertical-align: middle">Thao Tác</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="tl in tailieuthamkhaos">
+                                        <td style="text-align:center; vertical-align: middle">{{$index+1}}</td>
+                                        <td style="text-align:center; vertical-align: middle" ng-if="tl.LoaiTL == '1'">Giáo trình</td>
+                                        <td style="text-align:center; vertical-align: middle" ng-if="tl.LoaiTL == '2'">Tài liệu tham khảo</td>
+                                        <td style="text-align:center; vertical-align: middle" ng-if="tl.LoaiTL == '3'">Giáo trình chính</td>
+                                        <td style="text-align:center; vertical-align: middle" ng-if="tl.LoaiTL == '4'">Tài liệu học tập</td>
+                                        <td style="text-align:center; vertical-align: middle">{{tl.TenTL}}</td>
+                                        <td style="text-align:center; vertical-align: middle" ng-if="tl.Kieunhap == '1'">Tác giả:{{tl.Tacgia}} - Nhà XB:{{tl.NhaXB}} - Năm XB:{{tl.NamXB}}</td>
+                                        <td style="text-align:center; vertical-align: middle" ng-if="tl.Kieunhap == '2'"></td>
+                                        <td title="Chỉnh sửa" style="vertical-align: middle; text-align:center"><a href="javascript:void(0)" data-toggle="modal" data-target="#editThamkhao1" ng-click="getTailieu(tl)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a><a href="" ng-click="deleteTailieu(tl, $index)"><img src="~/Areas/CMS/images/IconBin3.png" style="width:35px; "></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h4>5.Yêu Cầu Của Giảng Viên Đối Với Học Phần</h4>
+                                <label>Loại phòng học</label>
+                                <br />
+                                <select class="select2 form-control m-t-15" multiple style="width: 30%" id="phonghoc" ng-model="MaPH">
+                                    <option ng-repeat="loai in LoaiPH" value="{{loai.MaLoaiPH}}">{{loai.TenLoaiPH}}</option>
+                                </select>
+                                <br />
+                                <br />
+                                <label>Phương tiện phục vụ giảng dạy</label>
+                                <br />
+                                <textarea rows="2" class="form-control" ng-model="khdt.PhuongtienGD"></textarea>
+                                <br />
+                                <label>Phương tiện phục vụ thi cử</label>
+                                <br />
+                                <textarea rows="2" class="form-control" ng-model="khdt.PhuongtienThi"></textarea>
+                            </div>
+                            <br />
+                            <div class="col-lg-6">
+                                <h4>6.Nhiệm Vụ Của Sinh Viên</h4>
+                                <textarea rows="12" class="form-control" ng-model="khdt.NhiemvuSV"></textarea>
+                            </div>
+                        </div>
+                        <br />
+                        <h4>7.Nội Dung Cập Nhật</h4>
+                        <textarea id="" name="" rows="5" class="form-control" ng-model="khdt.NoidungCN"></textarea>
+                        <br />
+                    </div>
+                </div>
+                <br />
+                <a id="" class="btn" style="float:right;border-radius:25px; background-color:green; color:white; border: 2px solid #ffffff;" href="" ng-click="hoanthanh(khdt, TC, BB, MaPH)">Hoàn thành</a>
+                <a id="" class="btn" style="float:right;border-radius:25px;margin-right:1%; background-color:#b22222; color:white; border: 2px solid #ffffff;" href="" ng-click="luunhap(khdt,TC, BB, MaPH)">Lưu tạm</a>
+                @*<a class="btn" style="float:right; margin-right:1%;border-radius:25px ;color:black;border-bottom-color:#b22222; border: 1px solid #b22222;" href="@Url.Action("CourseList", "CourseSyllabus", new { area = "CMS" })">Quay lại</a>*@
+            </div>
+        </div>
+
+        @*nut len dau trang*@
+        <div class='lentop'>
+            <div>
+                <img src='~/Areas/CMS/images/top.png' />
+            </div>
+        </div>
+
+        @*form them chuan dau ra mon hoc*@
+        <div class="modal fade" id="addCdr" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">Thêm kết quả học tập mong đợi HP</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font-style:italic">Kết quả học tập mong đợi CTDT</label>
+                        <select class="select2 form-control m-t-15" multiple style="width: 100%" id="cdrCtdt" ng-model="CDRMH.MaELO">
+                            <option ng-repeat="cdr in CDRCTDT" value="{{cdr.MaELO}}">{{cdr.MaHT}}</option>
+                        </select>
+                        <br />
+                        <br />
+                        <label style="font-style:italic">Phân Loại</label>
+                        <select class="select2 form-control custom-select" style="width:470px" id="phanloai" ng-model="cdrMH.Phanloai">
+                            <option>Kiến Thức</option>
+                            <option>Kỹ Năng</option>
+                            <option>Thái độ và phẩm chất đạo đức</option>
+                        </select>
+                        <br />
+                        <br />
+                        <label style="font-style:italic">Kết quả học tập mong đợi HP</label>
+                        <input id="mahienthi" name="mahienthi" type="text" class="form-control" ng-model="cdrMH.MaHT" />
+                        <br />
+                        <label style="font-style:italic">Mô tả</label>
+                        <textarea id="mota" name="mota" maxlength="500" rows="2" class="form-control" ng-model="cdrMH.Mota"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="addCdr(cdrMH, CDRMH.MaELO)">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*form chinh sua chuan dau ra mon hoc*@
+        <div class="modal fade" id="editCdr" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">Chỉnh sửa kết quả học tập mong đợi HP</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font-style:italic">Kết quả học tập mong đợi CTDT</label>
+                        <select id="maelo" class="select2 form-control m-t-15" multiple style="width: 100%" ng-model="CDRMHedit">
+                            <option ng-repeat="cdr in CDRCTDT" value="{{cdr.MaELO}}">{{cdr.MaHT}}</option>
+                        </select>
+                        <br />
+                        <label style="font-style:italic">Kết quả học tập mong đợi HP</label>
+                        <input id="mahienthi" name="mahienthi" type="text" class="form-control" placeholder="Mã hiển thị" ng-model="cdrMHedit.MaHT" />
+                        <br />
+                        <label style="font-style:italic">Phân Loại</label>
+                        <select class="select2 form-control custom-select" style="width:470px" id="phanloai" ng-model="cdrMHedit.Phanloai">
+                            <option>Kiến Thức</option>
+                            <option>Kỹ Năng</option>
+                            <option>Thái độ và phẩm chất đạo đức</option>
+                        </select>
+                        <br />
+                        <br />
+                        <textarea id="mota" name="mota" maxlength="500" rows="5" class="form-control" placeholder="Mô tả" ng-model="cdrMHedit.Mota"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="editCdr(cdrMHedit, CDRMHedit)">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Form them giao trinh tham khao*@
+        <div class="modal fade" id="Thamkhao">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">Thêm giáo trình / tài liệu </h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font-style:italic">Loại tài liệu</label>
+                        <div class="form-group row">
+                            <div class="col-lg-6 custom-control custom-radio" style="float:right">
+                                <input type="radio" class="custom-control-input" value="1" id="gtc" name="radio-stacked" ng-model="GTC" ng-click="changeGTC()">
+                                <label class="custom-control-label" for="gtc" value="1">&nbsp; &nbsp; &nbsp; &nbsp; Giáo trình chính</label>
+                            </div>
+                            <div class=" col-lg-6 custom-control custom-radio" style="float: left">
+                                <input type="radio" class="custom-control-input" value="2" id="tlht" name="radio-stacked" ng-model="TLHT" ng-click="changeTLHT()">
+                                <label class="custom-control-label" for="tlht" value="2">&nbsp; &nbsp; &nbsp; &nbsp; Tài liệu học tập</label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-6 custom-control custom-radio" style="float:right">
+                                <input type="radio" class="custom-control-input" value="3" id="gt" name="radio-stacked" ng-model="GT" ng-click="changeGT()">
+                                <label class="custom-control-label" for="gt" value="3">&nbsp; &nbsp; &nbsp; &nbsp; Giáo trình</label>
+                            </div>
+                            <div class="col-lg-6 custom-control custom-radio" style="float: left">
+                                <input type="radio" class="custom-control-input" value="4" id="tltk" name="radio-stacked" ng-model="TLTK" ng-click="changeTLTK()">
+                                <label class="custom-control-label" for="tltk" value="4">&nbsp; &nbsp; &nbsp; &nbsp; Tài liệu tham khảo</label>
+                            </div>
+                        </div>
+                        <br />
+                        <label>Chọn kiểu nhập</label>
+                        <div>
+                            <ul class="nav nav-pills nav-justified" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link thongtin active show" data-toggle="tab">Dạng thông tin </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link duongdan" data-toggle="tab">Dạng đường dẫn</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <br />
+                        <div id="conTent1" class=" active">
+                            <label style="font-style:italic">Tên / Tiêu đề tài liệu</label>
+                            <input type="text" maxlength="200" class="form-control" ng-model="tk.TenTL" />
+                            <br />
+                            <label style="font-style:italic">Tác giả</label>
+                            <input type="text" maxlength="200" class="form-control" ng-model="tk.Tacgia" />
+                            <br />
+                            <label style="font-style:italic">Nhà xuất bản</label>
+                            <input type="text" maxlength="200" class="form-control" ng-model="tk.NhaXB" />
+                            <br />
+                            <label style="font-style:italic">Năm xuất bản</label>
+                            <br />
+                            <input type="text" maxlength="4" class="form-control" style="width:100%;height:40px" ng-model="tk.NamXB" />
+                        </div>
+                        <div id="conTent2">
+                            <label style="font-style:italic">Đường dẫn</label>
+                            <input type="text" maxlength="500" class="form-control" ng-model="tk.Duongdan" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="addTailieu(tk,GT,TLTK,GTC, TLHT)">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Form chinh sua giao trinh tham khao*@
+        <div class="modal fade" id="editThamkhao1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">Chỉnh sửa tài liệu học phần</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font-style:italic">Loại tài liệu</label>
+                        <div class="form-group row">
+                            <div class="col-lg-6 custom-control custom-radio" style="float:right">
+                                <input type="radio" class="custom-control-input" value="1" id="gtc" ng-checked="checkgtc" name="radiotlhp" ng-model="GTC" ng-click="changeGTC()">
+                                <label class="custom-control-label" for="gtc" value="1">&nbsp; &nbsp; &nbsp; &nbsp; Giáo trình chính</label>
+                            </div>
+                            <div class=" col-lg-6 custom-control custom-radio" style="float: left">
+                                <input type="radio" class="custom-control-input" value="2" id="tlht" ng-checked="checktlht" name="radiotlhp" ng-model="TLHT" ng-click="changeTLHT()">
+                                <label class="custom-control-label" for="tlht" value="2">&nbsp; &nbsp; &nbsp; &nbsp; Tài liệu học tập</label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-6 custom-control custom-radio" style="float:right">
+                                <input type="radio" class="custom-control-input" value="3" id="gt" ng-checked="checkgt" name="radiotlhp" ng-model="GT" ng-click="changeGT()">
+                                <label class="custom-control-label" for="gt" value="3">&nbsp; &nbsp; &nbsp; &nbsp; Giáo trình</label>
+                            </div>
+                            <div class="col-lg-6 custom-control custom-radio" style="float: left">
+                                <input type="radio" class="custom-control-input" value="4" id="tltk" ng-checked="checktltk" name="radiotlhp" ng-model="TLTK" ng-click="changeTLTK()">
+                                <label class="custom-control-label" for="tltk" value="4">&nbsp; &nbsp; &nbsp; &nbsp; Tài liệu tham khảo</label>
+                            </div>
+                        </div>
+                        <br />
+                        <div ng-show="showTL">
+                            <label style="font-style:italic">Tên / Tiêu đề tài liệu</label>
+                            <input type="text" maxlength="200" class="form-control" ng-model="edittk.TenTL" />
+                            <br />
+                            <label style="font-style:italic">Tác giả</label>
+                            <input type="text" maxlength="200" class="form-control" ng-model="edittk.Tacgia" />
+                            <br />
+                            <label style="font-style:italic">Nhà xuất bản</label>
+                            <input type="text" maxlength="200" class="form-control" ng-model="edittk.NhaXB" />
+                            <br />
+                            <label style="font-style:italic">Năm xuất bản</label>
+                            <input type="text" maxlength="4" class="form-control" style="width:100%;height:40px" ng-model="edittk.NamXB" />
+                        </div>
+                        <div ng-hide="showTL">
+                            <label style="font-style:italic">Đường dẫn</label>
+                            <input type="text" maxlength="500" class="form-control" ng-model="edittk.TenTL" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="editTailieu(edittk,GT,TLTK,GTC, TLHT)">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        @*form them nội dung bài học*@
+        <div class="modal fade" id="Baihoc" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">Thêm Nội Dung Giảng Dạy</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Tên nội dung giảng dạy</label>
+                        <input type="text" class="form-control" ng-model="ndgd.TenHT" />
+                        <br />
+                        <label>Kết quả học tập mong đợi HP</label>
+                        <div class="form-group row">
+                            <div class="col-md-9">
+                                <select class="select2 form-control m-t-15" multiple style="width: 470px" ng-model="NDGD.MaCELO">
+                                    <option ng-repeat="cdr in cdrmonhocs" value="{{cdr.MaCELO}}">{{cdr.MaHT}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label>Phân loại</label>
+                        <select class="form-control" style="width:470px" ng-model="ndgd.Phanloai">
+                            <option>Lý thuyết</option>
+                            <option>Thực hành</option>
+                            <option>Thực tập</option>
+                            <option>Đồ án</option>
+                        </select>
+                        <br />
+                        <div>
+                            <label>Nội dung giảng dạy</label>
+                            <label style="font-style:italic">Nội dung giảng dạy có thể bao gồm tên bài học và nội dung chính của bài học, thực hành,...</label>
+                            <textarea id="" name="" rows="5" class="form-control" ng-model="ndgd.Noidung"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addND(ndgd,NDGD.MaCELO)">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*form chinh sua noi dung giang day*@
+        <div class="modal fade" id="Baihocedit" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d51c29; color:white">
+                        <h4 class="modal-title">{{editndgd.TenHT}}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Tên nội dung giảng dạy</label>
+                        <input type="text" class="form-control" ng-model="editndgd.TenHT" />
+                        <br />
+                        <label>Kết quả học tập mong đợi HP</label>
+                        <div class="form-group row">
+                            <div class="col-md-9">
+                                <select id="macelo" class="select2 form-control m-t-15" multiple style="width: 470px" ng-model="editNDGD.MaCELO">
+                                    <option ng-repeat="cdr in cdrmonhocs" value="{{cdr.MaCELO}}">{{cdr.MaHT}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label>Phân loại</label>
+                        <select class="form-control" style="width:470px" ng-model="editndgd.Phanloai">
+                            <option>Lý thuyết</option>
+                            <option>Thực hành</option>
+                            <option>Thực tập</option>
+                            <option>Đồ án</option>
+                        </select>
+                        <br />
+                        <div>
+                            <label>Nội dung giảng dạy</label>
+                            <textarea id="" name="" rows="3" class="form-control" ng-model="editndgd.Noidung"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="editND(editndgd,editNDGD.MaCELO)">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@*Script For select2*@
+<script>
+    $(".select2").select2();
+
+</script>
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#conTent2").hide();
+        $('.thongtin').click(function () {
+            $("#conTent1").show('slow');
+            $("#conTent2").hide();
+        });
+        $('.duongdan').click(function () {
+            $("#conTent2").show('slow');
+            $("#conTent1").hide();
+
+        });
+    });
+    $(function () {
+        $('.mydatepicker').datepicker({
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'yy',
+            onClose: function (dateText, inst) {
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, 1));
+            }
+        });
+        $(".date-picker-year").focus(function () {
+            $(".ui-datepicker-month").hide();
+        });
+    });
+</script>
+@*//Sum sô tín chỉ*@
+<script>
+    function myFunction() {
+        var lt = document.getElementById("lythuyet");
+        var th = document.getElementById("thuchanh");
+        var doan = document.getElementById("doan");
+        var thuctap = document.getElementById("thuctap");
+        var tong = +lt.value + +th.value + +doan.value + +thuctap.value;
+        document.getElementById('sotinchi').value = tong;
+    }
+</script>
+
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+
+<script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/ĐCCTMH/DcctModel.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/ĐCCTMH/DcctService.js"></script>
+<script src="~/Areas/CMS/Content/Curriculum/angular/ĐCCTMH/DcctController.js"></script>
+

@@ -1,0 +1,114 @@
+﻿@model IEnumerable<Capstone.Areas.CMS.Models.CTDTData>
+@{
+                /**/
+
+                ViewBag.Title = "Overview";
+                Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
+<div class="page-wrapper">
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Thông Tin Chung </h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Hệ Thống Quản Lý CTDT</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Thông Tin Chung</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Bread crumb and right sidebar toggle -->
+    <br />
+    <a class="btn btn-success" style="margin-left:20px" href="/cms/curriculum/list/@Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT">Xem Nội Dung CTĐT</a>
+    <!-- Container fluid  -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-body printableArea">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-left" style="color: black; text-align:justify">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p style="text-align:center; font-size: 20px">BỘ GIÁO DỤC VÀ ĐÀO TẠO</p>
+                                        <p style="text-align:center;font-size: 20px;font-weight:bold">TRƯỜNG ĐẠI HỌC VĂN LANG </p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p style="text-align:center;font-size: 20px;font-weight:bold">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+                                        <p style="text-align:center;font-size: 20px;font-weight:bold">Độc lập - Tự do - Hạnh phúc </p>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="pull-left" style="color: black; text-align:center">
+                                    <b style="font-size: 25px">CHƯƠNG TRÌNH GIÁO DỤC ĐẠI HỌC</b>
+                                </div>
+                                <br />
+                                <p style="text-align:left ; font-size: 20px ; margin-left:40px">
+                                    <input hidden value="@Model.FirstOrDefault().ctdt.FirstOrDefault().MaCT" />
+                                    <b>Tên Chương Trình : </b> @Model.FirstOrDefault().ctdt.FirstOrDefault().TenCT <br />
+                                    <b>Trình Độ Đào Tạo : </b> @Model.FirstOrDefault().ctdt.FirstOrDefault().Trinhdo <br />
+                                    <b>Ngành Đào Tạo : </b> @Model.FirstOrDefault().kh.FirstOrDefault().TenKhoa <br />
+                                    <b>Loại Hình Đào Tạo : </b> @Model.FirstOrDefault().ctdt.FirstOrDefault().HinhthucDT <br />
+                                    (Ban hành tại quyết định số @Model.FirstOrDefault().ctdt.FirstOrDefault().SoQD/ VL-ĐT ngày @Model.FirstOrDefault().ctdt.FirstOrDefault().NgayQD của Hiệu Trưởng trường Đại Học Văn Lang)
+                                </p>
+                                <br />
+                                <ol style="font-size: 20px">
+                                    <li>
+                                        <b>Mục Tiêu Đào Tạo : </b> <br /> <p>@Html.Raw(Model.FirstOrDefault().ctdt.FirstOrDefault().Muctieu)</p>
+
+                                    </li>
+                                    <li>
+                                        <b>Thời gian đào tạo : </b> @Model.FirstOrDefault().ctdt.FirstOrDefault().ThoigianDT <br />
+                                    </li>
+                                    <li>
+                                        <b>Khối lượng kiến thức toàn khoá : </b> @Model.FirstOrDefault().ctdt.FirstOrDefault().Khoiluongkienthuc <br />
+                                    </li>
+                                    <li>
+                                        <b>Đối tượng tuyển sinh : </b> @Html.Raw(Model.FirstOrDefault().ctdt.FirstOrDefault().Doituong)<br />
+                                    </li>
+                                    <li>
+                                        <b>
+                                            Quy trình đào tạo, điều kiện tốt nghiệp : <br />
+                                        </b> @Html.Raw(Model.FirstOrDefault().ctdt.FirstOrDefault().QuytrinhDT)
+
+                                    </li>
+                                    <li>
+                                        <b>Thang điểm : </b>@Model.FirstOrDefault().ctdt.FirstOrDefault().Thangdiem <br />
+                                    </li>
+                                    <li>
+                                        <b>Cơ sở vật chất phục vụ học tập : </b> <br /> @Html.Raw(Model.FirstOrDefault().ctdt.FirstOrDefault().CosoVC)
+
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Nút lên đầu trang*@
+    <div class='lentop'>
+        <div>
+            <img src='~/Areas/CMS/images/top.png' />
+        </div>
+    </div>
+</div>
+@*//nut len dau trang*@
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
+            else $(".lentop").fadeOut();
+        });
+        $(".lentop").click(function () {
+            $("body,html").animate({ scrollTop: 0 }, "slow");
+        });
+    });
+</script>
+<!-- End Container fluid  -->

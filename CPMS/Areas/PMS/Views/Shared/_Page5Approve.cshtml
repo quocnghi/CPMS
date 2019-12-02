@@ -1,0 +1,181 @@
+﻿<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">1. Ngôn ngữ và tài liệu giảng dạy</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group required-field">
+                    <label>Ngôn ngữ giảng dạy:</label>
+                    <textarea class="form-control" id="formNNGD" rows="5" placeholder="Nhập ngôn ngữ giảng dạy" readonly>@Model.NgonnguGD</textarea>
+                    <div class="invalid-feedback">
+                        Không được để trống
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">2. Mô tả tổng quan về môn học</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group required-field">
+                    <label>Mô tả tổng quan về môn học:</label>
+                    <textarea class="form-control" id="formMota" rows="5" placeholder="Nhập Mô tả tổng quan về môn học" readonly>@Model.Mota</textarea>
+                    <div class="invalid-feedback">
+                        Không được để trống
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">3. Phương pháp</h5>
+</div>
+<div class="form-row">
+    <div class="form-group required-field col-md-6">
+        <label>Phương pháp giảng dạy:</label>
+        <textarea class="form-control" id="formGiangday" rows="5" placeholder="Nhập phương pháp giảng dạy" readonly>@Model.PPGD</textarea>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+    <div class="form-group required-field col-md-6">
+        <label>Phương pháp học tập:</label>
+        <textarea class="form-control" id="formHoctap" rows="5" placeholder="Nhập phương pháp học tập" readonly>@Model.PPHT</textarea>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+</div>
+
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">4. Nhiệm vụ của sinh viên</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group required-field">
+                    <label>Nhiệm vụ của sinh viên:</label>
+                    <textarea class="form-control" id="formNhiemvu" rows="5" placeholder="Nhập nhiệm vụ của sinh viên" readonly>@Model.NhiemvuSV</textarea>
+                    <div class="invalid-feedback">
+                        Không được để trống
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">5. Thang điểm</h5>
+</div>
+<div class="col-md-12 p-0">
+    <div class="card m-b-10">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group required-field">
+                    <label>Thang điểm:</label>
+                    <textarea class="form-control" id="formThangdiem" rows="5" placeholder="Nhập thang điểm" readonly>@Model.Thangdiem</textarea>
+                    <div class="invalid-feedback">
+                        Không được để trống
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">6. Yêu cầu của GV đối với học phần</h5>
+</div>
+<div class="form-row">
+    <div class="form-group required-field col-md-6">
+        <label>Phương tiện phục vụ giảng dạy:</label>
+        <textarea class="form-control" id="formPTPVGD" rows="5" placeholder="Nhập phương tiện phục vụ giảng dạy" readonly>@Model.PhuongtienGD</textarea>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+    <div class="form-group required-field col-md-6">
+        <label>Phương tiện thi:</label>
+        <textarea class="form-control" id="formPTT" rows="5" placeholder="Nhập phương tiện thi" readonly>@Model.Phuongtienthi</textarea>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+    <div class="form-group col-md-6 required-field">
+        <label>Phòng học:</label>
+        <select class="form-control" multiple="multiple" id="formLPH" style="width: 100%; height:36px;"></select>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+</div>
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">7. Biên soạn và cập nhật đề cương chi tiết</h5>
+</div>
+<div class="form-row">
+    <div class="form-group required-field col-md-6">
+        <label>Đề cương được biên soạn vào năm học:</label>
+        <input type="date" class="form-control" value="@Convert.ToDateTime(Model.Ngaytao).ToString("yyyy-MM-dd")" id="formNHDCBS" readonly/>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+    <div class="form-group required-field col-md-6">
+        <label>Đề cương được chỉnh sửa lần thứ:</label>
+        <input class="form-control" type="number" placeholder="Nhập số lần cập nhật đề cương" id="formCSDCLT" value="@Model.SolancapnhatDC" readonly/>
+        @*<textarea class="form-control" id="formCSDCLT" rows="5" placeholder="Nhập đề cương được chỉnh sửa lần thứ"></textarea>*@
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group required-field col-md-12">
+        <label>Nội dung được chỉnh sửa, cập nhật, thay đổi ở lần gần nhất:</label>
+        <textarea class="form-control" id="formNDCS" rows="5" placeholder="Nhập nội dung được chỉnh sửa" readonly>@Model.NoidungCN</textarea>
+        <div class="invalid-feedback">
+            Không được để trống
+        </div>
+    </div>
+</div>
+
+<div class="card-body p-l-0 p-t-0 p-b-10">
+    <h5 class="card-title fw-7 m-b-0">8. Giáo trình / Tài liệu tham khảo</h5>
+</div>
+<div class="card m-b-0" id="table-content">
+    <table class="table table-hover table-bordered bg-table-mhgd-p5-t1 m-t-0 m-b-5" id="table-header">
+        <thead class="thead_ct" id="tableHead">
+            <tr>
+                <th>STT</th>
+                <th>Loại</th>
+                <th>Tên giáo trình / Tài liệu tham khảo / Đường dẫn</th>
+            </tr>
+        </thead>
+        <tbody id='table-body-p5-t1'>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.getJSON('@Url.Action("LayTatCaLoaiPH", "api")', data => {
+            data.forEach(item => {
+                var newOption = new Option(item.text, item.id, false, false);
+                $('#formLPH').append(newOption).trigger('change');
+            })
+            $.getJSON('@Url.Action("LayLoaiPHTheoKHDT", "api")' + "?makhdt=" +@Model.MaKHDT, data2 => {
+                $("#formLPH").val(data2).trigger('change');
+            })
+        })
+    })
+</script>

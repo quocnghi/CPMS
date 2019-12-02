@@ -1,0 +1,30 @@
+﻿@model Capstone.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+                for details on setting up this ASP.NET application to support logging in via external services.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList">
+                <p>
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
+                        <button type="submit" class="btn btn-default" style="font-weight: 600;" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Đăng nhập bằng tài khoản @p.Caption"><img class="m-b-5" src="~/Content/images/logo-vlu.png" style="width: 15px; height: auto" alt="logo-vlu" /> @p.AuthenticationType</button>
+                    }
+                </p>
+            </div>
+        }
+    }
+}

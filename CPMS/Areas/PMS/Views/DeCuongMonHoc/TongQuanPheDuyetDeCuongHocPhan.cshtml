@@ -1,0 +1,346 @@
+﻿@model Capstone.Models.tp_KHDaotao
+
+@{
+    ViewBag.Title = "Phê duyệt đề cương học phần";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Phê duyệt đề cương học phần</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home", new { area = "CMS" })">Trang chủ</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="@Url.Action("MonHocGiangDay", "DeCuongMonHoc")"> Môn học giảng dạy</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Phê duyệt đề cương học phần</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+    {
+        @Html.AntiForgeryToken()
+    }
+    <div class="col-md-12 bg_content">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title">Thông tin đề cương</h4>
+                        <h5 class="card-subtitle">Học phần: @Model.TenHP</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion" id="accordionCDR">
+        </div>
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-end">
+                    @if (Model.TrangthaiDC == "2")
+                    {
+                        <a class="btn btn-success m-l-10" href="javascript:void(0)" id="btnPheDuyet" data-toggle="modal" data-target="#modalPheDuyet">Phê duyệt</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (Model.TrangthaiDC == "2")
+{
+    <div class="modal fade" id="modalPheDuyet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Phê duyệt / Từ chối đề cương học phần</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Xác nhận phê duyệt hoặc từ chối đề cương học phần<span style="color: red;">*</span>:</label>
+                                <div class="d-flex justify-content-start">
+                                    <div class="custom-control custom-radio m-r-20">
+                                        <input type="radio" class="custom-control-input" id="dongypheduyet"
+                                               name="radio-stacked" value="1" onclick="handleSelect(this)" required>
+                                        <label class="custom-control-label" for="dongypheduyet">
+                                            Đồng ý
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="tuchoipheduyet"
+                                               name="radio-stacked" value="2" onclick="handleSelect(this)" required>
+                                        <label class="custom-control-label" for="tuchoipheduyet">
+                                            Từ chối
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="invalidRadioPheDuyet" class="invalid-feedback" style="display: none;">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label id="labelLyDoTuChoi" style="display: none;">Nhập lý do từ chối phê duyệt đề cương học phần<span style="color: red;">*</span>:</label>
+                                <textarea id="textLyDoTuChoi" style="display: none;" class="form-control" rows="5" placeholder="Nhập lý do từ chối phê duyệt đề cương học phần"></textarea>
+                                <div class="invalid-feedback">
+                                    Không được để trống
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button class="btn btn-success" href="javascript:void(0)" id="btnXacNhanPheDuyet">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    //Kiểm tra radioButton đang được chọn: Giá trị 1 là đồng ý, 2 là từ chối
+    var radioSelectedVal = 0;
+    function handleSelect(selectedRadioValue) {
+        radioSelectedVal = selectedRadioValue.value
+    }
+    //Kiểm tra trạng thái đề cương đã được phê duyệt hay chưa
+    var checkTrangThaiDC = false;
+    let trangThaiDC = @Model.TrangthaiDC;
+    if (trangThaiDC == "2") {
+        checkTrangThaiDC = true;
+    }
+
+    if (checkTrangThaiDC) {
+        document.getElementById('btnXacNhanPheDuyet').addEventListener('click', function () {
+            if (radioSelectedVal != 0) {
+                // Khi xác nhận nộp thì ẩn hết nút Quay lại và Nộp đề cương
+                document.getElementById('btnPheDuyet').style.display = "none"
+                // Đóng Modal xác nhận đồng ý / từ chối phê duyệt đề cương
+                $('#modalPheDuyet').modal('toggle')
+                // Sau khi phê duyệt thì redirect sang trang khác
+                // Xuất hiện thông báo, thông báo tắt thì tự động chuyển trang
+                var form = $('#__AjaxAntiForgeryForm');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+                form_data = {maKHDT: @Model.MaKHDT, trangThaiPheDuyet: radioSelectedVal, __RequestVerificationToken: token}
+                $.ajax({
+                    url: "@Url.Action("XacNhanPheDuyetDeCuong", "DeCuongMonHoc")",
+                    type: "POST",
+                    data: form_data
+                }).done(function (response) {
+                    if (response == "Success") {
+                        toastr.options.onHidden = function () {
+                            window.location.href = '@Url.Action("DeCuongMonHoc", "DeCuongMonHoc")';
+                        }
+                        if (radioSelectedVal == 1) {
+                            toastr.success("@CommonRS.Resources.VI.mes_PheDuyetDCThanhCong", 'Thành công!');
+                        } else if (radioSelectedVal == 2) {
+                            toastr.success("@CommonRS.Resources.VI.mes_TuChoiPheDuyetDC", 'Thành công!');
+                        }
+                        document.getElementById("btnPheDuyet").style.display = "none";
+                    } else {
+                        toastr.warning("@CommonRS.Resources.VI.mes_KhongThePheDuyetDC", 'Lỗi!');
+                        document.getElementById("btnPheDuyet").style.display = "block";
+                    }
+                })
+            } else {
+                document.getElementById('invalidRadioPheDuyet').style.display = "block";
+                toastr.error("@CommonRS.Resources.VI.mes_LuaChonTruocKhiPheDuyetDC", "Lỗi!")
+            }
+        })
+    }
+
+    const cdrPosition = document.getElementById('accordionCDR');
+    cdrPosition.innerHTML = "";
+    var countCDR = 1;
+    //Get list of CDR
+    $.ajax({
+        url: '@Url.Action("LayDanhSachCDRPheDuyetDC", "API")' + '?maKHDT=' + @Model.MaHP,
+        dataType: 'JSON',
+        async: false,
+        success: function (data) {
+            for (let item of data) {
+                createAccordition(item.MaCELO, item.TenCDR, item.PhanLoai, item.MoTa);
+            }
+        }
+    });
+    //Purpose: Create accordition contains Content, Action and Evaluation
+    //Parameters: MaCELO, TenCDR, Phanloai, MoTa
+    //Return: None
+    function createAccordition(MaCELO, TenCDR, PhanLoai, MoTa) {
+        var cardContent = "";
+        var cardEvaluation = "";
+        //Get list of contents with input is MaCELO
+        $.ajax({
+            url: '@Url.Action("LayDanhSachNoiDungPheDuyetDC", "API")' + '?maCELO=' + MaCELO,
+            dataType: 'JSON',
+            async: false,
+            success: function (data) {
+                for (let item of data) {
+                    var hoatDongTrongLop = "";
+                    var hoatDongNgoaiLop = "";
+                    //Get list of Action with input is MaHP, MaCELO, MaND
+                    $.ajax({
+                        url: '@Url.Action("LayTacVuNoiDungPheDuyetDC", "API")' + '?maKHDT=' + @Model.MaHP + '&maCELO=' + MaCELO + '&maND=' + item.MaND,
+                        dataType: 'JSON',
+                        async: false,
+                        success: function (data) {
+                            var countTrongLop = 1;
+                            var countNgoaiLop = 1;
+                            for (let item of data) {
+                                if (typeof (item.noiDung) !== 'undefined') {
+                                    if (item.hoatDongTrongLop) {
+                                        hoatDongTrongLop += '<tr>'
+                                            + '<td>' + countTrongLop + '</td>'
+                                            + '<td>' + item.moTaTV + '</td>'
+                                            + '<td>' + loaiNguoiThucHien(item.phanLoai.trim()) + '</td>'
+                                            + '<td>' + item.soGio + '</td>'
+                                            + '<td>' + formatDanhGia(item.noiDung.trim()) + '</td>'
+                                            + '</tr>';
+                                        countTrongLop++;
+                                    } else {
+                                        hoatDongNgoaiLop += '<tr>'
+                                            + '<td>' + countNgoaiLop + '</td>'
+                                            + '<td>' + item.moTaTV + '</td>'
+                                            + '<td>' + loaiNguoiThucHien(item.phanLoai.trim()) + '</td>'
+                                            + '<td>' + item.soGio + '</td>'
+                                            + '<td>' + formatDanhGia(item.noiDung.trim()) + '</td>'
+                                            + '</tr>';
+                                        countNgoaiLop++;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    var noiDungContent = "";
+                    if (item.Noidung != null) {
+                        noiDungContent = item.Noidung;
+                    }
+                    var noiDung = '<div class="card card-custom m-b-10">'
+                        + '<div class="card-header p-t-0 p-b-0 p-l-0" id="cdr-content-header-num">'
+                        + '<h2 class="mb-0">'
+                        + '<button class="btn btn-link collapsed p-l-10" id="' + MaCELO + '-header-' + item.MaND + '" type="button" data-toggle="collapse" data-target="#collapse-' + MaCELO + '-content-' + item.MaND + '" aria-expanded="true" aria-controls="collapse-' + MaCELO + '-content-' + item.MaND + '">'
+                        + item.TenNoiDung
+                        + '</button>'
+                        + '</h2>'
+                        + '</div>'
+                        + '<div id="collapse-' + MaCELO + '-content-' + item.MaND + '" class="collapse" aria-labelledby="cdr-content-header-num" data-parent="#accordion' + MaCELO + '">'
+                        + '<div class="card-body" id="cdr-content-body-num">'
+                        + '<div class="input-group">'
+                        + '<div class="col-md-6 p-l-0 p-t-10">'
+                        + '<div class="form-group required-field">'
+                        + '<label>A. Tên nội dung:</label>'
+                        + '<input class="required form-control" value="' + item.TenNoiDung + '" placeholder="Tên nội dung" readonly />'
+                        + '</div>'
+                        + '</div>'
+                        + '<div class="col-md-3 p-l-0 p-t-10">'
+                        + '<div class="form-group required-field">'
+                        + '<label>B. Phân loại:</label>'
+                        + '<input class="required form-control" value="' + item.Phanloai + '" placeholder="Phân loại" readonly />'
+                        + '</div>'
+                        + '</div>'
+                        + '<div class="col-md-12 p-l-0">'
+                        + '<div class="form-group required-field">'
+                        + '<label>C. Nội dung chi tiết (Nếu có):</label>'
+                        + '<input class="required form-control" value="' + noiDungContent + '" placeholder="Nội dung chi tiết (Nếu có)" readonly />'
+                        + '</div>'
+                        + '</div>'
+                        + '<div class="col-md-12 p-l-0">'
+                        + '<label>D. Hoạt động trong lớp:</label>'
+                        + '<table class="table table-hover table-bordered bg-table-pheduyet m-t-0">'
+                        + '<thead class="thead_ct"><tr><th rowspan="2">STT</th><th rowspan="2">Mô tả hoạt động</th><th rowspan="2">Người thực hiện</th><th rowspan="2">Số giờ</th><th rowspan="2">Phương pháp đánh giá</th></tr></thead>'
+                        + '<tbody>'
+                        + hoatDongTrongLop
+                        + '</tbody>'
+                        + '</table>'
+                        + '</div>'
+                        + '<div class="col-md-12 p-l-0">'
+                        + '<label>E. Hoạt động ngoài lớp:</label>'
+                        + '<table class="table table-hover table-bordered bg-table-pheduyet m-t-0">'
+                        + '<thead class="thead_ct"><tr><th rowspan = "2" >STT</th><th rowspan="2">Mô tả hoạt động</th><th rowspan="2">Người thực hiện</th><th rowspan="2">Số giờ</th><th rowspan="2">Phương pháp đánh giá</th></tr >'
+                        + '</thead>'
+                        + '<tbody>'
+                        + hoatDongNgoaiLop
+                        + '</tbody>'
+                        + '</table>'
+                        + '</div>'
+                        + '</div>'
+                        + '</div>'
+                        + '</div>'
+                        + '</div>';
+                    cardContent += noiDung;
+                }
+            }
+        });
+        //Get list of Evaluation with input is MaCELO
+        $.ajax({
+            url: '@Url.Action("LayDanhGiaPheDuyetDC", "API")' + '?maCELO=' + MaCELO,
+            dataType: 'JSON',
+            async: false,
+            success: function (data) {
+                for (let item of data) {
+                    cardEvaluation += '- ' + item.Noidung.trim() + ' - ' + item.Trongso + '%' + '<br />'
+                }
+            }
+        });
+        var card = '<div class="card card-custom m-b-10">'
+            + '<div class="card-header p-t-0 p-b-0 p-l-0" id="heading-cdr-' + MaCELO + '">'
+            + '<h2 class="mb-0">'
+            + '<button class="btn btn-link collapsed p-l-10" id="cdr-header-' + MaCELO + '" type="button" data-toggle="collapse" data-target="#collapse-cdr-' + MaCELO + '" aria-expanded="true" aria-controls="collapse-cdr-' + MaCELO + '">'
+            + countCDR + '. ' + TenCDR + ' - ' + PhanLoai + ' - ' + MoTa
+            + '</button>'
+            + '</h2>'
+            + '</div>'
+            + '<div id="collapse-cdr-' + MaCELO + '" class="collapse" aria-labelledby="heading-cdr-' + MaCELO + '" data-parent="#accordionCDR">'
+            + '<div class="card-body" id="cdr-body-' + MaCELO + '">'
+            + '<h5>A. Nội dung giảng dạy</h5>'
+            + '<div class="accordion" id="accordion' + MaCELO + '">'
+            + cardContent
+            + '</div>'
+            + '<h5>B. Phương pháp đánh giá</h5>'
+            + cardEvaluation
+            + '</div>'
+            + '</div>'
+            + '</div>';
+        cdrPosition.innerHTML += card;
+        countCDR++;
+    }
+    //Purpose: Get type of user in table TacVuHP
+    //Parameter: inp
+    //Return: Type of user in string
+    function loaiNguoiThucHien(inp) {
+        switch (inp) {
+            case "GV": {
+                return '@CommonRS.Resources.VI.var_GiangVien';
+                break;
+            }
+            case "SV": {
+                return '@CommonRS.Resources.VI.var_SinhVien';
+                break;
+            }
+            case "NSV": {
+                return '@CommonRS.Resources.VI.var_NhomSinhVien';
+                break;
+            }
+        }
+    }
+    //Purpose: Get Evaluation content
+    //Parameter: inp
+    //Return: Content of Evaluation in string
+    function formatDanhGia(inp) {
+        let noiDungDanhGia = inp.slice(0, inp.length - 1);
+        return noiDungDanhGia;
+    }
+</script>
