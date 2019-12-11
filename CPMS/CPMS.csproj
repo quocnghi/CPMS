@@ -239,6 +239,10 @@
     <Compile Include="Areas\CMS\Controllers\Training\Curriculum\MaTranController.cs" />
     <Compile Include="Areas\CMS\Models\APIMindMap.cs" />
     <Compile Include="Areas\CMS\Models\Data.cs" />
+    <Compile Include="Areas\CMS\Models\DataInfoModel.cs" />
+    <Compile Include="Areas\CMS\Models\HeModel.cs" />
+    <Compile Include="Areas\CMS\Models\KhoaModel.cs" />
+    <Compile Include="Areas\CMS\Models\NganhModel.cs" />
     <Compile Include="Areas\CMS\NotificationManagement\ErrorMessage.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -4841,6 +4845,7 @@
     <Content Include="Areas\CMS\Views\CourseSyllabus\Course.cshtml" />
     <Content Include="Areas\CMS\Views\CTDTKhung\Index.cshtml" />
     <Content Include="Areas\CMS\Views\CTDTKhung\CreateCTDTStep0.cshtml" />
+    <Content Include="Areas\CMS\Views\CategoriesManagement\EditHeNganhAction.cshtml" />
     <None Include="Areas\PMS\Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Areas\PMS\Scripts\jquery-1.12.4.js" />
     <Content Include="Areas\PMS\Scripts\jquery-1.12.4.min.js" />

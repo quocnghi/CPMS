@@ -35,7 +35,6 @@
 
     // Edit he nganh
     $scope.edithenganh = function (data) {
-        console.log(data)
         QLHanganhService.edithenganh(data).success(function (msg) {
             toastr.success(msg.msg);
             console.log(msg)

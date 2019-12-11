@@ -11,7 +11,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
 {
     public class CategoriesManagementController : Controller
     {
-		fit_misDBEntities db = new fit_misDBEntities();
+        fit_misDBEntities db = new fit_misDBEntities();
         // GET: CategoriesManagement
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public ActionResult QuanlyHeNganh()
@@ -20,70 +20,65 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             var id = ck.Value;
             var role = db.AspNetUsers.Find(id).AspNetRoles.FirstOrDefault().Name;
             ViewBag.Role = role;
-            return View();
+            DataInfoModel model = loadDataInfo();
+
+            return View(model);
         }
-        [HttpPost]
-        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult loadInfo()
+
+        /// <summary>
+        ///  Lấy data từ databse bao gồm danh sách hệ, danh sách ngành, danh sách khoa
+        /// </summary>
+        /// <returns>model chứa các thông tin trên</returns>
+        public DataInfoModel loadDataInfo()
         {
-            var lsthe = db.sc_HeNganh.Where(s => s.MaQH == null).Select(s => new { s.MaHN, s.Mota, s.MaDK, KHOA = s.sc_Khoa.TenKhoa, s.Tenrutgon });
-            var lstnganh = db.sc_HeNganh.Select(s => new { s.MaHN, s.Mota, s.MaDK, KHOA = s.sc_Khoa.TenKhoa, s.Tenrutgon, TenHe = s.sc_HeNganh2.Mota, s.MaQH });
-            var lstkhoa = db.sc_Khoa.Select(s => new { s.MaKhoa, s.TenKhoa });
-            return Json(new { list = lsthe, listkhoa = lstkhoa, listhnganh = lstnganh });
+            DataInfoModel dataInfo = new DataInfoModel();
+            List<HeModel> lsthe = db.sc_HeNganh.Where(s => s.MaQH == null).ToList().
+                Select(m => new HeModel { MaHN = m.MaHN, MaDK = m.MaDK, Mota = m.Mota, KHOA = m.sc_Khoa.TenKhoa, Tenrutgon = m.Tenrutgon }).ToList();
+
+            List<NganhModel> lstnganh = db.sc_HeNganh.
+                Select(m => new NganhModel { MaHN = m.MaHN, MaDK = m.MaDK, Mota = m.Mota, KHOA = m.sc_Khoa.TenKhoa, Tenrutgon = m.Tenrutgon, TenHe = m.sc_HeNganh2.Mota, MaQH = m.MaQH }).ToList();
+
+            List<KhoaModel> lstkhoa = db.sc_Khoa.Select(s => new KhoaModel { MaKhoa = s.MaKhoa, TenKhoa = s.TenKhoa }).ToList();
+
+            dataInfo.lstkhoa = lstkhoa;
+            dataInfo.lstnganh = lstnganh;
+            dataInfo.lsthe = lsthe;
+
+            return dataInfo;
         }
-        [HttpPost]
+
+        /// <summary>
+        /// Load thông tin cần chỉnh sửa
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult addHenganh(HenganhDT hnganh)
+        public PartialViewResult EditHeNganhAction(int index)
         {
-            try
-            {
-                var he = new sc_HeNganh();
-                he.MaKhoa = hnganh.Henganh.MaKhoa;
-                he.Mota = hnganh.TenHe;
-                db.sc_HeNganh.Add(he);
-                db.SaveChanges();
-                var lhe = db.sc_HeNganh.AsEnumerable().LastOrDefault();
-                var nganh = new sc_HeNganh();
-                nganh.MaKhoa = hnganh.Henganh.MaKhoa;
-                nganh.Mota = hnganh.Henganh.Mota;
-                nganh.MaQH = lhe.MaHN;
-                db.sc_HeNganh.Add(nganh);
-                db.SaveChanges();
-                var lstnganh = db.sc_HeNganh.Select(s => new { s.MaHN, s.Mota, s.MaDK, KHOA = s.sc_Khoa.TenKhoa, s.Tenrutgon, TenHe = s.sc_HeNganh2.Mota });
-                return Json(new { msg = NotificationManagement.SuccessMessage.DM_Themhenganh, heNganh = lstnganh });
-            }
-            catch (Exception e)
-            {
-                return Json(new { msg = NotificationManagement.ErrorMessage.DM_Luudulieu });
-            }
+            DataInfoModel dataInfo = new DataInfoModel();
+            dataInfo.lstnganh = new List<NganhModel>();
+
+            List<NganhModel> lstnganh = db.sc_HeNganh.
+                Select(s => new NganhModel { MaHN = s.MaHN, MaQH = s.MaQH, Mota = s.Mota, MaKhoa = s.MaKhoa, MaDK = s.MaDK, KHOA = s.sc_Khoa.TenKhoa, Tenrutgon = s.Tenrutgon, TenHe = s.sc_HeNganh2.Mota }).ToList();
+
+            NganhModel item = lstnganh[index];
+
+            List<KhoaModel> lstkhoa = db.sc_Khoa.Select(s => new KhoaModel { MaKhoa = s.MaKhoa, TenKhoa = s.TenKhoa }).ToList();
+
+            dataInfo.lstnganh.Add(item);
+            dataInfo.lstkhoa = lstkhoa;
+
+            return PartialView(dataInfo);
         }
+
+        /// <summary>
+        /// lưu thông được chỉnh sửa
+        /// </summary>
+        /// <param name="He">thông tin hệ</param>
+        /// <returns>true: nếu thành công false nếu thất bại</returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult addHe(sc_HeNganh hnganh)
-        {
-            try
-            {
-                db.sc_HeNganh.Add(hnganh);
-                db.SaveChanges();
-                var lstnganh = db.sc_HeNganh.Select(s => new { s.MaHN, s.Mota, s.MaDK, KHOA = s.sc_Khoa.TenKhoa, s.Tenrutgon, TenHe = s.sc_HeNganh2.Mota });
-                return Json(new { msg = NotificationManagement.SuccessMessage.DM_Themhenganh, he = lstnganh });
-            }
-            catch (Exception e)
-            {
-                return Json(new { msg = NotificationManagement.ErrorMessage.DM_Luudulieu });
-            }
-        }
-        [HttpPost]
-        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult gethenganh(sc_HeNganh He)
-        {
-            var lstnganh = db.sc_HeNganh.Where(s => s.MaHN == He.MaHN).Select(s => new { s.MaHN,s.MaQH, s.Mota, s.MaKhoa, s.MaDK, KHOA = s.sc_Khoa.TenKhoa, s.Tenrutgon, TenHe = s.sc_HeNganh2.Mota }).FirstOrDefault();
-            var lstkhoa = db.sc_Khoa.Select(s => new { s.MaKhoa, s.TenKhoa });
-            return Json(new { He = lstnganh, listkhoa = lstkhoa });
-        }
-        [HttpPost]
-        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult edithenganh(sc_HeNganh He)
+        public bool SaveEditHN(sc_HeNganh He)
         {
             try
             {
@@ -94,32 +89,103 @@ namespace Capstone.Areas.CMS.Controllers.Setting
                 Ng.Tenrutgon = He.Tenrutgon;
                 db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
-                var rs = db.sc_HeNganh.Select(s => new { s.MaHN, s.MaQH, s.Mota, s.MaDK, s.Tenrutgon, s.sc_Khoa.MaKhoa, KHOA = s.sc_Khoa.TenKhoa, TenHe = s.sc_HeNganh2.Mota });
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
 
-                return Json(new { msg = NotificationManagement.SuccessMessage.DM_Suahenganh, HNganh = rs });
+        }
+
+        /// <summary>
+        /// thêm mới hệ ngành
+        /// </summary>
+        /// <param name="HnKhoa"> mã khoa</param>
+        /// <param name="HnTenhe">tên hệ</param>
+        /// <param name="HnMota"> mô tả</param>
+        /// <param name="HnTenrutgon">tên rút ngọn</param>
+        /// <param name="HnMaDK"> mã đăng ký</param>
+        /// <returns></returns>
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult AddHeNganh(string HnKhoa, string HnTenhe, string HnMota, string HnTenrutgon, string HnMaDK)
+        {
+            try
+            {
+                sc_HeNganh he = new sc_HeNganh();
+                he.MaKhoa = int.Parse(HnKhoa);
+                he.Mota = HnTenhe;
+                db.sc_HeNganh.Add(he);
+                db.SaveChanges();
+
+                var lhe = db.sc_HeNganh.AsEnumerable().LastOrDefault();
+                var nganh = new sc_HeNganh();
+                nganh.MaKhoa = int.Parse(HnKhoa);
+                nganh.Mota = HnMota;
+                nganh.MaQH = lhe.MaHN;
+                db.sc_HeNganh.Add(nganh);
+                db.SaveChanges();
+
+                return RedirectToAction("QuanlyHeNganh");
             }
             catch (Exception e)
             {
-                return Json(new { msg = NotificationManagement.ErrorMessage.DM_Chinhsuadulieu });
             }
+            return RedirectToAction("QuanlyHeNganh");
+        }
+        /// <summary>
+        /// thêm mới hệ
+        /// </summary>
+        /// <param name="HnKhoa"> mã khoa</param>
+        /// <param name="HnMota">mô tả</param>
+        /// <returns></returns>
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult AddHe(string HnKhoa, string HnMota)
+        {
+            sc_HeNganh hnganh = new sc_HeNganh();
+            hnganh.MaKhoa = int.Parse(HnKhoa);
+            hnganh.Mota = HnMota;
+
+            try
+            {
+                db.sc_HeNganh.Add(hnganh);
+                db.SaveChanges();
+                return RedirectToAction("QuanlyHeNganh");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyHeNganh");
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        //public JsonResult deletehenganh(int id)
-        //{
-        //    try
-        //    {
-        //        var rs = db.sc_HeNganh.Find(id);
-        //        db.Entry(rs).State = System.Data.Entity.EntityState.Deleted;
-        //        db.SaveChanges();
-        //        return Json(new { msg = "Xóa thành công hệ ngành" });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Json(new { msg = "Có lỗi xảy ra. Vui lòng thử lại" });
-        //    }
-        //}
+        /// <summary>
+        /// thêm mới ngành
+        /// </summary>
+        /// <param name="MaQH"></param>
+        /// <param name="HnMota">mô tả</param>
+        /// <param name="HnTenrutgon">tên rút ngọn</param>
+        /// <param name="HnMaDK">mã đang ký</param>
+        /// <returns></returns>
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult AddNganh(string MaQH, string HnMota, string HnTenrutgon, string HnMaDK)
+        {
+            sc_HeNganh nganh = new sc_HeNganh();
+            nganh.Mota = HnMota;
+            nganh.MaQH = int.Parse(MaQH);
+            nganh.MaDK = HnMaDK;
+            nganh.Tenrutgon = HnTenrutgon;
+
+            try
+            {
+                db.sc_HeNganh.Add(nganh);
+                db.SaveChanges();
+                return RedirectToAction("QuanlyHeNganh");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyHeNganh");
+        }
 
 
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
@@ -134,7 +200,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public JsonResult loadKhoa()
         {
-            var lstkhoa = db.sc_Khoa.Select(s => new { s.MaKhoa, s.TenKhoa});
+            var lstkhoa = db.sc_Khoa.Select(s => new { s.MaKhoa, s.TenKhoa });
             return Json(new { list = lstkhoa });
         }
         [HttpPost]
@@ -283,7 +349,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public JsonResult loadKhoiKT()
         {
-            var lstkhoi = db.sc_Khoikienthuc.Where(s => s.MaQH == null).Select(s => new { s.MaKhoiKT, s.Mota, s.MaQH});
+            var lstkhoi = db.sc_Khoikienthuc.Where(s => s.MaQH == null).Select(s => new { s.MaKhoiKT, s.Mota, s.MaQH });
             var lst = db.sc_Khoikienthuc.Select(s => new { s.MaKhoiKT, s.Mota, s.MaQH, TenLoai = s.sc_Khoikienthuc2.Mota });
             return Json(new { list = lstkhoi, ls = lst });
         }
@@ -303,7 +369,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
                 tenkt.MaQH = loai.MaKhoiKT;
                 db.sc_Khoikienthuc.Add(tenkt);
                 db.SaveChanges();
-                var lstKienthuc = db.sc_Khoikienthuc.Select(s => new {s.MaKhoiKT,s.Mota, TenLoai = s.sc_Khoikienthuc2.Mota,s.MaQH });
+                var lstKienthuc = db.sc_Khoikienthuc.Select(s => new { s.MaKhoiKT, s.Mota, TenLoai = s.sc_Khoikienthuc2.Mota, s.MaQH });
                 return Json(new { msg = NotificationManagement.SuccessMessage.DM_Themkhoikienthuc, KHoi = lstKienthuc });
             }
             catch (Exception e)
@@ -347,7 +413,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public JsonResult getKhoiKT(sc_Khoikienthuc kt)
         {
-            var rs = db.sc_Khoikienthuc.Where(s => s.MaKhoiKT == kt.MaKhoiKT).Select(s => new { s.MaKhoiKT, s.Mota, TenLoai = s.sc_Khoikienthuc2.Mota,s.MaQH }).FirstOrDefault();
+            var rs = db.sc_Khoikienthuc.Where(s => s.MaKhoiKT == kt.MaKhoiKT).Select(s => new { s.MaKhoiKT, s.Mota, TenLoai = s.sc_Khoikienthuc2.Mota, s.MaQH }).FirstOrDefault();
             return Json(new { KhOi = rs });
         }
         [HttpPost]
@@ -361,7 +427,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
                 Ng.MaKhoiKT = KT.MaKhoiKT;
                 db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
-                var rs = db.sc_Khoikienthuc.Select(s => new { s.MaKhoiKT, s.Mota,TenLoai = s.sc_Khoikienthuc2.Mota, s.MaQH });
+                var rs = db.sc_Khoikienthuc.Select(s => new { s.MaKhoiKT, s.Mota, TenLoai = s.sc_Khoikienthuc2.Mota, s.MaQH });
 
                 return Json(new { msg = NotificationManagement.SuccessMessage.DM_Suakhoikienthuc, kthuc = rs });
             }

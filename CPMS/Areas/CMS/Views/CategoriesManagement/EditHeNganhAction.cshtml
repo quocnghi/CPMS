@@ -1,0 +1,78 @@
+﻿@model Capstone.Areas.CMS.Models.DataInfoModel
+
+<div class="modal-body">
+    @if (@Model.lstnganh.FirstOrDefault().MaQH == null)
+    {
+        <div>
+            <label style="font-style:italic">Chọn khoa</label>
+            <select class="form-control" style="width:450px" id="editKhMaKhoa">
+                @foreach (var item in Model.lstkhoa)
+                {
+                    <option value="@item.MaKhoa">@item.TenKhoa</option>
+                }
+
+            </select>
+            <br />
+            <label style="font-style:italic">Tên hệ</label>
+            <input type="text" class="form-control" id="editHnMota" />
+        </div>
+    }
+    else
+    {
+        <div ng-if="editHn.MaQH != null">
+            <label style="font-style:italic">Chọn hệ</label>
+            <select class="form-control" style="width:450px" id="editHnMaQH">
+                @foreach (var item in Model.lstnganh)
+                {
+                    <option value="@item.MaQH">@item.Mota</option>
+                }
+            </select>
+            <br />
+            <label style="font-style:italic">Tên ngành</label>
+            <input type="text" class="form-control" id="editHnMota" />
+            <br />
+            <label style="font-style:italic">Tên rút gọn</label>
+            <input type="text" class="form-control" id="editHnTenrutgon" />
+            <br />
+            <label style="font-style:italic">Mã đăng ký</label>
+            <input type="text" class="form-control" id="editHnMaDK" />
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="SaveEditEvent(@Model.lstnganh.FirstOrDefault().MaHN)">Lưu</button>
+</div>
+
+<script>
+    function prepareData(MaHN) {
+        var data = {
+            "MaHN": MaHN,
+            "Mota": $("#editHnMota").val(),
+            "MaDK": $("#editHnMaDK").val(),
+            "MaKhoa": $("#editKhMaKhoa").val(),
+            "Tenrutgon": $("#editHnTenrutgon").val(),
+        };
+        return data;
+    }
+
+    function SaveEditEvent(MaHN) {
+        var data = prepareData(MaHN);
+        $.ajax(
+            {
+                type: "POST",
+                data: JSON.stringify(data),
+                url: "./CMS/CategoriesManagement/SaveEditHN",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data == "True") {
+                        location.reload();
+                    } else {
+
+                    }
+                },
+                error: function () {
+
+                }
+            })
+    }
+</script>

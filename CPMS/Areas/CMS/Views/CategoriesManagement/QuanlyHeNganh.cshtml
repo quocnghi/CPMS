@@ -1,11 +1,12 @@
-﻿
+﻿@model Capstone.Areas.CMS.Models.DataInfoModel
 @{
     ViewBag.Title = "QuanlyHeNganh";
     Layout = "~/Areas/CMS/Views/Shared/_Layout.cshtml";
 }
 <link rel="stylesheet" type="text/css" href="~/Areas/CMS/Content/Curriculum/dist/css/TopButton.css">
 <link href="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
-<div class="page-wrapper" ng-controller="QLHenganhController">
+
+<div class="page-wrapper">
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
@@ -23,7 +24,6 @@
             </div>
         </div>
     </div>
-
     <div class="container-fluid">
         <div class="card">
             <div class="card-body wizard-content">
@@ -46,20 +46,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="HN in nganhs">
-                                <th style="vertical-align: middle; text-align:center">{{$index + 1}}</th>
-                                <th style="vertical-align: middle; text-align:center">{{HN.KHOA}}</th>
-                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH != null">{{HN.TenHe}}</td>
-                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH == null">{{HN.Mota}}</td>
-                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH != null">{{HN.Mota}}</td>
-                                <td style="vertical-align: middle; text-align:center" ng-if="HN.MaQH == null"></td>
-                                <td style="vertical-align: middle; text-align:center">{{HN.Tenrutgon}}</td>
-                                <td style="vertical-align: middle; text-align:center">{{HN.MaDK}}</td>
-                                <td style="vertical-align: middle; text-align:center">
-                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#edithenganh1" ng-click="gethenganh(HN, $index)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
-                                    @*<a href="javascript:void(0)" ng-click="deletehenganh(HN, $index)"><img src="~/images/IconBin3.png" style="width:35px; "></a>*@
-                                </td>
-                            </tr>
+                            @{ int indexLstnganh = 0;}
+                            @foreach (var item in Model.lstnganh)
+                            {
+                                <tr>
+                                    <th style="vertical-align: middle; text-align:center">@Html.Raw(indexLstnganh + 1)</th>
+                                    <th style="vertical-align: middle; text-align:center">@item.KHOA</th>
+                                    @if (item.MaQH != null)
+                                    {
+                                        <td style="vertical-align: middle; text-align:center">@item.TenHe</td>
+                                        <td style="vertical-align: middle; text-align:center">@item.Mota</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="vertical-align: middle; text-align:center">@item.Mota</td>
+                                        <td style="vertical-align: middle; text-align:center"></td>
+                                    }
+
+                                    <td style="vertical-align: middle; text-align:center">@item.Tenrutgon</td>
+                                    <td style="vertical-align: middle; text-align:center">@item.MaDK</td>
+                                    <td style="vertical-align: middle; text-align:center">
+                                        <a href="javascript:void(0)" data-toggle="modal" data-target="#edithenganh1" onclick="editEvent(@indexLstnganh)"><img src="~/Areas/CMS/images/IconEdit.png" style="width:25px;"></a>
+                                    </td>
+                                </tr>
+                                indexLstnganh++;
+                            }
+
                         </tbody>
                     </table>
                 </div>
@@ -74,27 +86,38 @@
                     <h4 class="modal-title">Thêm Hệ / Ngành</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <label style="font-style:italic">Chọn khoa</label>
-                    <select class="form-control" style="width:450px" ng-model="Hn.MaKhoa">
-                        <option ng-repeat="ma in KHOA" value="{{ma.MaKhoa}}">{{ma.TenKhoa}}</option>
-                    </select>
-                    <br />
-                    <label style="font-style:italic">Tên hệ</label>
-                    <input type="text" class="form-control" ng-model="Tenhe" />
-                    <br />
-                    <label style="font-style:italic">Tên ngành</label>
-                    <input type="text" class="form-control" ng-model="Hn.Mota" />
-                    <br />
-                    <label style="font-style:italic">Tên rút gọn</label>
-                    <input type="text" class="form-control" ng-model="Hn.Tenrutgon" />
-                    <br />
-                    <label style="font-style:italic">Mã đăng ký</label>
-                    <input type="text" class="form-control" ng-model="Hn.MaDK" />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addHenganh(Hn, Tenhe)">Thêm</button>
-                </div>
+                @using (Html.BeginForm("AddHeNganh", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+                {
+                    <div class="modal-body">
+                        <label style="font-style:italic">Chọn khoa</label>
+                        @{ List<SelectListItem> SelectListItemKho = new List<SelectListItem>();
+                            foreach (var item in Model.lstkhoa)
+                            {
+                                SelectListItem items = new SelectListItem();
+                                items.Value = item.MaKhoa.ToString();
+                                items.Text = item.TenKhoa;
+
+                                SelectListItemKho.Add(items);
+                            }
+                        }
+                        @Html.DropDownList("HnKhoa", SelectListItemKho, new { @class = "form-control" })
+                        <br />
+                        <label style="font-style:italic">Tên hệ</label>
+                        @Html.TextBox("HnTenhe", null, new { @class = "form-control" })
+                        <br />
+                        <label style="font-style:italic">Tên ngành</label>
+                        @Html.TextBox("HnMota", null, new { @class = "form-control" })
+                        <br />
+                        <label style="font-style:italic">Tên rút gọn</label>
+                        @Html.TextBox("HnTenrutgon", null, new { @class = "form-control" })
+                        <br />
+                        <label style="font-style:italic">Mã đăng ký</label>
+                        @Html.TextBox("HnMaDK", null, new { @class = "form-control" })
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Thêm" class="btn btn-default" />
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -106,18 +129,33 @@
                     <h4 class="modal-title">Thêm Hệ / Ngành</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <label style="font-style:italic">Chọn khoa</label>
-                    <select class="form-control" style="width:450px" ng-model="Hn.MaKhoa">
-                        <option ng-repeat="ma in KHOA" value="{{ma.MaKhoa}}">{{ma.TenKhoa}}</option>
-                    </select>
-                    <br />
-                    <label style="font-style:italic">Tên hệ</label>
-                    <input type="text" class="form-control" ng-model="Hn.Mota" />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addHe(Hn)">Thêm</button>
-                </div>
+
+                @using (Html.BeginForm("AddHe", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+                {
+                    <div class="modal-body">
+                        <label style="font-style:italic">Chọn khoa</label>
+                        @{ List<SelectListItem> SelectListItemKho = new List<SelectListItem>();
+                            foreach (var item in Model.lstkhoa)
+                            {
+                                SelectListItem items = new SelectListItem();
+                                items.Value = item.MaKhoa.ToString();
+                                items.Text = item.TenKhoa;
+
+                                SelectListItemKho.Add(items);
+                            }
+                        }
+                        @Html.DropDownList("HnKhoa", SelectListItemKho, new { @class = "form-control" })
+
+                        <br />
+                        <label style="font-style:italic">Tên hệ</label>
+                        @Html.TextBox("HnMota", null, new { @class = "form-control" })
+                  
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Thêm" class="btn btn-default" />
+                    </div>
+                }
+
             </div>
         </div>
     </div>
@@ -129,24 +167,37 @@
                     <h4 class="modal-title">Thêm Hệ / Ngành</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <label style="font-style:italic">Chọn hệ</label>
-                        <select class="form-control" style="width:450px"ng-model="Hn.MaQH">
-                            <option ng-repeat="he in henganhs" value="{{he.MaQH}}">{{he.Mota}}</option>
-                        </select>
-                    <br />
-                    <label style="font-style:italic">Tên ngành</label>
-                    <input type="text" class="form-control" ng-model="Hn.Mota" />
-                    <br />
-                    <label style="font-style:italic">Tên rút gọn</label>
-                    <input type="text" class="form-control" ng-model="Hn.Tenrutgon" />
-                    <br />
-                    <label style="font-style:italic">Mã đăng ký</label>
-                    <input type="text" class="form-control" ng-model="Hn.MaDK" />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addNganh(Hn)">Thêm</button>
-                </div>
+                @using (Html.BeginForm("AddNganh", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+                {
+                    <div class="modal-body">
+                        <label style="font-style:italic">Chọn hệ</label>
+
+                        @{ List<SelectListItem> SelectListItemHeNganh = new List<SelectListItem>();
+                            foreach (var item in Model.lsthe)
+                            {
+                                SelectListItem items = new SelectListItem();
+                                items.Value = item.MaHN.ToString();
+                                items.Text = item.Mota;
+
+                                SelectListItemHeNganh.Add(items);
+                            }
+                        }
+                        @Html.DropDownList("MaQH", SelectListItemHeNganh, new { @class = "form-control" })
+
+                        <br />
+                        <label style="font-style:italic">Tên ngành</label>
+                        @Html.TextBox("HnMota", null, new { @class = "form-control" })
+                        <br />
+                        <label style="font-style:italic">Tên rút gọn</label>
+                        @Html.TextBox("HnTenrutgon", null, new { @class = "form-control" })
+                        <br />
+                        <label style="font-style:italic">Mã đăng ký</label>
+                        @Html.TextBox("HnMaDK", null, new { @class = "form-control" })
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Thêm" class="btn btn-default" />
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -158,38 +209,11 @@
                     <h4 class="modal-title">Chỉnh sửa Hệ / Ngành</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <div ng-if="editHn.MaQH == null">
-                        <label style="font-style:italic">Chọn khoa</label>
-                        <select class="form-control" style="width:450px" ng-model="editKh.MaKhoa">
-                            <option ng-repeat="ma in KHOA" value="{{ma.MaKhoa}}">{{ma.TenKhoa}}</option>
-                        </select>
-                        <br />
-                        <label style="font-style:italic">Tên hệ</label>
-                        <input type="text" class="form-control" ng-model="editHn.Mota" />
-                    </div>
-                    <div ng-if="editHn.MaQH != null">
-                        <label style="font-style:italic">Chọn hệ</label>
-                        <select class="form-control" style="width:450px" ng-model="editHn.MaQH">
-                            <option ng-repeat="he in henganhs" value="{{he.MaQH}}">{{he.Mota}}</option>
-                        </select>
-                        <br />
-                        <label style="font-style:italic">Tên ngành</label>
-                        <input type="text" class="form-control" ng-model="editHn.Mota" />
-                        <br />
-                        <label style="font-style:italic">Tên rút gọn</label>
-                        <input type="text" class="form-control" ng-model="editHn.Tenrutgon" />
-                        <br />
-                        <label style="font-style:italic">Mã đăng ký</label>
-                        <input type="text" class="form-control" ng-model="editHn.MaDK" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="editHenganh(editHn, editKh,editHn)">Lưu</button>
-                </div>
+                <div id="editcontent"></div>
             </div>
         </div>
     </div>
+
     @*nut len dau trang*@
     <div class='lentop'>
         <div>
@@ -197,9 +221,13 @@
         </div>
     </div>
 </div>
-</div>
+
 @*//nut len dau trang*@
 <script>
+    function editEvent(index) {
+        $("#editcontent").load("./CMS/CategoriesManagement/EditHeNganhAction/", { index: index });
+    }
+
     $(function () {
         $(window).scroll(function () {
             if ($(this).scrollTop() > 100) $(".lentop").fadeIn();
@@ -224,7 +252,5 @@
         });
     });
 </script>
+
 <script src="~/Areas/CMS/Content/Curriculum/assets/libs/toastr/build/toastr.min.js"></script>
-<script src="~/Areas/CMS/Content/Curriculum/angular/QLHeNganh/QLHenganhModel.js"></script>
-<script src="~/Areas/CMS/Content/Curriculum/angular/QLHeNganh/QLHanganhService.js"></script>
-<script src="~/Areas/CMS/Content/Curriculum/angular/QLHeNganh/QLHenganhController.js"></script>
