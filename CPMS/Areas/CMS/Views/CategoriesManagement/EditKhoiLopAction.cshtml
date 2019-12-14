@@ -1,0 +1,23 @@
+﻿@model Capstone.Models.sc_Khoilop
+
+<div class="modal-header" style="background-color:#d51c29; color:white">
+    <h4 class="modal-title">Chỉnh sửa khối lớp</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+@using (Html.BeginForm("SaveEditKhoi", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+{
+    <div class="modal-body">
+        @Html.TextBox("maKH", Model.MaKhoi, new { @class = "form-control hide" })
+        <label style="font-style:italic">Tên khối lớp</label>
+        @Html.TextBox("TenKhoi", Model.TenKhoi, new { @class = "form-control" })
+        <br />
+        <label style="font-style:italic">Năm bắt đầu</label>
+        @Html.TextBox("NamBD", Model.NamBD, new { @class = "form-control" })
+        <br />
+        <label style="font-style:italic">Năm kết thúc</label>
+        @Html.TextBox("NamKT", Model.NamKT, new { @class = "form-control" })
+    </div>
+    <div class="modal-footer">
+        <input type="submit" value="Lưu" class="btn btn-default" />
+    </div>
+}

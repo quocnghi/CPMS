@@ -1,0 +1,20 @@
+﻿@model Capstone.Models.sc_Khoa
+
+<div class="modal-content">
+    @using (Html.BeginForm("SaveEditKhoa", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+    {
+        @Html.TextBox("maKH", Model.MaKhoa, new { @class = "form-control hide" })
+        <div class="modal-header" style="background-color:#d51c29; color:white">
+            <h4 class="modal-title">Chỉnh sửa khoa </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label style="font-style:italic">Tên khoa</label>
+            @Html.TextBox("TenKhoa", Model.TenKhoa, new { @class = "form-control" })
+            <br />
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Lưu" class="btn btn-default" />
+        </div>
+    }
+</div>

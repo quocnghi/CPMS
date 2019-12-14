@@ -78,24 +78,41 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         /// <returns>true: nếu thành công false nếu thất bại</returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public bool SaveEditHN(sc_HeNganh He)
+        public ActionResult SaveEditHN(string MaHN,string MaQH,string Mota, string Tenrutgon, string MaDK)
         {
             try
             {
-                var Ng = db.sc_HeNganh.Find(He.MaHN);
-                Ng.Mota = He.Mota;
-                Ng.MaDK = He.MaDK;
-                Ng.MaKhoa = He.MaKhoa;
-                Ng.Tenrutgon = He.Tenrutgon;
+                var Ng = db.sc_HeNganh.Find(int.Parse(MaHN));
+                Ng.MaQH = int.Parse(MaQH);
+                Ng.Mota = Mota;
+                Ng.MaDK = MaDK;
+                Ng.Tenrutgon = Tenrutgon;
                 db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
-                return true;
             }
             catch
             {
-                return false;
             }
+            return RedirectToAction("QuanlyHeNganh");
 
+        }
+
+        [HttpPost]
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult SaveEditHe(string MaHN, string MaKhoa, string HnMota)
+        {
+            try
+            {
+                var Ng = db.sc_HeNganh.Find(int.Parse(MaHN));
+                Ng.Mota = HnMota;
+                Ng.MaKhoa = int.Parse(MaKhoa);
+                db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch
+            {
+            }
+            return RedirectToAction("QuanlyHeNganh");
         }
 
         /// <summary>
@@ -123,6 +140,8 @@ namespace Capstone.Areas.CMS.Controllers.Setting
                 nganh.MaKhoa = int.Parse(HnKhoa);
                 nganh.Mota = HnMota;
                 nganh.MaQH = lhe.MaHN;
+                nganh.MaDK = HnMaDK;
+                nganh.Tenrutgon = HnTenrutgon;
                 db.sc_HeNganh.Add(nganh);
                 db.SaveChanges();
 
@@ -174,7 +193,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             nganh.MaQH = int.Parse(MaQH);
             nganh.MaDK = HnMaDK;
             nganh.Tenrutgon = HnTenrutgon;
-
+           
             try
             {
                 db.sc_HeNganh.Add(nganh);
@@ -195,16 +214,36 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             var id = ck.Value;
             var role = db.AspNetUsers.Find(id).AspNetRoles.FirstOrDefault().Name;
             ViewBag.Role = role;
-            return View();
+
+            List<sc_Khoa> DataInfo = loadKhoa();
+
+            return View(DataInfo);
         }
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult loadKhoa()
+        public List<sc_Khoa> loadKhoa()
         {
-            var lstkhoa = db.sc_Khoa.Select(s => new { s.MaKhoa, s.TenKhoa });
-            return Json(new { list = lstkhoa });
+            List<sc_Khoa> lstkhoa = new List<sc_Khoa>();
+            lstkhoa = db.sc_Khoa.ToList();
+            return lstkhoa;
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult AddKhoa(string TenKhoa)
+        {
+            sc_Khoa khoa = new sc_Khoa();
+            khoa.TenKhoa = TenKhoa;
+            try
+            {
+                db.sc_Khoa.Add(khoa);
+                db.SaveChanges();
+                return RedirectToAction("QuanlyKhoa");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoa");
+        }
+
         public JsonResult addKhoa(sc_Khoa khoa)
         {
             try
@@ -221,6 +260,15 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+
+        public PartialViewResult EditKhoaAction(int index)
+        {
+            sc_Khoa dataInfo = new sc_Khoa();
+
+            dataInfo = db.sc_Khoa.Where(s => s.MaKhoa == index).FirstOrDefault();
+            return PartialView(dataInfo);
+        }
+
         public JsonResult getKhoa(sc_Khoa lop)
         {
             var rs = db.sc_Khoa.Where(s => s.MaKhoa == lop.MaKhoa).Select(s => new { s.MaKhoa, s.TenKhoa }).FirstOrDefault();
@@ -228,6 +276,23 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult SaveEditKhoa(int maKH, string TenKhoa)
+        {
+
+            try
+            {
+                var Ng = db.sc_Khoa.Find(maKH);
+                Ng.TenKhoa = TenKhoa;
+                db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("QuanlyKhoa");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoa");
+        }
         public JsonResult editKhoa(sc_Khoa Hn)
         {
             try
@@ -244,6 +309,24 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             {
                 return Json(new { msg = NotificationManagement.ErrorMessage.DM_Chinhsuadulieu });
             }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public bool DeleteKhoa(int maKH)
+        {
+            try
+            {
+                var rs = db.sc_Khoa.Find(maKH);
+                db.Entry(rs).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+            }
+            return false;
         }
 
         //[HttpPost]
@@ -266,15 +349,66 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public ActionResult QuanlyKhoiLop()
         {
-            return View();
+            List<sc_Khoilop> data = loadList();
+            return View(data);
         }
-        [HttpPost]
-        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult loadList()
+
+        private List<sc_Khoilop> loadList()
         {
-            var lstkhoi = db.sc_Khoilop.Select(s => new { s.MaKhoi, s.TenKhoi, s.NamBD, s.NamKT });
-            return Json(new { list = lstkhoi });
+            List<sc_Khoilop> lstkhoi = db.sc_Khoilop.ToList();
+            //var lstkhoi = db.sc_Khoilop.Select(s => new { s.MaKhoi, s.TenKhoi, s.NamBD, s.NamKT });
+            return lstkhoi;
         }
+
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult AddKhoi(string TenKhoi, string NamBD, string NamKT)
+        {
+            sc_Khoilop lop = new sc_Khoilop();
+            lop.TenKhoi = TenKhoi;
+            lop.NamBD = NamBD;
+            lop.NamKT = NamKT;
+
+            db.Entry(lop).State = System.Data.Entity.EntityState.Added;
+            try
+            {
+                db.sc_Khoilop.Add(lop);
+                db.SaveChanges();
+                return RedirectToAction("QuanlyKhoiLop");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiLop");
+        }
+
+        public PartialViewResult EditKhoiLopAction(int index)
+        {
+            sc_Khoilop dataInfo = new sc_Khoilop();
+
+            dataInfo = db.sc_Khoilop.Where(s => s.MaKhoi == index).FirstOrDefault();
+            return PartialView(dataInfo);
+        }
+
+        public ActionResult SaveEditKhoi(int maKH, string TenKhoi, string NamBD, string NamKT)
+        {
+
+            try
+            {
+                var Ng = db.sc_Khoilop.Find(maKH);
+                Ng.TenKhoi = TenKhoi;
+                Ng.NamBD = NamBD;
+                Ng.NamKT = NamKT;
+                db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("QuanlyKhoiLop");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiLop");
+        }
+
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public JsonResult addKhoilop(sc_Khoilop lop)

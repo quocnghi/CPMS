@@ -1,78 +1,108 @@
 ﻿@model Capstone.Areas.CMS.Models.DataInfoModel
 
-<div class="modal-body">
-    @if (@Model.lstnganh.FirstOrDefault().MaQH == null)
+
+@if (@Model.lstnganh.FirstOrDefault().MaQH == null)
+{
+    using (Html.BeginForm("SaveEditHe", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
     {
-        <div>
-            <label style="font-style:italic">Chọn khoa</label>
-            <select class="form-control" style="width:450px" id="editKhMaKhoa">
-                @foreach (var item in Model.lstkhoa)
-                {
-                    <option value="@item.MaKhoa">@item.TenKhoa</option>
+        <div class="modal-body">
+            <div>
+                @Html.TextBox("MaHN", @Model.lstnganh.FirstOrDefault().MaHN, new { @class = "form-control hide" })
+                <label style="font-style:italic">Chọn khoa</label>
+                @{ List<SelectListItem> SelectListItemHeNganh = new List<SelectListItem>();
+                    foreach (var item in Model.lstkhoa)
+                    {
+                        SelectListItem items = new SelectListItem();
+                        items.Value = item.MaKhoa.ToString();
+                        items.Text = item.TenKhoa;
+
+                        SelectListItemHeNganh.Add(items);
+                    }
+                }
+                @Html.DropDownList("MaKhoa", SelectListItemHeNganh, new { @class = "form-control" })
+
+                <br />
+                <label style="font-style:italic">Tên hệ</label>
+                @Html.TextBox("HnMota", @Model.lstnganh.FirstOrDefault().Mota, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <input type="submit" value="Lưu" class="btn btn-default" />
+        </div>
+    }
+}
+else
+{
+    using (Html.BeginForm("SaveEditHN", "CategoriesManagement", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+    {
+        <div class="modal-body">
+            <div>
+                @Html.TextBox("MaHN", @Model.lstnganh.FirstOrDefault().MaHN, new { @class = "form-control hide" })
+                <label style="font-style:italic"> Chọn hệ</label>
+                @{ List<SelectListItem> SelectListItemHeNganh = new List<SelectListItem>();
+                    foreach (var item in Model.lstnganh)
+                    {
+                        SelectListItem items = new SelectListItem();
+                        items.Value = item.MaQH.ToString();
+                        items.Text = item.Mota;
+
+                        SelectListItemHeNganh.Add(items);
+                    }
                 }
 
-            </select>
-            <br />
-            <label style="font-style:italic">Tên hệ</label>
-            <input type="text" class="form-control" id="editHnMota" />
+                @Html.DropDownList("MaQH", SelectListItemHeNganh, new { @class = "form-control" })
+
+                <br />
+                <label style="font-style:italic"> Tên ngành</label>
+                @Html.TextBox("Mota", @Model.lstnganh.FirstOrDefault().Mota, new { @class = "form-control" })
+                <br />
+                <label style="font-style:italic"> Tên rút gọn</label>
+
+                @Html.TextBox("Tenrutgon", @Model.lstnganh.FirstOrDefault().Tenrutgon, new { @class = "form-control" })
+                <br />
+                <label style="font-style:italic"> Mã đăng ký</label>
+
+                @Html.TextBox("MaDK", @Model.lstnganh.FirstOrDefault().MaDK, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Lưu" class="btn btn-default" />
         </div>
     }
-    else
-    {
-        <div ng-if="editHn.MaQH != null">
-            <label style="font-style:italic">Chọn hệ</label>
-            <select class="form-control" style="width:450px" id="editHnMaQH">
-                @foreach (var item in Model.lstnganh)
-                {
-                    <option value="@item.MaQH">@item.Mota</option>
-                }
-            </select>
-            <br />
-            <label style="font-style:italic">Tên ngành</label>
-            <input type="text" class="form-control" id="editHnMota" />
-            <br />
-            <label style="font-style:italic">Tên rút gọn</label>
-            <input type="text" class="form-control" id="editHnTenrutgon" />
-            <br />
-            <label style="font-style:italic">Mã đăng ký</label>
-            <input type="text" class="form-control" id="editHnMaDK" />
-        </div>
-    }
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="SaveEditEvent(@Model.lstnganh.FirstOrDefault().MaHN)">Lưu</button>
-</div>
+}
+
 
 <script>
-    function prepareData(MaHN) {
-        var data = {
-            "MaHN": MaHN,
-            "Mota": $("#editHnMota").val(),
-            "MaDK": $("#editHnMaDK").val(),
-            "MaKhoa": $("#editKhMaKhoa").val(),
-            "Tenrutgon": $("#editHnTenrutgon").val(),
-        };
-        return data;
-    }
+                    //function prepareData(MaHN) {
+                    //    var data = {
+                    //        "MaHN": MaHN,
+                    //        "Mota": $("#editHnMota").val(),
+                    //        "MaDK": $("#editHnMaDK").val(),
+                    //        "MaKhoa": $("#editKhMaKhoa").val(),
+                    //        "Tenrutgon": $("#editHnTenrutgon").val(),
+                    //    };
+                    //    return data;
+                    //}
 
-    function SaveEditEvent(MaHN) {
-        var data = prepareData(MaHN);
-        $.ajax(
-            {
-                type: "POST",
-                data: JSON.stringify(data),
-                url: "./CMS/CategoriesManagement/SaveEditHN",
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                    if (data == "True") {
-                        location.reload();
-                    } else {
+                    //function SaveEditEvent(MaHN) {
+                    //    var data = prepareData(MaHN);
+                    //    $.ajax(
+                    //        {
+                    //            type: "POST",
+                    //            data: JSON.stringify(data),
+                    //            url: "./CMS/CategoriesManagement/SaveEditHN",
+                    //            contentType: 'application/json; charset=utf-8',
+                    //            success: function (data) {
+                    //                if (data == "True") {
+                    //                    location.reload();
+                    //                } else {
 
-                    }
-                },
-                error: function () {
+                    //                }
+                    //            },
+                    //            error: function () {
 
-                }
-            })
-    }
+                    //            }
+                    //        })
+                    //}
 </script>

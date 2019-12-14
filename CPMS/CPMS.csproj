@@ -4846,6 +4846,8 @@
     <Content Include="Areas\CMS\Views\CTDTKhung\Index.cshtml" />
     <Content Include="Areas\CMS\Views\CTDTKhung\CreateCTDTStep0.cshtml" />
     <Content Include="Areas\CMS\Views\CategoriesManagement\EditHeNganhAction.cshtml" />
+    <Content Include="Areas\CMS\Views\CategoriesManagement\EditKhoiLopAction.cshtml" />
+    <Content Include="Areas\CMS\Views\CategoriesManagement\EditKhoaAction.cshtml" />
     <None Include="Areas\PMS\Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Areas\PMS\Scripts\jquery-1.12.4.js" />
     <Content Include="Areas\PMS\Scripts\jquery-1.12.4.min.js" />
