@@ -10,72 +10,75 @@ namespace Capstone.Areas.CMS.Controllers.Setting
 {
     public class EmailTemplateController : Controller
     {
-		fit_misDBEntities db = new fit_misDBEntities();
+        fit_misDBEntities db = new fit_misDBEntities();
         // GET: EmailTemplate
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public ActionResult Index()
         {
-            return View();
+            List<sf_EmailTemplate> data = loadEmailList();
+            return View(data);
         }
 
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult loadEmailList()
+        public List<sf_EmailTemplate> loadEmailList()
         {
-            var lstemail = db.sf_EmailTemplate.Select(s => new { s.MaET, s.Chude, s.Noidung, s.Phanloai, s.Ghichu });
-            return Json(new { email = lstemail });
+            List<sf_EmailTemplate> lstemail = db.sf_EmailTemplate.ToList();
+            return lstemail;
         }
 
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult addEmail(sf_EmailTemplate eMail)
+        [ValidateInput(false)]
+        public ActionResult AddEmail(string mahienthi, string Description)
         {
+            sf_EmailTemplate eMail = new sf_EmailTemplate();
+            eMail.Chude = mahienthi;
+            eMail.Noidung = Description;
             try
             {
                 db.sf_EmailTemplate.Add(eMail);
                 db.SaveChanges();
-                var lstemail = db.sf_EmailTemplate.Select(s => new { s.MaET, s.Chude, s.Noidung, s.Phanloai, s.Ghichu });
-                return Json(new { msg = NotificationManagement.SuccessMessage.DM_Themmail, email = lstemail });
             }
             catch (Exception e)
             {
-                return Json(new { msg = NotificationManagement.ErrorMessage.DM_Luudulieu });
             }
-
+            return RedirectToAction("/");
         }
 
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult editEmail(sf_EmailTemplate eMail)
+        public PartialViewResult EditEmail(int id)
         {
+            sf_EmailTemplate dataInfo = new sf_EmailTemplate();
+
+            var rs = db.sf_EmailTemplate.Find(id);
+            return PartialView(rs);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        [ValidateInput(false)]
+        public ActionResult SaveEditEmail(int id, string mahienthi, string Description)
+        {
+            sf_EmailTemplate eMail = new sf_EmailTemplate();
             try
             {
-                var rs = db.sf_EmailTemplate.Find(eMail.MaET);
-                rs.Chude = eMail.Chude;
-                rs.Noidung = eMail.Noidung;
+                var rs = db.sf_EmailTemplate.Find(id);
+                rs.Chude = mahienthi;
+                rs.Noidung = Description;
                 db.Entry(rs).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
-                var lstemail = db.sf_EmailTemplate.Select(s => new { s.MaET, s.Chude, s.Noidung, s.Phanloai, s.Ghichu });
-                return Json(new { msg = NotificationManagement.SuccessMessage.DM_Suamail, email = lstemail });
             }
             catch (Exception e)
             {
-                return Json(new { msg = NotificationManagement.ErrorMessage.DM_Chinhsuadulieu });
             }
-
+            return RedirectToAction("/");
         }
-
-        [HttpPost]
-        [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult getDetailEmail(int id)
-        {
-            var rs = db.sf_EmailTemplate.Find(id);
-            return Json(new { email = rs });
-        }
-
+             
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR_EDITOR)]
-        public JsonResult deleteEmail(int id)
+        public bool DeleteEmail(int id)
         {
             try
             {
@@ -85,12 +88,12 @@ namespace Capstone.Areas.CMS.Controllers.Setting
                 db.Entry(rs).State = System.Data.Entity.EntityState.Deleted;
                 //lưu lại
                 db.SaveChanges();
-                return Json(new { msg = NotificationManagement.SuccessMessage.DM_Xoamail });
+                return true;
             }
             catch (Exception e)
             {
-                return Json(new { msg = NotificationManagement.ErrorMessage.DM_Xoadulieu });
+                return false;
             }
-        }
+        }      
     }
 }

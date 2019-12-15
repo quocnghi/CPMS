@@ -112,22 +112,7 @@
 
     function deleteKhoa(index) {
         var result = confirm("Are you sure you want to delete?");
-        if (result) {       
-            //$.ajax({
-            //    url: "./CMS/CategoriesManagement/DeleteKhoa",
-            //    type: "post",
-            //    dataType: 'json',
-            //    data: { maKH: index },
-            //    success: function (data) {
-            //        debugger;
-            //        if (data == "True") {
-            //            location.reload();
-            //        } else {
-
-            //        }
-            //    }
-            //});
-
+        if (result) {               
             $.ajax(
                 {
                     type: "POST",

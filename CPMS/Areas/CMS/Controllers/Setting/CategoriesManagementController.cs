@@ -78,7 +78,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         /// <returns>true: nếu thành công false nếu thất bại</returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public ActionResult SaveEditHN(string MaHN,string MaQH,string Mota, string Tenrutgon, string MaDK)
+        public ActionResult SaveEditHN(string MaHN, string MaQH, string Mota, string Tenrutgon, string MaDK)
         {
             try
             {
@@ -193,7 +193,7 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             nganh.MaQH = int.Parse(MaQH);
             nganh.MaDK = HnMaDK;
             nganh.Tenrutgon = HnTenrutgon;
-           
+
             try
             {
                 db.sc_HeNganh.Add(nganh);
@@ -391,7 +391,6 @@ namespace Capstone.Areas.CMS.Controllers.Setting
 
         public ActionResult SaveEditKhoi(int maKH, string TenKhoi, string NamBD, string NamKT)
         {
-
             try
             {
                 var Ng = db.sc_Khoilop.Find(maKH);
@@ -400,8 +399,6 @@ namespace Capstone.Areas.CMS.Controllers.Setting
                 Ng.NamKT = NamKT;
                 db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
-
-                return RedirectToAction("QuanlyKhoiLop");
             }
             catch (Exception e)
             {
@@ -478,17 +475,45 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             var id = ck.Value;
             var role = db.AspNetUsers.Find(id).AspNetRoles.FirstOrDefault().Name;
             ViewBag.Role = role;
-            return View();
+            DataInfoModel data = new DataInfoModel();
+            data = loadKhoiKT();
+            return View(data);
         }
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
-        public JsonResult loadKhoiKT()
+        public DataInfoModel loadKhoiKT()
         {
-            var lstkhoi = db.sc_Khoikienthuc.Where(s => s.MaQH == null).Select(s => new { s.MaKhoiKT, s.Mota, s.MaQH });
-            var lst = db.sc_Khoikienthuc.Select(s => new { s.MaKhoiKT, s.Mota, s.MaQH, TenLoai = s.sc_Khoikienthuc2.Mota });
-            return Json(new { list = lstkhoi, ls = lst });
+            DataInfoModel data = new DataInfoModel();
+            data.lstkhoi = data.lst = new List<sc_Khoikienthuc>();
+            //{ s.MaKhoiKT, s.Mota, s.MaQH }
+            data.lstkhoi = db.sc_Khoikienthuc.Where(s => s.MaQH == null).ToList();
+            // s.MaKhoiKT, s.Mota, s.MaQH, TenLoai = s.sc_Khoikienthuc2.Mota
+            data.lst = db.sc_Khoikienthuc.ToList();
+            return data;
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+
+        public ActionResult AddKhoiKT(string Tenloai, string Mota)
+        {
+            try
+            {
+                var kt = new sc_Khoikienthuc();
+                kt.Mota = Tenloai;
+                db.sc_Khoikienthuc.Add(kt);
+                db.SaveChanges();
+                var loai = db.sc_Khoikienthuc.AsEnumerable().LastOrDefault();
+                var tenkt = new sc_Khoikienthuc();
+                tenkt.Mota = Mota;
+                tenkt.MaQH = loai.MaKhoiKT;
+                db.sc_Khoikienthuc.Add(tenkt);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiKT");
+        }
+
         public JsonResult addKhoiKT(KhoiKienThuc khoi)
         {
             try
@@ -513,6 +538,25 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+
+        public ActionResult AddKKT(string MaQH, string HnMota)
+        {
+            sc_Khoikienthuc khoi = new sc_Khoikienthuc();
+            khoi.MaQH = int.Parse(MaQH);
+            khoi.Mota = HnMota;
+
+            try
+            {
+                db.sc_Khoikienthuc.Add(khoi);
+                db.SaveChanges();
+                return RedirectToAction("QuanlyKhoiKT");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiKT");
+        }
+
         public JsonResult addKKT(sc_Khoikienthuc khoi)
         {
             try
@@ -529,6 +573,23 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public ActionResult AddLoai(string tenktMota)
+        {
+            sc_Khoikienthuc khoi = new sc_Khoikienthuc();
+            khoi.Mota = tenktMota;
+
+            try
+            {
+                db.sc_Khoikienthuc.Add(khoi);
+                db.SaveChanges();
+                return RedirectToAction("QuanlyKhoiKT");
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiKT");
+        }
+
         public JsonResult addLoai(sc_Khoikienthuc khoi)
         {
             try
@@ -552,6 +613,47 @@ namespace Capstone.Areas.CMS.Controllers.Setting
         }
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
+        public PartialViewResult EditKhoiKT(int id)
+        {
+            sc_Khoikienthuc Ng = db.sc_Khoikienthuc.Where(s => s.MaKhoiKT == id).FirstOrDefault();
+            DataInfoModel data = new DataInfoModel();
+            data.lst = new List<sc_Khoikienthuc>();
+            data.lst.Add(Ng);
+            data.lstkhoi = db.sc_Khoikienthuc.Where(s => s.MaQH == null).ToList();
+
+            return PartialView(data);
+        }
+
+        public ActionResult SavEditKhoi(int MaKhoiKT, string HnMota)
+        {
+            try
+            {
+                var Ng = db.sc_Khoikienthuc.Find(MaKhoiKT);
+                Ng.Mota = HnMota;
+                db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiKT");
+        }
+
+        public ActionResult SavEditKhoiKT(int MaKhoiKT, string MaQH, string HnMota)
+        {
+            try
+            {
+                var Ng = db.sc_Khoikienthuc.Find(MaKhoiKT);
+                Ng.Mota = HnMota;
+                Ng.MaQH = int.Parse(MaQH);
+                db.Entry(Ng).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+            }
+            return RedirectToAction("QuanlyKhoiKT");
+        }
         public JsonResult editKhoiKT(sc_Khoikienthuc KT)
         {
             try

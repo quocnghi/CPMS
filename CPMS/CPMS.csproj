@@ -4848,6 +4848,8 @@
     <Content Include="Areas\CMS\Views\CategoriesManagement\EditHeNganhAction.cshtml" />
     <Content Include="Areas\CMS\Views\CategoriesManagement\EditKhoiLopAction.cshtml" />
     <Content Include="Areas\CMS\Views\CategoriesManagement\EditKhoaAction.cshtml" />
+    <Content Include="Areas\CMS\Views\EmailTemplate\EditEmail.cshtml" />
+    <Content Include="Areas\CMS\Views\CategoriesManagement\EditKhoiKT.cshtml" />
     <None Include="Areas\PMS\Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Areas\PMS\Scripts\jquery-1.12.4.js" />
     <Content Include="Areas\PMS\Scripts\jquery-1.12.4.min.js" />

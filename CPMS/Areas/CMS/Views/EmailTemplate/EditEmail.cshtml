@@ -1,0 +1,29 @@
+﻿@model Capstone.Models.sf_EmailTemplate
+
+@using (Html.BeginForm("SaveEditEmail", "EmailTemplate", new { returnUrl = ViewBag.ReturnUrl, }, FormMethod.Post, null))
+{
+<div class="modal-body">
+    @Html.TextBox("id", Model.MaET, new { @class = "hide" })
+    <label style="font-style:italic">Tiêu đề</label>
+    @Html.TextBox("mahienthi", Model.Chude, new { @class = "form-control", @maxlength = "100", @id = "mahienthi" })
+    @*<input id="mahienthi" maxlength="100" name="mahienthi" type="text" class="form-control" placeholder="Tiêu đề" ng-model="email.Chude" />*@
+    <br />
+    <label style="font-style:italic">Nội dung</label>
+    @Html.TextArea("Description", Model.Noidung, new { @class = "form-control", @id = "Noidung2" })
+    @*<textarea class="form-control" style="height:250px" ng-model="email.Noidung" id="Noidung"></textarea>*@
+    <br />
+    <h8 style="color:red">Chú ý: Những chử có định dạng "{abc}" không được chỉnh sửa </h8>
+</div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <input type="submit" value="Lưu" class="btn btn-success" />
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        CKEDITOR.replace('Noidung2');
+    });
+ 
+</script>
