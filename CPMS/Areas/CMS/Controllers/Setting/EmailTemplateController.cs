@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Capstone.Models;
 using CommonLibrary;
@@ -19,6 +18,10 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             return View(data);
         }
 
+        /// <summary>
+        /// lấy danh sách email
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public List<sf_EmailTemplate> loadEmailList()
@@ -27,6 +30,12 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             return lstemail;
         }
 
+        /// <summary>
+        /// thêm mới 1 email template
+        /// </summary>
+        /// <param name="mahienthi"></param>
+        /// <param name="Description"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         [ValidateInput(false)]
@@ -46,6 +55,11 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             return RedirectToAction("/");
         }
 
+        /// <summary>
+        /// lấy thông tin cần chỉnh sửa 1 email theo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         public PartialViewResult EditEmail(int id)
@@ -56,6 +70,13 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             return PartialView(rs);
         }
 
+        /// <summary>
+        /// lưu thông tin chỉnh sửa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="mahienthi"></param>
+        /// <param name="Description"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR)]
         [ValidateInput(false)]
@@ -75,7 +96,12 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             }
             return RedirectToAction("/");
         }
-             
+
+        /// <summary>
+        /// xóa 1 email 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = ROLES.ADMIN_HEADOFEDITOR_EDITOR)]
         public bool DeleteEmail(int id)
@@ -94,6 +120,6 @@ namespace Capstone.Areas.CMS.Controllers.Setting
             {
                 return false;
             }
-        }      
+        }
     }
 }
